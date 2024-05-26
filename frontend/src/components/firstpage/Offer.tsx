@@ -1,4 +1,4 @@
-import productview from "../secondpage/ProductView";
+
 import { Link } from 'react-router-dom';
 const products = [
   { id: 1, name: "CHAIR", price: 45, originalPrice: 500, imageUrl: "https://via.placeholder.com/200", rating: 4 },
@@ -53,9 +53,11 @@ const Offer = () => {
                   </svg>
                 ))}
               </div>
+              <Link to="/productview">
               <button className="w-full py-2 mt-4 text-white bg-purple-700 rounded hover:bg-purple-800">
                 Add to cart
               </button>
+              </Link>
             </div>
           </div>
         ))}
