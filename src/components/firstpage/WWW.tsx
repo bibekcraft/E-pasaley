@@ -102,7 +102,7 @@ function WWW() {
 
             </a>
             <a href="#" className="flex justify-center items-center">
-                <svg class="h-9" viewBox="0 0 189 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg className="h-9" viewBox="0 0 189 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd"
                         d="M168.844 27.6417L175.802 18.2809L169.384 9.43629H174.881L178.597 14.9547L182.347 9.43629H187.812L181.299 18.2493L188.16 27.6417H182.76L178.534 21.7021L174.436 27.6417H168.844Z"
                         fill="black" />
@@ -143,4 +143,4 @@ function WWW() {
   )
 }
 
-export default WWW
+export default WWW;
