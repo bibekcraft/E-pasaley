@@ -1,39 +1,37 @@
 from django.db import models
 from django.utils import timezone
 
-
-
-# /here i wan tot to there is sectionfrom where i can add cateogry .after adding category then it should show 
-# what should be kept inside that category .like if i add category as shoes then it should create a different type of shpes sectin
-
-# like addida that means if i add category then it should createa a new page for it and then i can add the product inside that category
-
-# this category section should be foregin key in Product model so that i can add the product inside that category
-
 class Category(models.Model):
     name = models.CharField(max_length=244)
+    description = models.TextField()
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='subcategories')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "Categories"
+
+class Product(models.Model):
+    name = models.CharField(max_length=244)
+    price = models.DecimalField(max_digits=10, decimal_places=2)  # Specify max_digits and decimal_places
+    description = models.TextField()
+    feature = models.TextField()
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
+    image = models.ImageField(upload_to='product')
+
+    def __str__(self):
+        return self.name
+
+class Testimonial(models.Model):  # Corrected spelling
+    name = models.CharField(max_length=244)
+    image = models.ImageField(upload_to="testimonials")
     description = models.TextField()
 
     def __str__(self):
         return self.name
-class Product(models.Model):
-    name=models.CharField(max_length=244)
-    price=models.DecimalField()
-    description=models.TextField()
-    Feature=models.TextField()
-    Category=models.ForeignKey(Category,on_delete=models.CASCADE)
-    image=models.ImageField(upload_to='product')
-    
-    def __str__(self):
-        return self.name
 
-class Testamonails(models.Model):
-    name=models.CharField(max_length=244)
-    image=models.ImageField(upload_to="testamonails")
-    Description=models.TextField()
-    def __str__(self):
-        return self.name
-class Coupen(models.Model):
+class Coupon(models.Model):  # Corrected spelling
     code = models.CharField(max_length=20, unique=True)  # Unique coupon code
     amount = models.DecimalField(max_digits=10, decimal_places=2)  # Discount amount
     active = models.BooleanField(default=True)  # Status of the coupon
@@ -51,4 +49,3 @@ class Coupen(models.Model):
         if self.expiry_date and self.expiry_date < timezone.now():
             return False
         return True
-
