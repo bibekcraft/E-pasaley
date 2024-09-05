@@ -13,6 +13,9 @@ from django.utils import timezone
 class Category(models.Model):
     name = models.CharField(max_length=244)
     description = models.TextField()
+
+    def __str__(self):
+        return self.name
 class Product(models.Model):
     name=models.CharField(max_length=244)
     price=models.DecimalField()
@@ -21,12 +24,15 @@ class Product(models.Model):
     Category=models.ForeignKey(Category,on_delete=models.CASCADE)
     image=models.ImageField(upload_to='product')
     
+    def __str__(self):
+        return self.name
 
 class Testamonails(models.Model):
     name=models.CharField(max_length=244)
     image=models.ImageField(upload_to="testamonails")
     Description=models.TextField()
-
+    def __str__(self):
+        return self.name
 class Coupen(models.Model):
     code = models.CharField(max_length=20, unique=True)  # Unique coupon code
     amount = models.DecimalField(max_digits=10, decimal_places=2)  # Discount amount
