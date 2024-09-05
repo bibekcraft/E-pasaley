@@ -6,7 +6,6 @@ import WWW from '../firstpage/WWW'
 import Offer from '../firstpage/Offer'
 import Footer from '../firstpage/Footer'
 import Philosophy from '../firstpage/Philosophy'
-import Allproduct from '../secondpage/Allproduct'
 import Whyus from '../firstpage/Whyus'
 function FirstPage() {
   return (
@@ -17,7 +16,6 @@ function FirstPage() {
     {/* <Testamonials /> */}
     <Offer />
     <Philosophy />
-    <Allproduct />
     <Whyus />
     <Footer />
     </>

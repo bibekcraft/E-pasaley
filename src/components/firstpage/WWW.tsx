@@ -2,13 +2,13 @@
 function WWW() {
   return (
     <div>                                                <section className="py-24 ">
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-14 text-center">
-            <h4 className="text-xl text-gray-400 text-center font-medium">Our clients</h4>
+    <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div className="text-center mb-14">
+            <h4 className="text-xl font-medium text-center text-gray-400">Our clients</h4>
         </div>
         <div
-            className="grid grid-cols-2  justify-center  items-center  gap-12 md:grid-cols-3  xl:grid-cols-none xl:flex xl:justify-between">
-            <a href="#" className="flex justify-center items-center">
+            className="grid items-center justify-center grid-cols-2 gap-12 md:grid-cols-3 xl:grid-cols-none xl:flex xl:justify-between">
+            <a href="#" className="flex items-center justify-center">
                 <svg className="h-9" viewBox="0 0 125 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M13.5911 1H0V33.5035L13.5911 1Z" fill="#FA0C00" />
                     <path d="M23.1533 1H36.7268V33.5035L23.1533 1Z" fill="#FA0C00" />
@@ -32,7 +32,7 @@ function WWW() {
                 </svg>
 
             </a>
-            <a href="#" className="flex justify-center items-center">
+            <a href="#" className="flex items-center justify-center">
                 <svg className="h-9" viewBox="0 0 114 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clip-path="url(#clip0_8562_69284)">
                         <path
@@ -50,7 +50,7 @@ function WWW() {
                 </svg>
 
             </a>
-            <a href="#" className="flex justify-center items-center">
+            <a href="#" className="flex items-center justify-center">
                 <svg className="h-9" viewBox="0 0 215 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clip-path="url(#clip0_8562_69285)">
                         <path
@@ -86,7 +86,7 @@ function WWW() {
                 </svg>
 
             </a>
-            <a href="#" className="flex justify-center items-center">
+            <a href="#" className="flex items-center justify-center">
                 <svg className="h-9" viewBox="0 0 114 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clip-path="url(#clip0_8562_69286)">
                         <path fill-rule="evenodd" clip-rule="evenodd"
@@ -101,7 +101,7 @@ function WWW() {
                 </svg>
 
             </a>
-            <a href="#" className="flex justify-center items-center">
+            <a href="#" className="flex items-center justify-center">
                 <svg className="h-9" viewBox="0 0 189 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd"
                         d="M168.844 27.6417L175.802 18.2809L169.384 9.43629H174.881L178.597 14.9547L182.347 9.43629H187.812L181.299 18.2493L188.16 27.6417H182.76L178.534 21.7021L174.436 27.6417H168.844Z"
