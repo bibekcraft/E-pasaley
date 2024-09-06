@@ -3,7 +3,7 @@ from django.utils import timezone
 
 class Category(models.Model):
     name = models.CharField(max_length=244)
-    description = models.TextField()
+    description = models.TextField(blank=True,null=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='subcategories')
 
     def __str__(self):
@@ -19,9 +19,22 @@ class Product(models.Model):
     feature = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     image = models.ImageField(upload_to='product')
+    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # New field for discount amount
 
     def __str__(self):
         return self.name
+
+    def get_discounted_price(self):
+        """Calculate the price after discount."""
+        return self.price - self.discount_amount
+
+    def save(self, *args, **kwargs):
+        """Override save method to calculate discount rate."""
+        if self.price and self.discount_amount:
+            self.discount_rate = (self.discount_amount / self.price) * 100
+        else:
+            self.discount_rate = 0
+        super().save(*args, **kwargs)
 
 class Testimonial(models.Model):  # Corrected spelling
     name = models.CharField(max_length=244)
