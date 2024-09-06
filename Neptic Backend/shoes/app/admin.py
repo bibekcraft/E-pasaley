@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, Testimonial, Coupon  # Corrected model names
+from .models import Category, Product, Testimonial, Coupon,Contact,Video  # Corrected model names
 
 # Register Category model
 @admin.register(Category)
@@ -28,3 +28,16 @@ class CouponAdmin(admin.ModelAdmin):
     list_display = ('code', 'amount', 'active', 'expiry_date', 'created_at', 'updated_at')  # Display fields
     list_filter = ('active', 'expiry_date')  # Filter by active status and expiry date
     search_fields = ('code',)  # Add search functionality by code
+
+
+@admin.register(Video)
+class VideoAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description')
+    search_fields = ('name', 'description')
+    list_filter = ('name',)
+
+@admin.register(Contact)
+class ContactAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'subject', 'message')
+    search_fields = ('name', 'email', 'subject', 'message')
+    list_filter = ('name', 'email', 'subject', 'message')

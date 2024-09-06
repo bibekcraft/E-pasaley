@@ -1,6 +1,6 @@
 # serializers.py
 from rest_framework import serializers
-from .models import Category, Product, Testimonial, Coupon
+from .models import Category, Product, Testimonial, Coupon,Video,Contact
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,3 +21,12 @@ class CouponSerializer(serializers.ModelSerializer):
     class Meta:
         model = Coupon
         fields = ['id', 'code', 'amount', 'active', 'created_at', 'updated_at', 'expiry_date']
+
+class VideoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Video
+        fields = ['id', 'name', 'description']
+class ContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contact
+        fields = ['id', 'name', 'email', 'subject', 'message']
