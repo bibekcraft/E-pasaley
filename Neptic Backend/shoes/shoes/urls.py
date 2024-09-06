@@ -24,5 +24,5 @@ urlpatterns = [
     path('products/', ProductListCreateAPIView.as_view(), name='product-list-create'),
     path('testimonials/', TestimonialListCreateAPIView.as_view(), name='testimonial-list-create'),
     path('coupons/', CouponListCreateAPIView.as_view(), name='coupon-list-create'),
-
+ 
 ]
