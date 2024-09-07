@@ -1,0 +1,11 @@
+//authand authenticatoion
+//search section
+//pegination
+//admin dashboardupdate
+//product should be added
+//code understand
+//profile update crud in dashboard
+
+//backend deadline=4 days
+
+//all completed
