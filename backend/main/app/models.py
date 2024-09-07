@@ -1,14 +1,10 @@
 from django.db import models
-
-
 from django.utils import timezone
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
-
-
-from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser)
 class Category(models.Model):
     name = models.CharField(max_length=244)
-    description = models.TextField(blank=True,null=True)
+    description = models.TextField(blank=True, null=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='subcategories')
 
     def __str__(self):
@@ -19,7 +15,7 @@ class Category(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=244)
-    price = models.DecimalField(max_digits=10, decimal_places=2)  # Specify max_digits and decimal_places
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField()
     feature = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
@@ -28,9 +24,10 @@ class Product(models.Model):
     image2 = models.ImageField(default='default_image.jpg', upload_to='images/')
     image3 = models.ImageField(default='default_image.jpg', upload_to='images/')
     image4 = models.ImageField(default='default_image.jpg', upload_to='images/')
+    
+    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Discount amount field
+    discount_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0, editable=False)  # Discount rate field
 
-
-    discount_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0)  # Add this field
     def __str__(self):
         return self.name
 
@@ -46,7 +43,7 @@ class Product(models.Model):
             self.discount_rate = 0
         super().save(*args, **kwargs)
 
-class Testimonial(models.Model):  # Corrected spelling
+class Testimonial(models.Model):
     name = models.CharField(max_length=244)
     image = models.ImageField(upload_to="testimonials")
     description = models.TextField()
@@ -54,7 +51,7 @@ class Testimonial(models.Model):  # Corrected spelling
     def __str__(self):
         return self.name
 
-class Coupon(models.Model):  # Corrected spelling
+class Coupon(models.Model):
     code = models.CharField(max_length=20, unique=True)  # Unique coupon code
     amount = models.DecimalField(max_digits=10, decimal_places=2)  # Discount amount
     active = models.BooleanField(default=True)  # Status of the coupon
@@ -72,91 +69,20 @@ class Coupon(models.Model):  # Corrected spelling
         if self.expiry_date and self.expiry_date < timezone.now():
             return False
         return True
-    
+
 class Video(models.Model):
-    name=models.CharField(max_length=244)
-    video=models.FileField(upload_to='video')
-    description=models.TextField()
+    name = models.CharField(max_length=244)
+    video = models.FileField(upload_to='video')
+    description = models.TextField()
+
     def __str__(self):
         return self.name
-    
+
 class Contact(models.Model):
-    name=models.CharField(max_length=244)
-    email=models.EmailField()
-    subject=models.CharField(max_length=244)
-    message=models.TextField()
+    name = models.CharField(max_length=244)
+    email = models.EmailField()
+    subject = models.CharField(max_length=244)
+    message = models.TextField()
+
     def __str__(self):
         return self.name
-    
-
-
-class MyUserManager(BaseUserManager):
-    def create_user(self, email, name, password=None):
-        """
-        Creates and saves a User with the given email, date of
-        birth and password.
-        """
-        if not email:
-            raise ValueError("Users must have an email address")
-
-        user = self.model(
-            email=self.normalize_email(email),
-            name=name,
-        )
-
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self,  email, name, password=None):
-        """
-        Creates and saves a superuser with the given email, date of
-        birth and password.
-        """
-        user = self.create_user(
-            email,
-            name=name,
-
-        )
-        user.is_admin = True
-        user.is_staff = True
-        user.save(using=self._db)
-        return user
-
-
-class User(AbstractBaseUser):
-    email = models.EmailField(
-        
-        verbose_name="Email",
-        max_length=255,
-        unique=True,
-    )
-    name=models.CharField(max_length=244)
-    is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    objects = MyUserManager()
-
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["name"]
-
-    def __str__(self):
-        return self.email
-
-    def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission?"
-        # Simplest possible answer: Yes, always
-        return self.is_admin    
-
-    def has_module_perms(self, app_label):
-        "Does the user have permissions to view the app `app_label`?"
-        # Simplest possible answer: Yes, always
-        return True
-
-    @property
-    def is_staff(self):
-        "Is the user a member of staff?"
-        # Simplest possible answer: All admins are staff
-        return self.is_admin 
