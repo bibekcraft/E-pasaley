@@ -19,6 +19,11 @@ class Product(models.Model):
     feature = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     image = models.ImageField(upload_to='product')
+    image1 = models.ImageField(upload_to='product')
+    image2 = models.ImageField(upload_to='product')
+    image3 = models.ImageField(upload_to='product')
+    image4 = models.ImageField(upload_to='product')
+
     discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # New field for discount amount
 
     def __str__(self):
@@ -62,3 +67,18 @@ class Coupon(models.Model):  # Corrected spelling
         if self.expiry_date and self.expiry_date < timezone.now():
             return False
         return True
+    
+class Video(models.Model):
+    name=models.CharField(max_length=244)
+    video=models.FileField(upload_to='video')
+    description=models.TextField()
+    def __str__(self):
+        return self.name
+    
+class Contact(models.Model):
+    name=models.CharField(max_length=244)
+    email=models.EmailField()
+    subject=models.CharField(max_length=244)
+    message=models.TextField()
+    def __str__(self):
+        return self.name

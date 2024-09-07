@@ -1,7 +1,7 @@
 # views.py
 from rest_framework import generics
-from .models import Category, Product, Testimonial, Coupon
-from .serializers import CategorySerializer, ProductSerializer, TestimonialSerializer, CouponSerializer
+from .models import Category, Product, Testimonial, Coupon,Video,Contact
+from .serializers import CategorySerializer, ProductSerializer, TestimonialSerializer, CouponSerializer,VideoSerializer,ContactSerializer
 
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
@@ -18,3 +18,11 @@ class TestimonialListCreateAPIView(generics.ListCreateAPIView):
 class CouponListCreateAPIView(generics.ListCreateAPIView):
     queryset = Coupon.objects.all()
     serializer_class = CouponSerializer
+
+class VideoListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Video.objects.all()
+    serializer_class = VideoSerializer
+
+class ContactListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
