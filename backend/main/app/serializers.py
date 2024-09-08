@@ -30,3 +30,29 @@ class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
         fields = ['id', 'name', 'email', 'subject', 'message']
+
+from app.models import User 
+
+class UserRegisterSerializer(serializers.ModelSerializer):
+    password1 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
+    password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
+    class Meta:
+        model = User
+        fields = ['id', 'name', 'email', 'password1',"password2","tc"]
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
+
+    def create(self, attrs):
+        password = attrs.get('password1')
+        password2 = attrs.get('password2')
+        if password != password2:
+            raise serializers.ValidationError({'password': 'Password must match.'})
+        return attrs
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
+    
+class UserLoginSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['password' 'email', ]
