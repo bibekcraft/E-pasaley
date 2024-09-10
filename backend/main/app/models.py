@@ -11,8 +11,7 @@ class Category(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural = "Categories"
-
+        verbose_name_plural = "Categories"  
 class Product(models.Model):
     name = models.CharField(max_length=244)
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -42,6 +41,7 @@ class Product(models.Model):
         else:
             self.discount_rate = 0
         super().save(*args, **kwargs)
+
 
 class Testimonial(models.Model):
     name = models.CharField(max_length=244)
