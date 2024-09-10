@@ -65,23 +65,24 @@ function Login() {
           </div>
 
           <div>
-            <button
-              type="submit"
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Sign in
-            </button>
-          </div>
+  <a
+    href="/"
+    className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+  >
+    Sign in
+  </a>
+</div>
+
         </form>
 
         <p className="mt-10 text-sm text-center text-gray-500">
           Not a member?{' '}
           <a
-            href="#"
+            href="/register"
             className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
           >
-            Start a 14-day free trial
-          </a>
+            Register Here
+            </a>
         </p>
       </div>
     </div>

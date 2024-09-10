@@ -1,4 +1,4 @@
-import React from 'react'
+import { Link } from 'react-router-dom'
 
 function ProductView() {
   return (
@@ -129,8 +129,13 @@ function ProductView() {
             <hr className="my-6" />
 
             <div className="flex flex-wrap gap-4">
+                <Link to={'/checkout'}>
                 <button type="button" className="min-w-[200px] px-4 py-3 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded">Buy now</button>
+                </Link>
+                <Link to={'/'}>
+
                 <button type="button" className="min-w-[200px] px-4 py-2.5 border border-orange-500 bg-transparent hover:bg-gray-50 text-gray-800 text-sm font-semibold rounded">Add to cart</button>
+                </Link>
             </div>
         </div>
     </div>

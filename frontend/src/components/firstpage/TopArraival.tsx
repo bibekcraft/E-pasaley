@@ -1,10 +1,11 @@
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/react-splide/css';
+import { Link } from 'react-router-dom';
 
 const TopArraival = () => {
   return (
     <section className="mx-auto max-w-[1200px] px-5 py-5">
-      <h2 className="text-center text-2xl font-bold mb-5">TOP NEW ARRIVAL</h2>
+      <h2 className="mb-5 text-2xl font-bold text-center">TOP NEW ARRIVAL</h2>
 
       <Splide
         options={{
@@ -17,17 +18,33 @@ const TopArraival = () => {
       >
         {/* Product 1 */}
         <SplideSlide>
-          <div className="border rounded-lg shadow-sm p-4 hover:shadow-lg transition-shadow duration-300">
+          <div className="p-4 transition-shadow duration-300 border rounded-lg shadow-sm hover:shadow-lg">
             <img
               src="/path/to/image1.jpg" // Replace with actual image paths
               alt="Guyer Chair"
-              className="w-full h-40 object-cover mb-3 rounded"
+              className="object-cover w-full h-40 mb-3 rounded"
             />
-            <h3 className="text-center text-lg font-semibold">GUYER CHAIR</h3>
-            <p className="text-center text-violet-900 font-bold mt-1">
-              $45.00 <span className="text-sm text-gray-500 line-through ml-2">$500.00</span>
+                          <div className="absolute inset-0 flex items-center justify-center space-x-4 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
+                <button className="p-2 bg-white rounded-full shadow hover:bg-gray-200">
+                  {/* Magnifying glass icon (eye) */}
+                  <Link to="/productview">  <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-3.5-3.5m0 0A5.5 5.5 0 1115 19zm0 0L21 21" />
+  </svg>
+</Link>
+
+                </button>
+                <button className="p-2 bg-white rounded-full shadow hover:bg-gray-200">
+                  {/* Heart icon */}
+                  <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.293l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.25l-7.682-7.568a4.5 4.5 0 010-6.364z" />
+                  </svg>
+                </button>
+              </div>
+            <h3 className="text-lg font-semibold text-center">GUYER CHAIR</h3>
+            <p className="mt-1 font-bold text-center text-violet-900">
+              $45.00 <span className="ml-2 text-sm text-gray-500 line-through">$500.00</span>
             </p>
-            <div className="flex justify-center items-center mt-2">
+            <div className="flex items-center justify-center mt-2">
               {/* Ratings */}
               {[...Array(4)].map((_, i) => (
                 <svg
@@ -35,7 +52,7 @@ const TopArraival = () => {
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
-                  className="h-4 w-4 text-yellow-400"
+                  className="w-4 h-4 text-yellow-400"
                 >
                   <path
                     fillRule="evenodd"
@@ -44,25 +61,25 @@ const TopArraival = () => {
                   />
                 </svg>
               ))}
-              <p className="text-sm text-gray-400 ml-1">(38)</p>
+              <p className="ml-1 text-sm text-gray-400">(38)</p>
             </div>
-            <button className="mt-4 w-full bg-violet-900 text-white py-2 rounded">Add to cart</button>
+            <button className="w-full py-2 mt-4 text-white rounded bg-violet-900">Add to cart</button>
           </div>
         </SplideSlide>
 
         {/* Product 2 */}
         <SplideSlide>
-          <div className="border rounded-lg shadow-sm p-4 hover:shadow-lg transition-shadow duration-300">
+          <div className="p-4 transition-shadow duration-300 border rounded-lg shadow-sm hover:shadow-lg">
             <img
               src="/path/to/image2.jpg" // Replace with actual image paths
               alt="Purple Chair"
-              className="w-full h-40 object-cover mb-3 rounded"
+              className="object-cover w-full h-40 mb-3 rounded"
             />
-            <h3 className="text-center text-lg font-semibold">PURPLE CHAIR</h3>
-            <p className="text-center text-violet-900 font-bold mt-1">
-              $45.00 <span className="text-sm text-gray-500 line-through ml-2">$500.00</span>
+            <h3 className="text-lg font-semibold text-center">PURPLE CHAIR</h3>
+            <p className="mt-1 font-bold text-center text-violet-900">
+              $45.00 <span className="ml-2 text-sm text-gray-500 line-through">$500.00</span>
             </p>
-            <div className="flex justify-center items-center mt-2">
+            <div className="flex items-center justify-center mt-2">
               {/* Ratings */}
               {[...Array(4)].map((_, i) => (
                 <svg
@@ -70,7 +87,7 @@ const TopArraival = () => {
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
-                  className="h-4 w-4 text-yellow-400"
+                  className="w-4 h-4 text-yellow-400"
                 >
                   <path
                     fillRule="evenodd"
@@ -79,9 +96,9 @@ const TopArraival = () => {
                   />
                 </svg>
               ))}
-              <p className="text-sm text-gray-400 ml-1">(38)</p>
+              <p className="ml-1 text-sm text-gray-400">(38)</p>
             </div>
-            <button className="mt-4 w-full bg-violet-900 text-white py-2 rounded">Add to cart</button>
+            <button className="w-full py-2 mt-4 text-white rounded bg-violet-900">Add to cart</button>
           </div>
         </SplideSlide>
 
@@ -89,17 +106,17 @@ const TopArraival = () => {
         <SplideSlide>
           {/* Repeat similar structure for other products */}
           {/* Example below for Product 3 */}
-          <div className="border rounded-lg shadow-sm p-4 hover:shadow-lg transition-shadow duration-300">
+          <div className="p-4 transition-shadow duration-300 border rounded-lg shadow-sm hover:shadow-lg">
             <img
               src="/path/to/image3.jpg" // Replace with actual image paths
               alt="Large Sofa"
-              className="w-full h-40 object-cover mb-3 rounded"
+              className="object-cover w-full h-40 mb-3 rounded"
             />
-            <h3 className="text-center text-lg font-semibold">LARGE SOFA</h3>
-            <p className="text-center text-violet-900 font-bold mt-1">
-              $45.00 <span className="text-sm text-gray-500 line-through ml-2">$500.00</span>
+            <h3 className="text-lg font-semibold text-center">LARGE SOFA</h3>
+            <p className="mt-1 font-bold text-center text-violet-900">
+              $45.00 <span className="ml-2 text-sm text-gray-500 line-through">$500.00</span>
             </p>
-            <div className="flex justify-center items-center mt-2">
+            <div className="flex items-center justify-center mt-2">
               {/* Ratings */}
               {[...Array(4)].map((_, i) => (
                 <svg
@@ -107,7 +124,7 @@ const TopArraival = () => {
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
-                  className="h-4 w-4 text-yellow-400"
+                  className="w-4 h-4 text-yellow-400"
                 >
                   <path
                     fillRule="evenodd"
@@ -116,23 +133,23 @@ const TopArraival = () => {
                   />
                 </svg>
               ))}
-              <p className="text-sm text-gray-400 ml-1">(38)</p>
+              <p className="ml-1 text-sm text-gray-400">(38)</p>
             </div>
-            <button className="mt-4 w-full bg-violet-900 text-white py-2 rounded">Add to cart</button>
+            <button className="w-full py-2 mt-4 text-white rounded bg-violet-900">Add to cart</button>
           </div>
         </SplideSlide>
         <SplideSlide>
-          <div className="border rounded-lg shadow-sm p-4 hover:shadow-lg transition-shadow duration-300">
+          <div className="p-4 transition-shadow duration-300 border rounded-lg shadow-sm hover:shadow-lg">
             <img
               src="/path/to/image2.jpg" // Replace with actual image paths
               alt="Purple Chair"
-              className="w-full h-40 object-cover mb-3 rounded"
+              className="object-cover w-full h-40 mb-3 rounded"
             />
-            <h3 className="text-center text-lg font-semibold">PURPLE CHAIR</h3>
-            <p className="text-center text-violet-900 font-bold mt-1">
-              $45.00 <span className="text-sm text-gray-500 line-through ml-2">$500.00</span>
+            <h3 className="text-lg font-semibold text-center">PURPLE CHAIR</h3>
+            <p className="mt-1 font-bold text-center text-violet-900">
+              $45.00 <span className="ml-2 text-sm text-gray-500 line-through">$500.00</span>
             </p>
-            <div className="flex justify-center items-center mt-2">
+            <div className="flex items-center justify-center mt-2">
               {/* Ratings */}
               {[...Array(4)].map((_, i) => (
                 <svg
@@ -140,7 +157,7 @@ const TopArraival = () => {
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
-                  className="h-4 w-4 text-yellow-400"
+                  className="w-4 h-4 text-yellow-400"
                 >
                   <path
                     fillRule="evenodd"
@@ -149,23 +166,23 @@ const TopArraival = () => {
                   />
                 </svg>
               ))}
-              <p className="text-sm text-gray-400 ml-1">(38)</p>
+              <p className="ml-1 text-sm text-gray-400">(38)</p>
             </div>
-            <button className="mt-4 w-full bg-violet-900 text-white py-2 rounded">Add to cart</button>
+            <button className="w-full py-2 mt-4 text-white rounded bg-violet-900">Add to cart</button>
           </div>
         </SplideSlide>
         <SplideSlide>
-          <div className="border rounded-lg shadow-sm p-4 hover:shadow-lg transition-shadow duration-300">
+          <div className="p-4 transition-shadow duration-300 border rounded-lg shadow-sm hover:shadow-lg">
             <img
               src="/path/to/image2.jpg" // Replace with actual image paths
               alt="Purple Chair"
-              className="w-full h-40 object-cover mb-3 rounded"
+              className="object-cover w-full h-40 mb-3 rounded"
             />
-            <h3 className="text-center text-lg font-semibold">PURPLE CHAIR</h3>
-            <p className="text-center text-violet-900 font-bold mt-1">
-              $45.00 <span className="text-sm text-gray-500 line-through ml-2">$500.00</span>
+            <h3 className="text-lg font-semibold text-center">PURPLE CHAIR</h3>
+            <p className="mt-1 font-bold text-center text-violet-900">
+              $45.00 <span className="ml-2 text-sm text-gray-500 line-through">$500.00</span>
             </p>
-            <div className="flex justify-center items-center mt-2">
+            <div className="flex items-center justify-center mt-2">
               {/* Ratings */}
               {[...Array(4)].map((_, i) => (
                 <svg
@@ -173,7 +190,7 @@ const TopArraival = () => {
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
-                  className="h-4 w-4 text-yellow-400"
+                  className="w-4 h-4 text-yellow-400"
                 >
                   <path
                     fillRule="evenodd"
@@ -182,23 +199,23 @@ const TopArraival = () => {
                   />
                 </svg>
               ))}
-              <p className="text-sm text-gray-400 ml-1">(38)</p>
+              <p className="ml-1 text-sm text-gray-400">(38)</p>
             </div>
-            <button className="mt-4 w-full bg-violet-900 text-white py-2 rounded">Add to cart</button>
+            <button className="w-full py-2 mt-4 text-white rounded bg-violet-900">Add to cart</button>
           </div>
         </SplideSlide>
         <SplideSlide>
-          <div className="border rounded-lg shadow-sm p-4 hover:shadow-lg transition-shadow duration-300">
+          <div className="p-4 transition-shadow duration-300 border rounded-lg shadow-sm hover:shadow-lg">
             <img
               src="/path/to/image2.jpg" // Replace with actual image paths
               alt="Purple Chair"
-              className="w-full h-40 object-cover mb-3 rounded"
+              className="object-cover w-full h-40 mb-3 rounded"
             />
-            <h3 className="text-center text-lg font-semibold">PURPLE CHAIR</h3>
-            <p className="text-center text-violet-900 font-bold mt-1">
-              $45.00 <span className="text-sm text-gray-500 line-through ml-2">$500.00</span>
+            <h3 className="text-lg font-semibold text-center">PURPLE CHAIR</h3>
+            <p className="mt-1 font-bold text-center text-violet-900">
+              $45.00 <span className="ml-2 text-sm text-gray-500 line-through">$500.00</span>
             </p>
-            <div className="flex justify-center items-center mt-2">
+            <div className="flex items-center justify-center mt-2">
               {/* Ratings */}
               {[...Array(4)].map((_, i) => (
                 <svg
@@ -206,7 +223,7 @@ const TopArraival = () => {
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
-                  className="h-4 w-4 text-yellow-400"
+                  className="w-4 h-4 text-yellow-400"
                 >
                   <path
                     fillRule="evenodd"
@@ -215,23 +232,23 @@ const TopArraival = () => {
                   />
                 </svg>
               ))}
-              <p className="text-sm text-gray-400 ml-1">(38)</p>
+              <p className="ml-1 text-sm text-gray-400">(38)</p>
             </div>
-            <button className="mt-4 w-full bg-violet-900 text-white py-2 rounded">Add to cart</button>
+            <button className="w-full py-2 mt-4 text-white rounded bg-violet-900">Add to cart</button>
           </div>
         </SplideSlide>
         <SplideSlide>
-          <div className="border rounded-lg shadow-sm p-4 hover:shadow-lg transition-shadow duration-300">
+          <div className="p-4 transition-shadow duration-300 border rounded-lg shadow-sm hover:shadow-lg">
             <img
               src="/path/to/image2.jpg" // Replace with actual image paths
               alt="Purple Chair"
-              className="w-full h-40 object-cover mb-3 rounded"
+              className="object-cover w-full h-40 mb-3 rounded"
             />
-            <h3 className="text-center text-lg font-semibold">PURPLE CHAIR</h3>
-            <p className="text-center text-violet-900 font-bold mt-1">
-              $45.00 <span className="text-sm text-gray-500 line-through ml-2">$500.00</span>
+            <h3 className="text-lg font-semibold text-center">PURPLE CHAIR</h3>
+            <p className="mt-1 font-bold text-center text-violet-900">
+              $45.00 <span className="ml-2 text-sm text-gray-500 line-through">$500.00</span>
             </p>
-            <div className="flex justify-center items-center mt-2">
+            <div className="flex items-center justify-center mt-2">
               {/* Ratings */}
               {[...Array(4)].map((_, i) => (
                 <svg
@@ -239,7 +256,7 @@ const TopArraival = () => {
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
-                  className="h-4 w-4 text-yellow-400"
+                  className="w-4 h-4 text-yellow-400"
                 >
                   <path
                     fillRule="evenodd"
@@ -248,23 +265,23 @@ const TopArraival = () => {
                   />
                 </svg>
               ))}
-              <p className="text-sm text-gray-400 ml-1">(38)</p>
+              <p className="ml-1 text-sm text-gray-400">(38)</p>
             </div>
-            <button className="mt-4 w-full bg-violet-900 text-white py-2 rounded">Add to cart</button>
+            <button className="w-full py-2 mt-4 text-white rounded bg-violet-900">Add to cart</button>
           </div>
         </SplideSlide>
         <SplideSlide>
-          <div className="border rounded-lg shadow-sm p-4 hover:shadow-lg transition-shadow duration-300">
+          <div className="p-4 transition-shadow duration-300 border rounded-lg shadow-sm hover:shadow-lg">
             <img
               src="/path/to/image2.jpg" // Replace with actual image paths
               alt="Purple Chair"
-              className="w-full h-40 object-cover mb-3 rounded"
+              className="object-cover w-full h-40 mb-3 rounded"
             />
-            <h3 className="text-center text-lg font-semibold">PURPLE CHAIR</h3>
-            <p className="text-center text-violet-900 font-bold mt-1">
-              $45.00 <span className="text-sm text-gray-500 line-through ml-2">$500.00</span>
+            <h3 className="text-lg font-semibold text-center">PURPLE CHAIR</h3>
+            <p className="mt-1 font-bold text-center text-violet-900">
+              $45.00 <span className="ml-2 text-sm text-gray-500 line-through">$500.00</span>
             </p>
-            <div className="flex justify-center items-center mt-2">
+            <div className="flex items-center justify-center mt-2">
               {/* Ratings */}
               {[...Array(4)].map((_, i) => (
                 <svg
@@ -272,7 +289,7 @@ const TopArraival = () => {
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
-                  className="h-4 w-4 text-yellow-400"
+                  className="w-4 h-4 text-yellow-400"
                 >
                   <path
                     fillRule="evenodd"
@@ -281,23 +298,23 @@ const TopArraival = () => {
                   />
                 </svg>
               ))}
-              <p className="text-sm text-gray-400 ml-1">(38)</p>
+              <p className="ml-1 text-sm text-gray-400">(38)</p>
             </div>
-            <button className="mt-4 w-full bg-violet-900 text-white py-2 rounded">Add to cart</button>
+            <button className="w-full py-2 mt-4 text-white rounded bg-violet-900">Add to cart</button>
           </div>
         </SplideSlide>
         <SplideSlide>
-          <div className="border rounded-lg shadow-sm p-4 hover:shadow-lg transition-shadow duration-300">
+          <div className="p-4 transition-shadow duration-300 border rounded-lg shadow-sm hover:shadow-lg">
             <img
               src="/path/to/image2.jpg" // Replace with actual image paths
               alt="Purple Chair"
-              className="w-full h-40 object-cover mb-3 rounded"
+              className="object-cover w-full h-40 mb-3 rounded"
             />
-            <h3 className="text-center text-lg font-semibold">PURPLE CHAIR</h3>
-            <p className="text-center text-violet-900 font-bold mt-1">
-              $45.00 <span className="text-sm text-gray-500 line-through ml-2">$500.00</span>
+            <h3 className="text-lg font-semibold text-center">PURPLE CHAIR</h3>
+            <p className="mt-1 font-bold text-center text-violet-900">
+              $45.00 <span className="ml-2 text-sm text-gray-500 line-through">$500.00</span>
             </p>
-            <div className="flex justify-center items-center mt-2">
+            <div className="flex items-center justify-center mt-2">
               {/* Ratings */}
               {[...Array(4)].map((_, i) => (
                 <svg
@@ -305,7 +322,7 @@ const TopArraival = () => {
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
-                  className="h-4 w-4 text-yellow-400"
+                  className="w-4 h-4 text-yellow-400"
                 >
                   <path
                     fillRule="evenodd"
@@ -314,9 +331,9 @@ const TopArraival = () => {
                   />
                 </svg>
               ))}
-              <p className="text-sm text-gray-400 ml-1">(38)</p>
+              <p className="ml-1 text-sm text-gray-400">(38)</p>
             </div>
-            <button className="mt-4 w-full bg-violet-900 text-white py-2 rounded">Add to cart</button>
+            <button className="w-full py-2 mt-4 text-white rounded bg-violet-900">Add to cart</button>
           </div>
         </SplideSlide>
 

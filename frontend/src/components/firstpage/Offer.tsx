@@ -53,7 +53,7 @@ const Offer = () => {
                   </svg>
                 ))}
               </div>
-              <Link to="/productview">
+              <Link to="/checkout">
               <button className="w-full py-2 mt-4 text-white bg-purple-700 rounded hover:bg-purple-800">
                 Add to cart
               </button>
