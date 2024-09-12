@@ -1,10 +1,8 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
-
 class Category(models.Model):
     name = models.CharField(max_length=244)
-    description = models.TextField(blank=True, null=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='subcategories')
 
     def __str__(self):
@@ -22,34 +20,53 @@ class Category(models.Model):
     def is_subcategory(self):
         """Check if the category is a subcategory."""
         return self.parent is not None
+
+    def get_subcategories(self):
+        """Return all subcategories of this category."""
+        return self.subcategories.all()
+
+    def get_products(self):
+        """Return all products under this category."""
+        return self.products.all()
+from django.db import models
+
 class Product(models.Model):
     name = models.CharField(max_length=244)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    initial_price = models.DecimalField(max_digits=10, decimal_places=2)
+    final_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Include final_price as a field
     description = models.TextField()
     feature = models.TextField()
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products', null=True, blank=True)
+    subcategory = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='sub_products', null=True, blank=True)
+    discount_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0)  # Discount rate field
+    discount = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     image = models.ImageField(upload_to='product')
     image1 = models.ImageField(default='default_image.jpg', upload_to='images/')
     image2 = models.ImageField(default='default_image.jpg', upload_to='images/')
     image3 = models.ImageField(default='default_image.jpg', upload_to='images/')
     image4 = models.ImageField(default='default_image.jpg', upload_to='images/')
-    
-    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Discount amount field
-    discount_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0, editable=False)  # Discount rate field
 
     def __str__(self):
         return self.name
-
-    def get_discounted_price(self):
-        """Calculate the price after discount."""
-        return self.price - self.discount_amount
+    
+    @property
+    def discount_amount(self):
+        discount = self.discount or 0  # Use 0 if discount is None
+        return self.initial_price * (discount / 100)
 
     def save(self, *args, **kwargs):
-        """Override save method to calculate discount rate."""
-        if self.price and self.discount_amount:
-            self.discount_rate = (self.discount_amount / self.price) * 100
-        else:
-            self.discount_rate = 0
+        """Override save method to calculate final_price and enforce business logic."""
+        # Calculate the final price before saving
+        self.final_price = self.initial_price - self.discount_amount
+
+        # Ensure a product is assigned to either a category or a subcategory, not both.
+        if self.category and self.subcategory:
+            raise ValueError("Product can belong to either a main category or a subcategory, not both.")
+        
+        # Ensure the subcategory belongs to the selected category
+        if self.subcategory and (self.subcategory.parent != self.category):
+            raise ValueError("Subcategory must belong to the selected main category.")
+        
         super().save(*args, **kwargs)
 
 

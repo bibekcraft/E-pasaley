@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'app',
     'rest_framework',
     'rest_framework_simplejwt',
-        "corsheaders",
+    "corsheaders",
 
 ]
 
@@ -126,11 +126,8 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
-}
+
+
 
 
 
@@ -176,7 +173,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'auth.User'  # Replace 'app_name' with your actual app name
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',

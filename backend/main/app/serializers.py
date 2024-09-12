@@ -11,7 +11,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['id', 'name', 'price', 'description', 'feature', 'category', 'image']
+        fields = ['id', 'name', 'initial_price','final_price', 'description', 'feature', 'category', 'image','image1','image2','image3','image4']
 
 class TestimonialSerializer(serializers.ModelSerializer):
     class Meta:

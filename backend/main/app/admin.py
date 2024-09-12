@@ -4,16 +4,25 @@ from .models import Category, Product, Testimonial, Coupon, Contact, Video
 # Register Category model
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'parent')
-    search_fields = ('name', 'description')
-    list_filter = ('name',)
+    list_display = ('name', 'parent')
+    search_fields = ['name']
+    list_filter = ('parent',)
 
 # Register Product model
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'category', 'description', 'feature')
-    list_filter = ('category', 'price')
-    search_fields = ('name', 'category__name', 'description', 'feature')
+    list_display = ('name', 'initial_price', 'final_price', 'category', 'subcategory', 'description', 'feature')
+    list_filter = ('category', 'subcategory', 'initial_price','final_price')  # Remove 'final_price' from here
+    search_fields = ('name', 'category__name', 'description', 'feature', 'subcategory__name')
+
+
+ 
+
+    # Define the fields to be included in the form
+    fields = ('name', 'initial_price','final_price', 'description', 'feature', 'category', 'subcategory', 'discount_rate', 'image', 'image1', 'image2', 'image3', 'image4')
+
+    # Optional: Display ordering
+
 
 # Register Testimonial model
 @admin.register(Testimonial)
