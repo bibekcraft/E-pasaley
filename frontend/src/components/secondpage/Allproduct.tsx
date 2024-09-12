@@ -1,24 +1,24 @@
-import React from 'react';
-
+import { Link } from "react-router-dom";
 function Allproduct() {
   const products = [
     {
+      id: 1,
       name: 'Purple Chair',
       price: 45.0,
       originalPrice: 500.0,
-      image: '/path/to/image2.jpg', // Replace with actual image path
+      imageUrl: 'https://via.placeholder.com/200', // Replace with actual image path
       rating: 4,
       reviews: 38,
     },
     {
+      id: 2,
       name: 'Green Sofa',
       price: 150.0,
       originalPrice: 300.0,
-      image: '/path/to/image3.jpg', // Replace with actual image path
+      imageUrl: 'https://via.placeholder.com/200', // Replace with actual image path
       rating: 5,
       reviews: 50,
     },
-    // Add more products as needed
   ];
 
   return (
@@ -68,7 +68,23 @@ function Allproduct() {
                           alt=""
                           className="inline-block"
                         />
-                        <p>Design</p>
+                        <p>Price : Lower To Higher</p>
+                      </a>
+                      <a href="#" className="flex gap-3 p-3 font-semibold bg-gray-100 rounded-md">
+                        <img
+                          src="https://assets.website-files.com/6458c625291a94a195e6cf3a/64b7a3a33cd5dc368f46daae_illustration.svg"
+                          alt=""  
+                          className="inline-block"
+                        />
+                                                <p>Price : Higher To Lower</p>
+                      </a>
+                      <a href="#" className="flex gap-3 p-3 font-semibold bg-gray-100 rounded-md">
+                        <img
+                          src="https://assets.website-files.com/6458c625291a94a195e6cf3a/64b7a3a33cd5dc368f46daae_illustration.svg"
+                          alt=""
+                          className="inline-block"
+                        />
+                        <p>   </p>
                       </a>
                       <a href="#" className="flex gap-3 p-3 font-semibold bg-gray-100 rounded-md">
                         <img
@@ -107,21 +123,7 @@ function Allproduct() {
                   {/* Divider */}
                   <div className="w-full h-px mt-6 mb-6 bg-gray-300"></div>
                   {/* Rating */}
-                  <div className="flex flex-col gap-6">
-                    <p className="font-semibold">Rating</p>
-                    <div className="flex flex-wrap gap-2 lg:justify-between">
-                      {[...Array(5)].map((_, index) => (
-                        <div
-                          key={index}
-                          className={`flex h-9 w-14 cursor-pointer items-center justify-center rounded-md border border-solid border-gray-300 ${
-                            index === 1 ? 'bg-black text-white' : 'bg-gray-100'
-                          } text-sm font-semibold`}
-                        >
-                          <span>{index + 1}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+
                   {/* Divider */}
                   <div className="w-full h-px mt-6 mb-6 bg-gray-300"></div>
                   {/* Filter One */}
@@ -163,47 +165,55 @@ function Allproduct() {
                 </form>
               </div>
               {/* Products */}
-              <div className="grid gap-4 sm:gap-6 lg:grid-cols-4">
-  {/* Product Cards */}
-  {products.map((product, index) => (
-    <div
-      key={index}
-      className="max-w-xs p-2 transition-shadow duration-300 border rounded-lg shadow-sm hover:shadow-lg min-h-60"  // Added min-h-60 for height control
-    >
-      <img
-        src={product.image}
-        alt={product.name}
-        className="object-cover w-full h-32 mb-3 rounded" // Adjust the image height here
-      />
-      <h3 className="text-sm font-semibold text-center">{product.name}</h3>
-      <p className="mt-1 text-sm text-center text-violet-900">
-        ${product.price.toFixed(2)} <span className="ml-2 text-xs text-gray-500 line-through">${product.originalPrice.toFixed(2)}</span>
-      </p>
-      <div className="flex items-center justify-center mt-1">
-        {/* Ratings */}
-        {[...Array(product.rating)].map((_, i) => (
-          <svg
-            key={i}
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            className="w-3 h-3 text-yellow-400"
-          >
-            <path
-              fillRule="evenodd"
-              d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
-              clipRule="evenodd"
-            />
-          </svg>
+              <div className="p-8">
+      <h2 className="mb-4 text-2xl font-bold">Filter Products</h2>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {products.map((product) => (
+          <div key={product.id} className="relative overflow-hidden bg-white rounded-lg shadow-md group">
+            <div className="relative">
+              <img src={product.imageUrl} alt={product.name} className="object-cover w-full h-48" />
+              <span className="absolute px-2 py-1 text-sm font-bold text-white bg-yellow-400 rounded top-2 right-2">
+                - 25% OFF
+              </span>
+
+              {/* Hover icons */}
+              <div className="absolute inset-0 flex items-center justify-center space-x-4 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
+                <button className="p-2 bg-white rounded-full shadow hover:bg-gray-200">
+                  {/* Magnifying glass icon (eye) */}
+                  <Link to="/productview">
+                    <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-3.5-3.5m0 0A5.5 5.5 0 1115 19zm0 0L21 21" />
+                    </svg>
+                  </Link>
+                </button>
+                <button className="p-2 bg-white rounded-full shadow hover:bg-gray-200">
+                  {/* Heart icon */}
+                  <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.293l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.25l-7.682-7.568a4.5 4.5 0 010-6.364z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div className="p-4">
+              <h3 className="text-lg font-bold">{product.name}</h3>
+              <p className="text-gray-500">
+                ${product.price.toFixed(2)} <span className="line-through">${product.originalPrice.toFixed(2)}</span>
+              </p>
+              <div className="flex items-center mt-2">
+
+              </div>
+              <Link to="/checkout">
+                <button className="w-full py-2 mt-4 text-white bg-purple-700 rounded hover:bg-purple-800">
+                  Add to cart
+                </button>
+              </Link>
+            </div>
+          </div>
         ))}
-        <p className="ml-1 text-xs text-gray-400">({product.reviews})</p>
       </div>
-      <button className="w-full py-2 mt-2 text-xs text-white rounded bg-violet-900 hover:bg-violet-700">
-        Add to cart
-      </button>
     </div>
-  ))}
-</div>
+
+
 
             </div>
           </div>

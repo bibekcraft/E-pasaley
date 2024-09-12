@@ -1,5 +1,5 @@
 import First from '../firstpage/First'
-// import Crausels from '../firstpage/Crausels'
+import Crausels from '../firstpage/Crausels'
 import TopArraival from '../firstpage/TopArraival'
 import WWW from '../firstpage/WWW'
 // import Testamonials from '../firstpage/Testamonials'
@@ -10,7 +10,7 @@ import Whyus from '../firstpage/Whyus'
 function FirstPage() {
   return (
     <><First />
-    {/* <Crausels /> */}
+    <Crausels />
     <TopArraival />
     <WWW />
     {/* <Testamonials /> */}

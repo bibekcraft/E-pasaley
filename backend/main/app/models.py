@@ -11,7 +11,17 @@ class Category(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural = "Categories"  
+        verbose_name_plural = "Categories"
+
+    @property
+    def is_main_category(self):
+        """Check if the category is a main category."""
+        return self.parent is None
+
+    @property
+    def is_subcategory(self):
+        """Check if the category is a subcategory."""
+        return self.parent is not None
 class Product(models.Model):
     name = models.CharField(max_length=244)
     price = models.DecimalField(max_digits=10, decimal_places=2)
