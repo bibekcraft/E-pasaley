@@ -8,15 +8,10 @@ import Allproduct from './components/secondpage/Allproduct';
 import HoverCard from './components/secondpage/Hovercard';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
-
-// Import Redux Provider and store
-import { Provider } from 'react-redux';
-import store from './components/store/store';  // Correct import path
-
+// Import Redux Provider and the correctly configured store
 function App() {
   return (
-    <Provider store={store}>  
-      <Router>
+            <Router>
         <Routes>
           <Route path="/" element={<FirstPage />} />
           <Route path="/productview" element={<ProductView />} /> 
@@ -27,7 +22,6 @@ function App() {
           <Route path="/hovercard" element={<HoverCard />} />
         </Routes>
       </Router>
-    </Provider>
   );
 }
 

@@ -7,9 +7,11 @@ import Offer from '../firstpage/Offer'
 import Footer from '../firstpage/Footer'
 import Philosophy from '../firstpage/Philosophy'
 import Whyus from '../firstpage/Whyus'
+import Categories from '../firstpage/Categories'
 function FirstPage() {
   return (
     <><First />
+    <Categories />
     <Crausels />
     <TopArraival />
     <WWW />
