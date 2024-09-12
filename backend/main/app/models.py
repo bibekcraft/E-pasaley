@@ -2,6 +2,8 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 class Category(models.Model):
+    category_image = models.ImageField(default='default_image.jpg', upload_to='images/')
+
     name = models.CharField(max_length=244)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='subcategories')
 
