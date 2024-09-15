@@ -23,16 +23,16 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Category URLs
-    path('categories/', CategoryListCreateAPIView.as_view(), name='category-list-create'),
-    path('category/<int:id>/', CategoryDetailAPIView.as_view(), name='category-detail'),
+    path('category/', CategoryListCreateAPIView.as_view(), name='category-list-create'),
+    path('category/<int:pk>/', CategoryDetailAPIView.as_view(), name='category-detail'),
 
     # Product URLs
-    path('products/', ProductListCreateAPIView.as_view(), name='product-list-create'),
-    path('product/<int:id>/', ProductDetailAPIView.as_view(), name='product-detail'),
+    path('product/', ProductListCreateAPIView.as_view(), name='product-list-create'),
+    path('product/<int:pk>/', ProductDetailAPIView.as_view(), name='product-detail'),
 
     # Coupon URLs
     path('coupons/', CouponListCreateAPIView.as_view(), name='coupon-list-create'),
-    path('coupon/<int:id>/', CouponDetailAPIView.as_view(), name='coupon-detail'),
+    path('coupon/<int:pk>/', CouponDetailAPIView.as_view(), name='coupon-detail'),
 
     # Testimonial URLs
     path('testimonials/', TestimonialListCreateAPIView.as_view(), name='testimonial-list-create'),
