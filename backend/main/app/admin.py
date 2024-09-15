@@ -4,14 +4,14 @@ from .models import Category, Product, Testimonial, Coupon, Contact, Video
 # Register Category model
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'parent','category_image')
-    search_fields = ['name']
+    list_display = ('name', 'parent','category_image','id')
+    search_fields = ['name','id']
     list_filter = ('parent',)
 
 # Register Product model
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'initial_price', 'final_price', 'category', 'subcategory', 'description', 'feature')
+    list_display = ('name', 'initial_price', 'final_price', 'category', 'subcategory', 'description', 'feature',)
     list_filter = ('category', 'subcategory', 'initial_price','final_price')  # Remove 'final_price' from here
     search_fields = ('name', 'category__name', 'description', 'feature', 'subcategory__name')
 
@@ -19,7 +19,7 @@ class ProductAdmin(admin.ModelAdmin):
  
 
     # Define the fields to be included in the form
-    fields = ('name', 'initial_price','final_price', 'description', 'feature', 'category', 'subcategory', 'discount_rate', 'image', 'image1', 'image2', 'image3', 'image4',)
+    fields = ('name', 'initial_price','final_price', 'description', 'feature', 'category', 'subcategory', 'discount_rate','discount', 'image', 'image1', 'image2', 'image3', 'image4',)
 
     # Optional: Display ordering
 

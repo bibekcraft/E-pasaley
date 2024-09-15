@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 class Category(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='subcategories')
     category_image = models.ImageField(upload_to='categories/', null=True, blank=True)
@@ -38,7 +39,7 @@ class Product(models.Model):
     description = models.TextField()
     feature = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products', null=True, blank=True)
-    subcategory = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='sub_products', null=True, blank=True)
+    subcategory = models.CharField(max_length=100, null=True, blank=True)
     discount_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     discount = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     image = models.ImageField(upload_to='product')
@@ -56,16 +57,10 @@ class Product(models.Model):
         return self.initial_price * (discount / 100)
 
     def save(self, *args, **kwargs):
-        """Override save method to calculate final_price and enforce business logic."""
-        self.final_price = self.initial_price - self.discount_amount
-
         if self.category and self.subcategory:
             raise ValueError("Product can belong to either a main category or a subcategory, not both.")
-        
-        if self.subcategory and (self.subcategory.parent != self.category):
-            raise ValueError("Subcategory must belong to the selected main category.")
-        
-        super().save(*args, **kwargs)
+        super(Product, self).save(*args, **kwargs)
+
 
 class Testimonial(models.Model):
     name = models.CharField(max_length=244)
