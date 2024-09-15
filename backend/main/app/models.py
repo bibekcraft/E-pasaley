@@ -39,7 +39,6 @@ class Product(models.Model):
     description = models.TextField()
     feature = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products', null=True, blank=True)
-    subcategory = models.CharField(max_length=100, null=True, blank=True)
     discount_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     discount = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     image = models.ImageField(upload_to='product')
