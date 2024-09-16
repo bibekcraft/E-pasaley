@@ -1,4 +1,4 @@
-
+import React from "react"
 function Philosophy() {
   return (
     <div><section className="w-screen py-10 text-gray-800 bg-white">

@@ -1,10 +1,10 @@
-
+import React from "react"
 function Testamonials() {
   return (
     <div><section className="px-4">
-    <div className="mx-auto max-w-3xl text-center">
+    <div className="max-w-3xl mx-auto text-center">
       <h3 className="mb-6 text-3xl font-bold">Testimonials</h3>
-      <p className="mb-6 pb-2 text-blue-700 md:mb-12">
+      <p className="pb-2 mb-6 text-blue-700 md:mb-12">
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fugit,
         error amet numquam iure provident voluptate esse quasi, veritatis
         totam voluptas nostrum quisquam eum porro a pariatur veniam.
@@ -14,7 +14,7 @@ function Testamonials() {
     <div className="grid gap-12 text-center md:grid-cols-2">
       {/* <!--First Testimonial--> */}
       <div className="mb-6 md:mb-0">
-        <div className="mb-6 flex justify-center">
+        <div className="flex justify-center mb-6">
           <img
             src="https://tecdn.b-cdn.net/img/Photos/Avatars/img%20(22).jpg"
             className="w-24 rounded-full shadow-lg dark:shadow-black/30" />
@@ -28,7 +28,7 @@ function Testamonials() {
   
       {/* <!--Second Testimonial--> */}
       <div className="mb-0">
-        <div className="mb-6 flex justify-center">
+        <div className="flex justify-center mb-6">
           <img
             src="https://tecdn.b-cdn.net/img/Photos/Avatars/img%20(19).jpg"
             className="w-24 rounded-full shadow-lg dark:shadow-black/30" />

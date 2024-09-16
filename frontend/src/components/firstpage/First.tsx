@@ -4,31 +4,6 @@ import { Link } from "react-router-dom";
 function First() {
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const categories = [
-    {
-      id: 1,
-      name: 'Beds',
-      icon: '🛏️',
-      subcategories: [
-        { id: 1, name: 'Wooden Beds', icon: '🪵' },
-        { id: 2, name: 'Metal Beds', icon: '🛠️' }
-      ]
-    },
-    {
-      id: 2,
-      name: 'Chairs',
-      icon: '🪑',
-      subcategories: [
-        { id: 3, name: 'Office Chairs', icon: '🖥️' },
-        { id: 4, name: 'Dining Chairs', icon: '🍽️' }
-      ]
-    }
-  ]
-
-  // Function to select a category
-  const handleCategorySelect = (category: React.SetStateAction<string | null>) => {
-    setSelectedCategory(category === selectedCategory ? null : category);
-  };
 
 
   const toggleCart = () => {

@@ -1,3 +1,4 @@
+import React from 'react';
 import First from '../firstpage/First'
 import Crausels from '../firstpage/Crausels'
 import TopArraival from '../firstpage/TopArraival'
@@ -10,7 +11,8 @@ import Whyus from '../firstpage/Whyus'
 import Categories from '../firstpage/Categories'
 function FirstPage() {
   return (
-    <><First />
+    <>
+    <First />
     <Categories />
     <Crausels />
     <TopArraival />

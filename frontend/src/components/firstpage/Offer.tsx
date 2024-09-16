@@ -1,4 +1,4 @@
-
+import React from "react"
 import { Link } from 'react-router-dom';
 const products = [
   { id: 1, name: "CHAIR", price: 45, originalPrice: 500, imageUrl: "https://via.placeholder.com/200", rating: 4 },
