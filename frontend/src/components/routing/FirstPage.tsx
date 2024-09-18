@@ -9,12 +9,14 @@ import Footer from '../firstpage/Footer'
 import Philosophy from '../firstpage/Philosophy'
 import Whyus from '../firstpage/Whyus'
 import Categories from '../firstpage/Categories'
+import CategorySection from '../firstpage/CategorySection'
 function FirstPage() {
   return (
     <>
     <First />
     <Categories />
     <Crausels />
+    <CategorySection />
     <TopArraival />
     <WWW />
     {/* <Testamonials /> */}

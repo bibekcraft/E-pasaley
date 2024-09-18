@@ -1,32 +1,18 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-const fetchProductWithAPI = async (categoryId: number) => {
-    const response = await fetch(`http://127.0.0.1:8000/product/?category=${categoryId}`);
-    if (!response.ok) {
-        throw new Error('Error fetching products');
-    }
-    return response.json();
-};
-
-
-
-const fetchProduct = createAsyncThunk<Product[], number>(
-    'product/fetchProducts',
-    async (categoryId) => {
-        const data = await fetchProductWithAPI(categoryId);
-        return data;
-    }
-);
-
+// Define the Product interface
 interface Product {
+    categoryId: number;
+    image: string | undefined;
+    initial_price: number;
+    discount_rate: number;
+    final_price: number;
+    brand: string;
     id: number;
     name: string;
-    imageUrl: string;
-    price: number;
-    originalPrice: number;
 }
 
-
+// Define the initial state for the slice
 interface ProductState {
     products: Product[];
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
@@ -39,6 +25,24 @@ const initialState: ProductState = {
     error: null,
 };
 
+// Define the async thunk to fetch products
+const fetchProductWithAPI = async (categoryId: number) => {
+    const response = await fetch(`http://127.0.0.1:8000/product/?category=${categoryId}`);
+    if (!response.ok) {
+        throw new Error('Error fetching products');
+    }
+    return response.json();
+};
+
+const fetchProduct = createAsyncThunk<Product[], number>(
+    'product/fetchProducts',
+    async (categoryId) => {
+        const data = await fetchProductWithAPI(categoryId);
+        return data;
+    }
+);
+
+// Create the slice
 const productSlice = createSlice({
     name: 'product',
     initialState,
@@ -59,6 +63,6 @@ const productSlice = createSlice({
     }
 });
 
-
+// Export the async thunk and the reducer
 export default productSlice.reducer;
 export { fetchProduct };

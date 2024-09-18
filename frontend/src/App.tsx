@@ -18,9 +18,10 @@ function App() {
         <Routes>
           <Route path="/" element={<FirstPage />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/allproducts" element={<Allproduct />} />
           <Route path="/allproducts/:categoryId" element={<Allproduct />} />
-          <Route path="/productview/:productId" element={<ProductView />} />        
-            <Route path="/login" element={<Login />} />
+          <Route path="/productview/:productId" element={<ProductView />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/hovercard" element={<HoverCard />} />
         </Routes>

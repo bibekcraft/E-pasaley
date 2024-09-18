@@ -12,9 +12,8 @@ function First() {
   return (
     <>
       <div>
-        <head>
           <title>MayBell - Online furniture store</title>
-        </head>
+
 
         <body x-data="{ desktopMenuOpen: false, mobileMenuOpen: false}">
           {/* Header */}

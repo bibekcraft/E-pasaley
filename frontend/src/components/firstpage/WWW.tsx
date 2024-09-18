@@ -1,4 +1,4 @@
-
+import React from "react";
 function WWW() {
   return (
     <div>                                                <section className="py-24 ">
@@ -150,4 +150,5 @@ function WWW() {
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export default WWW;

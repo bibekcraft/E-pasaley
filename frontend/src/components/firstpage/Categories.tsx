@@ -25,7 +25,9 @@ function Categories() {
               aria-expanded={status === 'succeeded'}
               aria-haspopup="true"
             >
+              <Link to={"/allproducts"}>
               All Categories
+              </Link>
             </button>
 
             {/* Categories List */}
@@ -48,7 +50,7 @@ function Categories() {
                       role="menuitem"
                     >
                       <img
-                        src={category.category_image || 'vector'} // Fallback image
+                        src={`http://localhost:8000${category.category_image }`}// Fallback image
                         alt={category.name}
                         className="w-24 h-24 transition-shadow duration-300 rounded-full shadow-lg hover:shadow-xl"
                         onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => (e.target as HTMLImageElement).src = '/path/to/default-image.png'} // Fallback on error
