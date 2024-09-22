@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProduct } from '../slice/ProductSlice';
 import { fetchCategories } from '../slice/CategorySlice';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { AppDispatch } from '../store/Store';
 import { RootState } from '../store/Store';
-import { useParams } from 'react-router-dom';
 
 export interface Product {
   final_price: number;
@@ -15,8 +14,7 @@ export interface Product {
   initial_price: number;
   discount_rate: number;
   brand: string;
-  rating: number;
-  categoryId: number; // Ensure this is included in the product type
+  categoryId: number;
 }
 
 export interface Category {
@@ -32,72 +30,44 @@ const AllProducts: React.FC = () => {
   const [maxPrice, setMaxPrice] = useState(1000000);
   const [selectedBrand, setSelectedBrand] = useState('');
   const [selectedDiscount, setSelectedDiscount] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const { categoryId } = useParams<{ categoryId: string }>();
+  const categoryIdNumber = categoryId ? parseInt(categoryId, 10) : null;
 
-  const { products, status: productStatus, error: productError } = useSelector((state: RootState) => state.product);
-  const { categories, status: categoryStatus, error: categoryError } = useSelector((state: RootState) => state.categories) as { categories: Category[], status: string, error: string | null };
+  const { products, status: productStatus } = useSelector((state: RootState) => state.product);
+  const { categories, status: categoryStatus } = useSelector((state: RootState) => state.categories) as { categories: Category[], status: string };
 
   useEffect(() => {
     dispatch(fetchCategories());
-    if (categoryId) {
-      const categoryIdNumber = parseInt(categoryId, 10);
-      setSelectedCategory(categoryIdNumber);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (categoryIdNumber) {
       dispatch(fetchProduct(categoryIdNumber));
-    } else {
-      dispatch(fetchProduct(1)); // Default fetch
     }
-  }, [dispatch, categoryId]);
+  }, [dispatch, categoryIdNumber]);
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
+  const filteredProducts = useMemo(() => {
+    return products.filter(product => {
+      const isWithinPriceRange = product.final_price >= minPrice && product.final_price <= maxPrice;
+      const matchesBrand = selectedBrand ? product.brand === selectedBrand : true;
+      const matchesSearchTerm = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesDiscount = selectedDiscount
+        ? (selectedDiscount === 'all' && product.discount_rate < 100) ||
+          (selectedDiscount === 'below 10%' && product.discount_rate < 10) ||
+          (selectedDiscount === 'below 20%' && product.discount_rate < 20) ||
+          (selectedDiscount === 'below 30%' && product.discount_rate < 30) ||
+          (selectedDiscount === '30% and more' && product.discount_rate >= 30)
+        : true;
+      return isWithinPriceRange && matchesBrand && matchesSearchTerm && matchesDiscount;
+    });
+  }, [products, minPrice, maxPrice, selectedBrand, searchTerm, selectedDiscount]);
 
-  const handleCategoryChange = (categoryId: number) => {
-    setSelectedCategory(categoryId);
-    dispatch(fetchProduct(categoryId));
-  };
-  const handleDiscountChange = (discountRange: string) => {
-    setSelectedDiscount(discountRange);
-  };
-
-  const clearFilters = () => {
-    setSearchTerm('');
-    setMinPrice(0);
-    setMaxPrice(1000000);
-    setSelectedBrand('');
-    setSelectedDiscount(null);
-    setSelectedCategory(null);
-    dispatch(fetchProduct(1)); // Reset to default fetch
-  };
-
-  const filteredProducts = products.filter(product => {
-    const discountRate = ((product.initial_price - product.final_price) / product.initial_price) * 100;
-    const isWithinPriceRange = product.final_price >= minPrice && product.final_price <= maxPrice;
-    const matchesBrand = selectedBrand ? product.brand === selectedBrand : true;
-    const matchesSearchTerm = product.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDiscount = selectedDiscount
-      ? (selectedDiscount === 'all' && discountRate < 100) ||
-        (selectedDiscount === 'below 10%' && discountRate < 10) ||
-        (selectedDiscount === 'below 20%' && discountRate < 20) ||
-        (selectedDiscount === 'below 30%' && discountRate < 30) ||
-        (selectedDiscount === '30% and more' && discountRate >= 30)
-      : true;
-    const matchesCategory = selectedCategory !== null ? product.categoryId === selectedCategory : true;
-  
-    return isWithinPriceRange && matchesBrand && matchesSearchTerm && matchesDiscount && matchesCategory;
-  });
-  
   if (productStatus === 'loading' || categoryStatus === 'loading') {
     return <p>Loading...</p>;
   }
 
-  if (productStatus === 'failed') {
-    return <p>Error fetching products: {productError}</p>;
-  }
-
-  if (categoryStatus === 'failed') {
-    return <p>Error fetching categories: {categoryError}</p>;
+  if (productStatus === 'failed' || categoryStatus === 'failed') {
+    return <p>Error fetching data. Please try again later.</p>;
   }
 
   return (
@@ -114,42 +84,42 @@ const AllProducts: React.FC = () => {
                 <form className="flex-col gap-6">
                   <div className="flex items-center justify-between py-4 mb-6 border-b border-gray-300">
                     <h5 className="text-xl font-bold">Filters</h5>
-                    <a
-                      href="#"
+                    <button
+                      type="button"
                       className="text-sm"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        clearFilters();
+                      onClick={() => {
+                        setSearchTerm('');
+                        setMinPrice(0);
+                        setMaxPrice(1000000);
+                        setSelectedBrand('');
+                        setSelectedDiscount(null);
+                        dispatch(fetchProduct(categoryIdNumber || 1));
                       }}
                     >
-                      <p>Clear all</p>
-                    </a>
+                      Clear all
+                    </button>
                   </div>
                   <input
                     type="text"
                     value={searchTerm}
-                    onChange={handleSearchChange}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                     className="block w-full py-3 pr-4 mb-10 text-sm font-bold text-gray-800 bg-gray-100 border border-gray-300 rounded-md"
-                    placeholder="                                Search"
-                    style={{
-                      backgroundSize: '18px',
-                      backgroundRepeat: 'no-repeat',
-                      backgroundPosition: '16px center',
-                    }}
+                    placeholder="Search"
                   />
                   <div className="flex flex-col gap-6 p-6 font-poppins">
-                    <p className="text-lg font-semibold text-gray-800">Categories</p>
+                    <p className="text-lg font-semibold ">Categories</p>
                     <div className="flex flex-wrap items-center gap-4">
-                      {categories.map((category) => (
-                        <button
-                          type="button"
-                          key={category.id}
-                          className={`flex items-center gap-2 ${selectedCategory === category.id ? 'text-green-500' : 'text-gray-700'}`}
-                          onClick={() => handleCategoryChange(category.id)}
-                        >
-                          <span>{category.name}</span>
-                        </button>
-                      ))}
+                      <ul>
+                        {categories.map((category) => (
+                          <li
+                            key={category.id}
+                            className={`cursor-pointer ${categoryIdNumber === category.id ? 'font-bold' : ''}`}
+                            onClick={() => dispatch(fetchProduct(category.id))}
+                          >
+                            {category.name}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                     <p className="text-lg font-semibold text-gray-800">Price Range</p>
                     <div className="flex flex-col gap-2">
@@ -195,7 +165,7 @@ const AllProducts: React.FC = () => {
                             type="radio"
                             name="discount"
                             value={range}
-                            onChange={() => handleDiscountChange(range)}
+                            onChange={() => setSelectedDiscount(range)}
                             checked={selectedDiscount === range}
                             className="mr-2"
                           />
@@ -224,29 +194,20 @@ const AllProducts: React.FC = () => {
                             -{product.discount_rate}% OFF
                           </span>
                         )}
-                        <div className="absolute inset-0 flex items-center justify-center space-x-4 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
-                          <Link to={`/productview/${product.id}`} className="p-2 bg-white rounded-full shadow hover:bg-gray-200">
-                            <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-3.5-3.5m0 0A5.5 5.5 0 1115 19zm0 0L21 21" />
-                            </svg>
-                          </Link>
-                          <button className="p-2 bg-white rounded-full shadow hover:bg-gray-200">
-                            <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.293l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.25l-7.682-7.568a4.5 4.5 0 010-6.364z" />
-                            </svg>
-                          </button>
-                        </div>
                       </div>
-                      <div className="p-4">
-                        <h3 className="text-lg font-bold">{product.name}</h3>
-                        <p className="text-gray-500">
-                          Rs {product.final_price} <span className="line-through">Rs {product.initial_price}</span>
-                        </p>
-                        <Link to="/checkout">
-                          <button className="w-full py-2 mt-4 text-white bg-purple-700 rounded hover:bg-purple-800">
-                            Add to cart
-                          </button>
+                      <div className="mt-2 text-gray-800">
+                        <Link to={`/product/${product.id}`} className="font-bold">
+                          {product.name}
                         </Link>
+                        <div className="flex items-center justify-between">
+                          <span className="text-lg font-semibold">Rs {product.final_price}</span>
+                          {product.initial_price && (
+                            <span className="text-gray-400 line-through">
+                              Rs {product.initial_price}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-500">Brand: {product.brand}</p>
                       </div>
                     </div>
                   ))}

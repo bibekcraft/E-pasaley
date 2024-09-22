@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 // Function to fetch categories from the API
 const fetchCategoriesByAPI = async () => {
-    const response = await fetch('http://127.0.0.1:8000/category');
+    const response = await fetch('http://127.0.0.1:8000/categories');
     if (!response.ok) {
         throw new Error('Connection Error');    
     }   

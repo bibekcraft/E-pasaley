@@ -1,276 +1,273 @@
-// import React, { useEffect, useState } from 'react';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { fetchProduct } from '../slice/ProductSlice';
-// import { fetchCategories } from '../slice/CategorySlice';
-// import { Link } from 'react-router-dom';
-// import { AppDispatch } from '../store/Store';
-// import { RootState } from '../store/Store';
-// import { useParams } from 'react-router-dom';
+import React, { useEffect, useState, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProduct } from '../slice/ProductSlice';
+import { fetchCategories } from '../slice/CategorySlice';
+import { Link, useParams } from 'react-router-dom';
+import { AppDispatch } from '../store/Store';
+import { RootState } from '../store/Store';
 
-// export interface Product {
-//   imageUrl: string;
-//   final_price: number;
-//   id: number;
-//   name: string;
-//   initial_price: number;
-//   discount_rate: number;
-//   brand: string;
-//   rating: number;
-// }
+export interface Product {
+  final_price: number;
+  id: number;
+  name: string;
+  image: string | undefined;
+  initial_price: number;
+  discount_rate: number;
+  brand: string;
+  categoryId: number;
+}
 
-// export interface Category {
-//   id: number;
-//   name: string;
-//   imageUrl: string;
-// }
+export interface Category {
+  id: number;
+  name: string;
+  image: string | undefined;
+}
 
-// const AllProducts: React.FC = () => {
-//   const dispatch: AppDispatch = useDispatch();
-//   const [searchTerm, setSearchTerm] = useState('');
-//   const [minPrice, setMinPrice] = useState(0);
-//   const [maxPrice, setMaxPrice] = useState(1000000);
-//   const [selectedBrand, setSelectedBrand] = useState('');
-//   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
-//   const [selectedDiscount, setSelectedDiscount] = useState<string | null>(null);
-//   const { categoryId } = useParams<{ categoryId: string }>();
+const AllProducts: React.FC = () => {
+  const dispatch: AppDispatch = useDispatch();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(1000000);
+  const [selectedBrand, setSelectedBrand] = useState('');
+  const [selectedDiscount, setSelectedDiscount] = useState<string | null>(null);
+  const { categoryId } = useParams<{ categoryId: string }>();
+  const categoryIdNumber = categoryId ? parseInt(categoryId, 10) : null;
 
-//   const { products, status: productStatus, error: productError } = useSelector((state: RootState) => state.product);
-//   const { categories, status: categoryStatus, error: categoryError } = useSelector((state: RootState) => state.categories);
+  const { products, status: productStatus } = useSelector((state: RootState) => state.product);
+  const { categories, status: categoryStatus } = useSelector((state: RootState) => state.categories) as { categories: Category[], status: string };
 
-//   useEffect(() => {
-//     if (categoryId) {
-//       dispatch(fetchProduct(parseInt(categoryId)));
-//       setSelectedCategory(parseInt(categoryId));
-//     } else {
-//       dispatch(fetchProduct(1));
-//       setSelectedCategory(null);
-//     }
-//     dispatch(fetchCategories());
-//   }, [dispatch, categoryId]);
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
-//   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-//     setSearchTerm(event.target.value);
-//   };
+  useEffect(() => {
+    if (categoryIdNumber) {
+      dispatch(fetchProduct(categoryIdNumber));
+    }
+  }, [dispatch, categoryIdNumber]);
 
-//   const handleCategoryChange = (categoryId: number) => {
-//     setSelectedCategory(categoryId);
-//     dispatch(fetchProduct(categoryId));
-//   };
+  const filteredProducts = useMemo(() => {
+    return products.filter(product => {
+      const isWithinPriceRange = product.final_price >= minPrice && product.final_price <= maxPrice;
+      const matchesBrand = selectedBrand ? product.brand === selectedBrand : true;
+      const matchesSearchTerm = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesDiscount = selectedDiscount
+        ? (selectedDiscount === 'all' && product.discount_rate < 100) ||
+          (selectedDiscount === 'below 10%' && product.discount_rate < 10) ||
+          (selectedDiscount === 'below 20%' && product.discount_rate < 20) ||
+          (selectedDiscount === 'below 30%' && product.discount_rate < 30) ||
+          (selectedDiscount === '30% and more' && product.discount_rate >= 30)
+        : true;
+      return isWithinPriceRange && matchesBrand && matchesSearchTerm && matchesDiscount;
+    });
+  }, [products, minPrice, maxPrice, selectedBrand, searchTerm, selectedDiscount]);
 
-//   const handleDiscountChange = (discountRange: string) => {
-//     setSelectedDiscount(discountRange);
-//   };
+  if (productStatus === 'loading' || categoryStatus === 'loading') {
+    return <p>Loading...</p>;
+  }
 
-//   const filteredProductsByCategory = selectedCategory
-//     ? products.filter(product => product.id === selectedCategory)
-//     : products;
+  if (productStatus === 'failed' || categoryStatus === 'failed') {
+    return <p>Error fetching data. Please try again later.</p>;
+  }
 
-//   const allBrands = [...new Set(filteredProductsByCategory.map(product => product.brand))];
+  return (
+    <div>
+      <section>
+        <div className="w-full px-5 py-16 mx-auto md:px-10 md:py-24">
+          <div className="flex flex-col gap-12">
+            <div className="flex flex-col gap-5">
+              <h3 className="text-2xl font-bold md:text-5xl">Filter products</h3>
+              <p className="text-sm text-gray-500 sm:text-base">Find the best products for you</p>
+            </div>
+            <div className="grid gap-10 md:gap-12 lg:grid-cols-[300px_1fr]">
+              <div className="mb-4 max-w-none lg:max-w-sm">
+                <form className="flex-col gap-6">
+                  <div className="flex items-center justify-between py-4 mb-6 border-b border-gray-300">
+                    <h5 className="text-xl font-bold">Filters</h5>
+                    <button
+                      type="button"
+                      className="text-sm"
+                      onClick={() => {
+                        setSearchTerm('');
+                        setMinPrice(0);
+                        setMaxPrice(1000000);
+                        setSelectedBrand('');
+                        setSelectedDiscount(null);
+                        dispatch(fetchProduct(categoryIdNumber || 1));
+                      }}
+                    >
+                      Clear all
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="block w-full py-3 pr-4 mb-10 text-sm font-bold text-gray-800 bg-gray-100 border border-gray-300 rounded-md"
+                    placeholder="Search"
+                  />
+                  <div className="flex flex-col gap-6 p-6 font-poppins">
+                    <p className="text-lg font-semibold text-gray-800">Categories</p>
+                    <div className="flex flex-wrap items-center gap-4">
+                      <ul>
+                        {categories.map((category) => (
+                          <li
+                            key={category.id}
+                            className={`cursor-pointer ${categoryIdNumber === category.id ? 'font-bold' : ''}`}
+                            onClick={() => dispatch(fetchProduct(category.id))}
+                          >
+                            {category.name}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <p className="text-lg font-semibold text-gray-800">Price Range</p>
+                    <div className="flex flex-col gap-2">
+                      <input
+                        type="range"
+                        min="0"
+                        max={Math.max(...products.map(product => product.final_price), 1000000)}
+                        value={minPrice}
+                        onChange={(e) => setMinPrice(parseInt(e.target.value))}
+                        className="w-full bg-gray-200"
+                      />
+                      <input
+                        type="range"
+                        min="0"
+                        max={Math.max(...products.map(product => product.final_price), 1000000)}
+                        value={maxPrice}
+                        onChange={(e) => setMaxPrice(parseInt(e.target.value))}
+                        className="w-full bg-gray-200"
+                      />
+                      <p className="text-gray-700">Price: Rs {minPrice} - Rs {maxPrice}</p>
+                    </div>
+                    <p className="text-lg font-semibold text-gray-800">Brand</p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      {Array.from(new Set(products.map(product => product.brand))).map((brand) => (
+                        <label key={brand} className="flex items-center gap-2">
+                          <input
+                            type="radio"
+                            name="brand"
+                            value={brand}
+                            onChange={() => setSelectedBrand(brand)}
+                            checked={selectedBrand === brand}
+                            className="mr-2"
+                          />
+                          <span>{brand}</span>
+                        </label>
+                      ))}
+                    </div>
+                    <p className="text-lg font-semibold text-gray-800">Discount</p>
+                    <div className="flex flex-wrap items-center gap-4">
+                      {['all', 'below 10%', 'below 20%', 'below 30%', '30% and more'].map((range) => (
+                        <label key={range} className="flex items-center gap-2">
+                          <input
+                            type="radio"
+                            name="discount"
+                            value={range}
+                            onChange={() => setSelectedDiscount(range)}
+                            checked={selectedDiscount === range}
+                            className="mr-2"
+                          />
+                          <span>{range}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div className="flex flex-col gap-8">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-lg font-bold">Products</h4>
+                </div>
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                  {filteredProducts.map((product) => (
+                    <div key={product.id} className="relative p-4 bg-white rounded shadow-md group">
+                      <div className="relative">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="object-cover w-full h-48"
+                        />
+                        {product.discount_rate > 0 && (
+                          <span className="absolute px-2 py-1 text-sm font-bold text-white bg-yellow-400 rounded top-2 right-2">
+                            -{product.discount_rate}% OFF
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-2 text-gray-800">
+                        <Link to={`/product/${product.id}`} className="font-bold">
+                          {product.name}
+                        </Link>
+                        <div className="flex items-center justify-between">
+                          <span className="text-lg font-semibold">Rs {product.final_price}</span>
+                          {product.initial_price && (
+                            <span className="text-gray-400 line-through">
+                              Rs {product.initial_price}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-500">Brand: {product.brand}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>  
+      </section>
+    </div>
+  );
+};
 
-//   const maxProductPrice = Math.max(...filteredProductsByCategory.map(product => product.final_price), 1000000);
+export default AllProducts;
 
-//     const filteredProducts = filteredProductsByCategory.filter(product => {
-//         const discountRate = ((product.initial_price - product.final_price) / product.initial_price) * 100;
-//         const isWithinPriceRange = product.final_price >= minPrice && product.final_price <= maxPrice;
-//         const matchesBrand = selectedBrand ? product.brand === selectedBrand : true;
-//         const matchesSearchTerm = product.name.toLowerCase().includes(searchTerm.toLowerCase());
-//         const matchesDiscount = selectedDiscount
-//         ? (selectedDiscount === 'below 10%' && discountRate < 10) ||
-//             (selectedDiscount === 'below 20%' && discountRate < 20) ||
-//             (selectedDiscount === 'below 30%' && discountRate < 30) ||
-//             (selectedDiscount === '30% and more' && discountRate >= 30)
-//         : true;
 
-//         return isWithinPriceRange && matchesBrand && matchesSearchTerm && matchesDiscount;
-//     });
 
-//   if (productStatus === 'loading' || categoryStatus === 'loading') {
-//     return <p>Loading...</p>;
-//   }
-
-//   if (productStatus === 'failed') {
-//     return <p>Error fetching products: {productError}</p>;
-//   }
-
-//   if (categoryStatus === 'failed') {
-//     return <p>Error fetching categories: {categoryError}</p>;
-//   }
-
-//   return (
-//     <div>
-//       <section>
-//         <div className="w-full px-5 py-16 mx-auto md:px-10 md:py-24">
-//           <div className="flex flex-col gap-12">
-//             <div className="flex flex-col gap-5">
-//               <h3 className="text-2xl font-bold md:text-5xl">Filter products</h3>
-//             </div>
-//             <div className="grid gap-10 md:gap-12 lg:grid-cols-[300px_1fr]">
-//               <div className="mb-4 max-w-none lg:max-w-sm">
-//                 <form name="wf-form-Filter-2" method="get" className="flex-col gap-6">
-//                   <div className="flex items-center justify-between py-4 mb-6 border-b border-gray-300">
-//                     <h5 className="text-xl font-bold">Filters</h5>
-//                     <a href="#" className="text-sm"><p>Clear all</p></a>
-//                   </div>
-//                   <input
-//                     type="text"
-//                     value={searchTerm}
-//                     onChange={handleSearchChange}
-//                     className="block w-full py-3 pr-4 mb-10 text-sm font-bold text-gray-800 bg-gray-100 border border-gray-300 border-solid rounded-md h-9 pl-11"
-//                     placeholder="Search"
-//                     style={{
-//                       backgroundImage: 'url("https://assets.website-files.com/6458c625291a94a195e6cf3a/64b7a3a33cd5dc368f46daaa_MagnifyingGlass.svg")',
-//                       backgroundSize: '18px',
-//                       backgroundRepeat: 'no-repeat',
-//                       backgroundPosition: '16px center',
-//                     }}
-//                   />
-
-//                   <div className="flex flex-col gap-6">
-//                     <p className="font-semibold">Categories</p>
-//                     <div className="flex flex-wrap items-center gap-2">
-//                       {categories.map((category: Category) => (
-//                         <a
-//                           key={category.id}
-//                           href="#"
-//                           className={`flex gap-3 p-3 font-semibold rounded-md ${selectedCategory === category.id ? 'bg-gray-300' : 'bg-gray-100'}`}
-//                           onClick={() => handleCategoryChange(category.id)}
-//                         >
-//                           <img src={category.imageUrl} className="inline-block" />
-//                           {category.name}
-//                         </a>
-//                       ))}
-//                     </div>
-//                     <p className="font-semibold">Price Range</p>
-//                     <div className="flex flex-col gap-2">
-//                       <input
-//                         type="range"
-//                         min="0"
-//                         max={maxProductPrice}
-//                         value={minPrice}
-//                         onChange={(e) => setMinPrice(parseInt(e.target.value))}
-//                         className="mb-2"
-//                       />
-//                       <input
-//                         type="range"
-//                         min="0"
-//                         max={maxProductPrice}
-//                         value={maxPrice}
-//                         onChange={(e) => setMaxPrice(parseInt(e.target.value))}
-//                         className="mb-2"
-//                       />
-//                       <p>{`Price: Rs ${minPrice} - Rs ${maxPrice}`}</p>
-//                     </div>
-//                     <p className="font-semibold">Brand</p>
-//                     <div className="flex flex-wrap items-center gap-2">
-//                       {allBrands.map((brand) => (
-//                         <label key={brand} className="flex gap-3 p-3 font-semibold bg-gray-100 rounded-md">
-//                           <input
-//                             type="radio"
-//                             name="brand"
-//                             value={brand}
-//                             onChange={() => setSelectedBrand(brand)}
-//                             checked={selectedBrand === brand}
-//                             className="mr-2"
-//                           />
-//                           {brand}
-//                         </label>
-//                       ))}
-//                     </div>
-//                     <p className="font-semibold">Discount</p>
-//                     <div className="flex flex-wrap items-center gap-2">
-//                       {['below 10%', 'below 20%', 'below 30%', '30% and more'].map((discount) => (
-//                         <label key={discount} className="flex gap-3 p-3 font-semibold bg-gray-100 rounded-md">
-//                           <input
-//                             type="radio"
-//                             name="discount"
-//                             value={discount}
-//                             onChange={() => handleDiscountChange(discount)}
-//                             checked={selectedDiscount === discount}
-//                             className="mr-2"
-//                           />
-//                           {discount}
-//                         </label>
-//                       ))}
-//                     </div>
-//                   </div>
-//                 </form>
-//               </div>
-//               <div className="p-8">
-//                 <h2 className="mb-4 text-2xl font-bold">Products</h2>
-//                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-//                   {filteredProducts.map((product: Product) => {
-//                     const discountRate = ((product.initial_price - product.final_price) / product.initial_price) * 100;
-//                     return (
-//                       <div key={product.id} className="relative overflow-hidden border border-gray-300 rounded-lg shadow-md group">
-//                         <div className="relative">
-//                           <img
-//                             src={product.imageUrl}
-//                             alt={product.name}
-//                             className="object-cover w-full h-64 transition-transform duration-300 transform rounded-t-lg group-hover:scale-105"
-//                           />
-//                           {product.discount_rate > 0 && (
-//                             <div className="absolute px-2 py-1 text-xs font-bold text-white bg-red-500 rounded-md top-2 left-2">
-//                               {`${Math.round(discountRate)}% OFF`}
-//                             </div>
-//                           )}
-//                           <div className="absolute hidden gap-2 top-2 right-2 group-hover:flex">
-//                             <button className="p-2 bg-white border border-gray-300 rounded-full shadow-md">
-//                               <svg
-//                                 xmlns="http://www.w3.org/2000/svg"
-//                                 fill="none"
-//                                 viewBox="0 0 24 24"
-//                                 stroke="currentColor"
-//                                 className="w-6 h-6 text-gray-700"
-//                               >
-//                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v9.5a2.5 2.5 0 01-1.5 2.3V21h-2v-6.2a3.5 3.5 0 00-1-6.8V4h2v2.5A1.5 1.5 0 0112 8V3z" />
-//                               </svg>
-//                             </button>
-//                             <button className="p-2 bg-white border border-gray-300 rounded-full shadow-md">
-//                               <svg
-//                                 xmlns="http://www.w3.org/2000/svg"
-//                                 fill="none"
-//                                 viewBox="0 0 24 24"
-//                                 stroke="currentColor"
-//                                 className="w-6 h-6 text-gray-700"
-//                               >
-//                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.293 9.293a1 1 0 00-1.414 0L12 10.586l-1.879-1.879a1 1 0 00-1.414 1.414l2.121 2.121a1 1 0 001.414 0l2.121-2.121a1 1 0 000-1.414z" />
-//                               </svg>
-//                             </button>
-//                           </div>
-//                         </div>
-//                         <div className="p-4">
-//                           <h3 className="text-lg font-bold">{product.name}</h3>
-//                           <div className="flex items-center justify-between mt-2">
-//                             <span className="text-lg font-semibold text-gray-800">
-//                               Rs {parseFloat(product.final_price.toString()).toFixed(2)}
-//                             </span>
-//                             {product.initial_price > product.final_price && (
-//                               <span className="text-sm text-gray-600 line-through">
-//                                 Rs {parseFloat(product.initial_price.toString()).toFixed(2)}
-//                               </span>
-//                             )}
-//                           </div>
-//                           <div className="flex items-center mt-2">
-//                             <span className="text-yellow-500">
-//                               {'⭐'.repeat(Math.round(product.rating))}
-//                               {'☆'.repeat(5 - Math.round(product.rating))}
-//                             </span>
-//                           </div>
-//                           <button className="w-full py-2 mt-4 font-bold text-white bg-blue-500 rounded-md">
-//                             Add to cart
-//                           </button>
-//                         </div>
-//                       </div>
-//                     );
-//                   })}
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </section>
-//     </div>
-//   );
-// };
-
-// export default AllProducts;
+                <div className="flex flex-col gap-8">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-lg font-bold">Products</h4>
+                  </div>
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                    {filteredProducts.map((product) => (
+                      <div key={product.id} className="relative p-4 bg-white rounded shadow-md group">
+                        <div className="relative">
+                          <img
+                            src={product.image}
+                            alt={product.name}
+                            className="object-cover w-full h-48"
+                          />
+                          {product.discount_rate > 0 && (
+                            <span className="absolute px-2 py-1 text-sm font-bold text-white bg-yellow-400 rounded top-2 right-2">
+                              -{product.discount_rate}% OFF
+                            </span>
+                          )}
+                          <div className="absolute inset-0 flex items-center justify-center space-x-4 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
+                            <Link to={`/productview/${product.id}`} className="p-2 bg-white rounded-full shadow hover:bg-gray-200">
+                              <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-3.5-3.5m0 0A5.5 5.5 0 1115 19zm0 0L21 21" />
+                              </svg>
+                            </Link>
+                            <button className="p-2 bg-white rounded-full shadow hover:bg-gray-200">
+                              <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.293l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.25l-7.682-7.568a4.5 4.5 0 010-6.364z" />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                        <div className="p-4">
+                          <h3 className="text-lg font-bold">{product.name}</h3>
+                          <p className="text-gray-500">
+                            Rs {product.final_price} <span className="line-through">Rs {product.initial_price}</span>
+                          </p>
+                          <Link to="/checkout">
+                            <button className="w-full py-2 mt-4 text-white bg-purple-700 rounded hover:bg-purple-800">
+                              Add to cart
+                            </button>
+                          </Link>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>

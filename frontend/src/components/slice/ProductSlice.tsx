@@ -27,7 +27,7 @@ const initialState: ProductState = {
 
 // Define the async thunk to fetch products
 const fetchProductWithAPI = async (categoryId: number) => {
-    const response = await fetch(`http://127.0.0.1:8000/product/?category=${categoryId}`);
+    const response = await fetch(`http://127.0.0.1:8000/products/?category=${categoryId}`);
     if (!response.ok) {
         throw new Error('Error fetching products');
     }
