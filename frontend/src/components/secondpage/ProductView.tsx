@@ -1,20 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+import axios from 'axios';  // assuming you are using axios for API calls
 
 function ProductView() {
-  const { id } = useParams(); // Get product ID from the route params
+  const { categoryId, id } = useParams(); // Get both categoryId and productId from route params
   const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Replace this URL with your actual API endpoint
-    fetch(`http://127.0.0.1:8000/products/${id}`)
-      .then(response => response.json())
-      .then(data => setProduct(data))
-      .catch(error => console.error("Error fetching product:", error));
-  }, [id]);
+    // Fetch the product based on categoryId and productId
+    const fetchProduct = async () => {
+      try {
+        const response = await axios.get(`/api/categories/${categoryId}/products/${id}`);
+        setProduct(response.data);  // assuming response.data contains product info
+      } catch (error) {
+        console.error("Error fetching the product:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [categoryId, id]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   if (!product) {
-    return <div>Loading...</div>;
+    return <div>Product not found</div>;
   }
 
   return (
@@ -25,7 +39,7 @@ function ProductView() {
             <img src={product.image} alt={product.name} className="object-contain object-top w-full h-full rounded lg:w-11/12" />
           </div>
           <div className="flex flex-wrap gap-4 mx-auto mt-4">
-            {product.image1.map((image, index) => (
+            {product.image1 && product.image1.map((image, index) => (
               <div key={index} className="relative p-1 cursor-pointer before:absolute before:inset-0 before:bg-black before:opacity-20 before:rounded">
                 <img src={image} alt={`Product Thumbnail ${index}`} className="object-contain w-20 h-16" />
               </div>
@@ -36,9 +50,7 @@ function ProductView() {
           <div className="flex flex-wrap items-start gap-4">
             <div>
               <h2 className="text-2xl font-extrabold text-gray-800">{product.name}</h2>
-
             </div>
-
           </div>
           <div className="flex flex-wrap justify-center gap-6 mt-8 md:gap-12">
             <button type="button" className="inline-block px-8 py-4 text-sm font-medium text-white transition bg-black rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2">
