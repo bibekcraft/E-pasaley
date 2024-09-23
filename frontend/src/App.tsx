@@ -11,6 +11,8 @@ import Register from './components/auth/Register';
 import { Provider } from 'react-redux';
 import React from 'react';
 import store from './components/store/Store'
+import AllProducts from './components/secondpage/Allproduct';
+import ProductDetail from './components/secondpage/ProductView';
 function App() {
   return (
     <Provider store={store}>
@@ -21,6 +23,10 @@ function App() {
           <Route path="/allproducts" element={<Allproduct />} />
           <Route path="/allproducts/:categoryId" element={<Allproduct />} />
           <Route path="/productview/:productId" element={<ProductView />} />
+          <Route path="/productview" element={<ProductView />} />
+          <Route path="/allproducts/:categoryId?" Component={AllProducts} />
+          <Route path="/product/:productId" Component={ProductDetail} /> 
+
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/hovercard" element={<HoverCard />} />

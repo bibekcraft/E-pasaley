@@ -1,7 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { ReactNode } from 'react';
 
 // Define the Product interface
 interface Product {
+    feature: ReactNode;
+    description: ReactNode;
     categoryId: number;
     image: string | undefined;
     initial_price: number;
@@ -25,7 +28,6 @@ const initialState: ProductState = {
     error: null,
 };
 
-// Define the async thunk to fetch products
 const fetchProductWithAPI = async (categoryId: number) => {
     const response = await fetch(`http://127.0.0.1:8000/products/?category=${categoryId}`);
     if (!response.ok) {

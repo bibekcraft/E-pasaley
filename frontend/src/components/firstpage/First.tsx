@@ -1,21 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
 function First() {
-  const [isCartOpen, setIsCartOpen] = useState(false);
 
 
 
-  const toggleCart = () => {
-    setIsCartOpen(!isCartOpen);
-  };
+
   return (
     <>
       <div>
           <title>MayBell - Online furniture store</title>
 
 
-        <body x-data="{ desktopMenuOpen: false, mobileMenuOpen: false}">
+        <div x-data="{ desktopMenuOpen: false, mobileMenuOpen: false}">
           {/* Header */}
           <header className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-5">
             <a href="index.html">
@@ -99,7 +96,6 @@ function First() {
               {/* Cart with Hover Section */}
               <div
                 className="relative flex flex-col items-center justify-center cursor-pointer group"
-                onClick={toggleCart}
               >
                 <a>
                   <svg
@@ -114,8 +110,8 @@ function First() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <Link to="/hovercard">
-                    <p className="text-xs">Cart</p>
+                  <Link to="checkout">
+                    <p className="text-xs border-l-indigo-600">Cart</p>
                   </Link>
                 </a>
 
@@ -152,53 +148,10 @@ function First() {
               </a>
             </div>
           </header>
-          {/* /Header */}
-
-          {/* Cart Slider */}
-          {isCartOpen && (
-            <div className="fixed top-0 right-0 z-50 h-full bg-white shadow-lg w-80">
-              <button
-                onClick={toggleCart}
-                className="absolute text-gray-600 top-4 right-4"
-              >
-                Close
-              </button>
-              {/* Your cart items and details go here */}
-              <div className="p-5">
-                <h2 className="text-lg font-bold">Your Cart</h2>
-                {/* Cart items */}
-                <div className="mt-5">
-                  {/* Example item */}
-                  <div className="flex items-center justify-between mb-3">
-                    <p>Item 1</p>
-                    <span>$10.00</span>
-                  </div>
-                  {/* Add more items as needed */}
-                </div>
-                <div className="mt-5">
-                  <button className="w-full py-2 bg-amber-400 hover:bg-green-600">
-                    Checkout
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Burger menu  */}
-          <section
-            className="absolute left-0 right-0 z-50 w-full h-screen bg-white"
-            style={{ display: "none" }}
-          >
-            {/* Content for the burger menu */}
-          </section>
-          {/* /Burger menu */}
-
-          {/* Nav bar */}
-          {/* hidden on small devices */}
 
 
 
-        </body>
+        </div>
       </div>
     </>
   );

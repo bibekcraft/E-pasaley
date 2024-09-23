@@ -5,7 +5,6 @@ import { fetchCategories } from '../slice/CategorySlice';
 import { Link, useParams } from 'react-router-dom';
 import { AppDispatch } from '../store/Store';
 import { RootState } from '../store/Store';
-
 export interface Product {
   final_price: number;
   id: number;
@@ -196,8 +195,7 @@ const AllProducts: React.FC = () => {
                         )}
                       </div>
                       <div className="mt-2 text-gray-800">
-                        <Link to={`/product/${product.id}`} className="font-bold">
-                          {product.name}
+                      <Link to={`/product/${product.id}`} className="font-bold">                          {product.name}
                         </Link>
                         <div className="flex items-center justify-between">
                           <span className="text-lg font-semibold">Rs {product.final_price}</span>
