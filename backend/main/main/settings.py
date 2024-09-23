@@ -127,6 +127,11 @@ DATABASES = {
     }
 }
 
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / "static"]
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 
 
 
@@ -180,6 +185,11 @@ REST_FRAMEWORK = {
 }
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+
 ]
 
 AUTH_USER_MODEL='app.User'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',  
+]

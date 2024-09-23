@@ -11,7 +11,7 @@ class CategoryAdmin(admin.ModelAdmin):
 # Register Product model
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'initial_price', 'final_price', 'category',  'description', 'feature',)
+    list_display = ('name', 'initial_price', 'final_price', 'category',  'description', 'feature','brand')
     list_filter = ('category', 'initial_price','final_price')  # Remove 'final_price' from here
     search_fields = ('name', 'category__name', 'description', 'feature')
 
@@ -19,7 +19,7 @@ class ProductAdmin(admin.ModelAdmin):
  
 
     # Define the fields to be included in the form
-    fields = ('name', 'initial_price','final_price', 'description', 'feature', 'category', 'discount_rate','discount', 'image', 'image1', 'image2', 'image3', 'image4',)
+    fields = ('brand','name', 'initial_price','final_price', 'description', 'feature', 'category', 'discount_rate','discount', 'image', 'image1', 'image2', 'image3', 'image4')
 
     # Optional: Display ordering
 
@@ -31,13 +31,8 @@ class TestimonialAdmin(admin.ModelAdmin):
     search_fields = ('name', 'description')
     list_filter = ('name',)
 
-# Register Coupon model
-@admin.register(Coupon)
-class CouponAdmin(admin.ModelAdmin):
-    list_display = ('code', 'amount', 'active', 'expiry_date', 'created_at', 'updated_at')
-    list_filter = ('active', 'expiry_date')
-    search_fields = ('code',)
 
+admin.site.register(Coupon)
 # Register Video model
 @admin.register(Video)
 class VideoAdmin(admin.ModelAdmin):

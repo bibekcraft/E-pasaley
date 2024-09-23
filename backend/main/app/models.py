@@ -1,12 +1,14 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.utils.text import slugify
 
 class Category(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='subcategories')
     category_image = models.ImageField(upload_to='categories/', null=True, blank=True)
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -16,23 +18,18 @@ class Category(models.Model):
 
     @property
     def is_main_category(self):
-        """Check if the category is a main category."""
         return self.parent is None
 
-    @property
-    def is_subcategory(self):
-        """Check if the category is a subcategory."""
-        return self.parent is not None
-
-    def get_subcategories(self):
-        """Return all subcategories of this category."""
-        return self.subcategories.all()
-
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+    
     def get_products(self):
-        """Return all products under this category."""
         return self.products.all()
 
 class Product(models.Model):
+    brand = models.CharField(max_length=244, default='brand')
     name = models.CharField(max_length=244)
     initial_price = models.DecimalField(max_digits=10, decimal_places=2)
     final_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
@@ -55,12 +52,6 @@ class Product(models.Model):
         discount = self.discount or 0
         return self.initial_price * (discount / 100)
 
-    def save(self, *args, **kwargs):
-        if self.category and self.subcategory:
-            raise ValueError("Product can belong to either a main category or a subcategory, not both.")
-        super(Product, self).save(*args, **kwargs)
-
-
 class Testimonial(models.Model):
     name = models.CharField(max_length=244)
     image = models.ImageField(upload_to="testimonials")
@@ -69,25 +60,21 @@ class Testimonial(models.Model):
     def __str__(self):
         return self.name
 
+from django.utils import timezone
+from datetime import datetime
 class Coupon(models.Model):
     code = models.CharField(max_length=20, unique=True)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    expiry_date = models.DateTimeField(blank=True, null=True)
+    discount_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    start_date = models.DateTimeField(default=datetime.now)
+    end_date = models.DateTimeField(default=datetime.now) 
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"{self.code} - {self.amount}"
+        return self.code
 
     def is_valid(self):
-        """Check if the coupon is valid (e.g., active and not expired)."""
-        if not self.active:
-            return False
-        if self.expiry_date and self.expiry_date < timezone.now():
-            return False
-        return True
-
+        now = timezone.now()
+        return self.is_active and self.start_date <= now <= self.end_date
 class Video(models.Model):
     name = models.CharField(max_length=244)
     video = models.FileField(upload_to='video')
@@ -107,7 +94,6 @@ class Contact(models.Model):
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, name, tc, password=None):
-        """Creates and saves a User with the given email, name, tc and password."""
         if not email:
             raise ValueError("Users must have an email address")
 
@@ -122,7 +108,6 @@ class MyUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, name, tc, password=None):
-        """Creates and saves a superuser with the given email, name, tc, and password."""
         user = self.create_user(
             email,
             password=password,
@@ -140,7 +125,7 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True) 
+    updated_at = models.DateTimeField(auto_now=True)
 
     objects = MyUserManager()
 
@@ -151,14 +136,11 @@ class User(AbstractBaseUser):
         return self.email
 
     def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission?"
         return self.is_admin
 
     def has_module_perms(self, app_label):
-        "Does the user have permissions to view the app `app_label`?"
         return True
 
     @property
     def is_staff(self):
-        "Is the user a member of staff?"
-        return self.is_admin    
+        return self.is_admin
