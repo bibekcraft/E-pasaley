@@ -5,6 +5,8 @@ import { fetchCategories } from '../slice/CategorySlice';
 import { Link, useParams } from 'react-router-dom';
 import { AppDispatch } from '../store/Store';
 import { RootState } from '../store/Store';
+import { FaTag } from 'react-icons/fa';
+import { FaPercentage } from 'react-icons/fa'; 
 export interface Product {
   final_price: number;
   id: number;
@@ -135,18 +137,21 @@ const AllProducts: React.FC = () => {
         </div>
         {accordionState.categories && (
           <div className="pb-5 text-sm text-slate-500">
-            <ul className="flex flex-wrap items-center gap-4">
-              {categories.map((category) => (
-                <li
-                  key={category.id}
-                  className={`cursor-pointer ${category.id ? 'font-bold' : ''}`}
-                  onClick={() => dispatch(fetchProduct(category.id))}
-                >
-                  {category.name}
-                </li>
-              ))}
-            </ul>
-          </div>
+  <ul className="flex flex-wrap items-center gap-6">
+    {categories.map((category) => (
+      <li
+        key={category.id}
+        className={`flex items-center gap-2 cursor-pointer p-2 rounded-lg transition-colors duration-300
+          ${category.id ? 'font-bold text-gray-800 hover:bg-gray-200' : 'text-gray-600 hover:text-gray-800'}
+        `}
+        onClick={() => dispatch(fetchProduct(category.id))}
+      >
+        <FaTag className="text-xl text-green-500" /> {/* Icon for each category */}
+        <span>{category.name}</span>
+      </li>
+    ))}
+  </ul>
+</div>
         )}
       </div>
 
@@ -157,32 +162,41 @@ const AllProducts: React.FC = () => {
           className="flex items-center justify-between w-full py-5 cursor-pointer text-slate-800"
         >
           <span>Price Range</span>
-          <span className="transition-transform duration-300 text-slate-800">
+          <span className="text-green-800 transition-transform duration-300">
             {accordionState.priceRange ? '-' : '+'}
           </span>
         </div>
         {accordionState.priceRange && (
-          <div className="pb-5 text-sm text-slate-500">
-            <div className="flex flex-col gap-2">
-              <input
-                type="range"
-                min="0"
-                max={Math.max(...products.map(product => product.final_price), 1000000)}
-                value={minPrice}
-                onChange={(e) => setMinPrice(parseInt(e.target.value))}
-                className="w-full bg-gray-200"
-              />
-              <input
-                type="range"
-                min="0"
-                max={Math.max(...products.map(product => product.final_price), 1000000)}
-                value={maxPrice}
-                onChange={(e) => setMaxPrice(parseInt(e.target.value))}
-                className="w-full bg-gray-200"
-              />
-              <p className="text-gray-700">Price: Rs {minPrice} - Rs {maxPrice}</p>
-            </div>
-          </div>
+          <div className="pb-5 text-sm text-green-500">
+  <div className="flex flex-col gap-4">
+    <div className="relative">
+      <input
+        type="range"
+        min="0"
+        max={Math.max(...products.map(product => product.final_price), 1000000)}
+        value={minPrice}
+        onChange={(e) => setMinPrice(parseInt(e.target.value))}
+        className="w-full h-2 bg-transparent rounded-lg appearance-none"
+        style={{
+          background: `linear-gradient(to right, #4ade80 ${((minPrice / Math.max(...products.map(product => product.final_price), 1000000)) * 100)}%, #e5e7eb ${((minPrice / Math.max(...products.map(product => product.final_price), 1000000)) * 100)}%)`,
+        }}
+      />
+      <input
+        type="range"
+        min="0"
+        max={Math.max(...products.map(product => product.final_price), 1000000)}
+        value={maxPrice}
+        onChange={(e) => setMaxPrice(parseInt(e.target.value))}
+        className="w-full h-2 bg-transparent rounded-lg appearance-none"
+        style={{
+          background: `linear-gradient(to right, #4ade80 ${((maxPrice / Math.max(...products.map(product => product.final_price), 1000000)) * 100)}%, #e5e7eb ${((maxPrice / Math.max(...products.map(product => product.final_price), 1000000)) * 100)}%)`,
+        }}
+      />
+    </div>
+    <p className="text-gray-700">Price: Rs {minPrice} - Rs {maxPrice}</p>
+  </div>
+</div>
+
         )}
       </div>
 
@@ -199,22 +213,24 @@ const AllProducts: React.FC = () => {
         </div>
         {accordionState.brand && (
           <div className="pb-5 text-sm text-slate-500">
-            <div className="flex flex-wrap items-center gap-2">
-              {Array.from(new Set(products.map(product => product.brand))).map((brand) => (
-                <label key={brand} className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="brand"
-                    value={brand}
-                    onChange={() => setSelectedBrand(brand)}
-                    checked={selectedBrand === brand}
-                    className="mr-2"
-                  />
-                  <span>{brand}</span>
-                </label>
-              ))}
-            </div>
-          </div>
+<div className="pb-5 text-sm text-slate-500">
+  <ul className="flex flex-wrap items-center gap-6">
+    {Array.from(new Set(products.map(product => product.brand))).map((brand) => (
+      <li
+        key={brand}
+        onClick={() => setSelectedBrand(brand)}
+        className={`flex items-center gap-2 cursor-pointer p-2 rounded-lg transition-colors duration-300
+          ${selectedBrand === brand ? 'bg-green-600 text-white' : 'bg-white text-slate-500 hover:bg-gray-200'}
+        `}
+      >
+        <FaTag className="text-xl text-green-500" /> {/* Icon for each brand */}
+        <span>{brand}</span>
+      </li>
+    ))}
+  </ul>
+</div>
+</div>
+
         )}
       </div>
 
@@ -230,23 +246,24 @@ const AllProducts: React.FC = () => {
           </span>
         </div>
         {accordionState.discount && (
-          <div className="pb-5 text-sm text-slate-500">
-            <div className="flex flex-wrap items-center gap-4">
-              {['all', 'below 10%', 'below 20%', 'below 30%', '30% and more'].map((range) => (
-                <label key={range} className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="discount"
-                    value={range}
-                    onChange={() => setSelectedDiscount(range)}
-                    checked={selectedDiscount === range}
-                    className="mr-2"
-                  />
-                  <span>{range}</span>
-                </label>
-              ))}
-            </div>
-          </div>
+          <div className="pb-5">
+  <h2 className="mb-4 text-lg font-semibold text-gray-800">Select Discount</h2>
+  <ul className="flex flex-wrap items-center gap-4 p-4 bg-gray-100 rounded-lg shadow-lg">
+    {['All', 'Below 10%', 'Below 20%', 'Below 30%', '30% and more'].map((range) => (
+      <li
+        key={range}
+        onClick={() => setSelectedDiscount(range)}
+        className={`flex items-center gap-2 cursor-pointer p-3 rounded-lg transition-colors duration-300
+          ${selectedDiscount === range ? 'bg-green-600 text-white shadow-md' : 'bg-white text-gray-700 hover:bg-gray-200'}
+        `}
+      >
+        <FaTag className="text-xl text-green-500" /> {/* Discount icon */}
+        <span className="font-medium">{range}</span>
+      </li>
+    ))}
+  </ul>
+</div>
+
         )}
       </div>
     </div>
@@ -263,7 +280,7 @@ const AllProducts: React.FC = () => {
         
         {/* Discount Label (above the photo) */}
         {product.discount_rate > 0 && (
-          <span className="px-2 py-1 mb-2 text-sm font-bold text-white bg-green-900 rounded">
+          <span className="px-2 py-1 mb-2 text-sm font-bold text-white ">
             -{product.discount_rate}% OFF
           </span>
         )}
