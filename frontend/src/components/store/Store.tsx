@@ -4,12 +4,14 @@ import cartReducer from '../slice/cartSlice';
 import categoryReducer from '../slice/CategorySlice';
 import productReducer from '../slice/ProductSlice';
 import couponReducer from '../slice/CouponSlice';
+import orderReducer from '../slice/orderSlice';
 const store = configureStore({
   reducer: {
     cart: cartReducer,
     categories: categoryReducer,
     product:productReducer,
     coupons: couponReducer ,
+    orders: orderReducer,
   },
 });
 

@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store/Store';
 import { removeItemFromCart } from '../slice/cartSlice';
-import { validateCoupon, reset } from '../slice/couponSlice';
+import { validateCoupon, reset } from '../slice/CouponSlice';
 import CategorySection from '../firstpage/CategorySection';
-
+import { Link } from 'react-router-dom';
 interface CartItem {
   id: string;
   image?: string;
@@ -47,6 +47,7 @@ const Checkout: React.FC = () => {
 
   const totalPrice = groupedItems.reduce((total, item) => total + (item.totalPrice || 0), 0);
   const totalWithDiscount = totalPrice - discount;
+  const shippingCost = 100;
 
   // Handle applying the coupon
   const handleApplyCoupon = () => {
@@ -76,10 +77,10 @@ const Checkout: React.FC = () => {
             {groupedItems.map((item, index) => (
               <div key={item.id} className="items-stretch py-8 border-t md:flex md:py-10 lg:py-8 border-gray-50">
                 <div className="w-full md:w-4/12 2xl:w-1/4">
-                  <img src={item.image} alt={item.name} className="object-cover object-center w-full h-full" />
+                  <img src={item.image as string | undefined} alt={item.name as string | undefined} className="object-cover object-center w-full h-full" />
                 </div>
                 <div className="flex flex-col justify-center md:pl-3 md:w-8/12 2xl:w-3/4">
-                  <p className="text-base font-black leading-none text-gray-800">{item.name}</p>
+                  <p className="text-base font-black leading-none text-gray-800">{item.name as string}</p>
                   <div className="flex items-center justify-between w-full">
                     <select
                       value={quantities[index]}
@@ -87,7 +88,7 @@ const Checkout: React.FC = () => {
                       aria-label="Select quantity"
                       className="px-1 py-2 mr-6 border border-gray-200"
                     >
-                      {[...Array(10).keys()].map((_, i) => (
+                      {Array.from(Array(10).keys()).map((_, i) => (
                         <option key={i} value={i + 1}>
                           {i + 1}
                         </option>
@@ -95,7 +96,7 @@ const Checkout: React.FC = () => {
                     </select>
                     <p className="text-base font-black leading-none text-gray-800">Rs {item.totalPrice}</p>
                   </div>
-                  <p className="text-xs leading-3 text-gray-600">Brand: {item.brand}</p>
+                  <p className="text-xs leading-3 text-gray-600">Brand: {item.brand as string}</p>
                   <div className="flex items-center justify-between pt-5">
                     <p className="text-xs leading-3 text-gray-800 underline cursor-pointer">Add to favorites</p>
                     <p
@@ -126,7 +127,7 @@ const Checkout: React.FC = () => {
             <div>
               <label className="inline-block mb-3 text-sm font-medium uppercase">Shipping</label>
               <select className="block w-full p-2 text-sm text-gray-600">
-                <option>Standard shipping - Rs 100</option>
+                <option>Standard shipping - Rs {shippingCost}</option>
               </select>
             </div>
             <div className="py-10">
@@ -141,23 +142,36 @@ const Checkout: React.FC = () => {
               />
             </div>
             <button
-  onClick={handleApplyCoupon}
-  className="px-5 py-2 text-sm text-white uppercase bg-red-500 hover:bg-red-600"
-  disabled={status === 'loading'}
->
-  Apply
-</button>
+              onClick={handleApplyCoupon}
+              className="px-5 py-2 text-sm text-white uppercase bg-red-500 hover:bg-red-600"
+              disabled={status === 'loading'}
+            >
+              Apply
+            </button>
 
             {status === 'loading' && <p className="text-sm text-gray-500">Validating coupon...</p>}
             {error && <p className="text-sm text-red-500">{error}</p>}
+
+            {/* Show discount if applied */}
+            {discount > 0 && (
+              <div className="flex justify-between mt-5 text-sm font-semibold uppercase">
+                <span>Discount Applied</span>
+                <span className="text-green-500">- Rs {discount}</span>
+              </div>
+            )}
+
             <div className="mt-8 border-t">
               <div className="flex justify-between py-6 text-sm font-semibold uppercase">
                 <span>Total cost</span>
-                <span>Rs {totalWithDiscount + 100}</span> {/* Add shipping cost */}
+                <span>Rs {totalWithDiscount + shippingCost}</span> {/* Final total with shipping */}
               </div>
+              <Link to="/shipping"
+              state={{ cartItems: groupedItems }} 
+              >// Pass the items as state
               <button className="w-full py-3 text-sm font-semibold text-white uppercase bg-indigo-500 hover:bg-indigo-600">
                 Checkout
               </button>
+              </Link>
             </div>
           </div>
         </div>
