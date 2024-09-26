@@ -274,23 +274,26 @@ const AllProducts: React.FC = () => {
     <h4 className="text-lg font-bold">Products</h4>
   </div>
   <div className="container py-10 mx-auto">
-  <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+  <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-2"> {/* Adjust grid columns for larger screens */}
     {filteredProducts.map((product) => (
-      <div key={product.id} className="flex flex-col items-center justify-between h-full p-4 border rounded-lg shadow-lg">
+      <div 
+        key={product.id} 
+        className="flex flex-col items-center justify-between w-full h-full p-2 border rounded-lg shadow-lg md:w-80"> {/* Increase width with md:w-80 */}
         
         {/* Discount Label (above the photo) */}
         {product.discount_rate > 0 && (
-          <span className="px-2 py-1 mb-2 text-sm font-bold text-white ">
-            -{product.discount_rate}% OFF
-          </span>
-        )}
+  <span className="px-3 py-1 mb-2 text-sm font-bold text-black bg-green-700 rounded">
+                         -{product.discount_rate}% OFF
+  </span>
+)}
+
 
         {/* Image Section (Increased size) */}
         <div className="relative w-full">
           <img
             src={product.image}
             alt={product.name}
-            className="object-cover w-full my-4 h-60" 
+            className="object-cover w-full my-4 h-60"
           />
         </div>
 
@@ -301,7 +304,7 @@ const AllProducts: React.FC = () => {
           </Link>
 
           {/* Brand, Previous Price, Final Price */}
-          <div className="flex justify-between w-full mt-2 text-sm text-blue-800">
+          <div className="flex justify-between w-full mt-2 text-sm text-slate-500">
             <span>{product.brand}</span>
             <span>|</span>
             <span className="line-through">{product.initial_price ? `Rs ${product.initial_price}` : '-'}</span>
@@ -311,13 +314,14 @@ const AllProducts: React.FC = () => {
         </div>
 
         {/* View Details Button */}
-        <button className="w-full px-4 py-2 mt-4 text-white bg-black rounded hover:bg-gray-800">
+        <button className="w-full px-4 py-2 mt-4 text-white bg-green-700 rounded hover:bg-green-800">
           View details
         </button>
       </div>
     ))}
   </div>
 </div>
+
 
 
 
