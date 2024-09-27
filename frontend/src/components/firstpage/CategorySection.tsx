@@ -38,7 +38,7 @@ function CategorySection() {
                             >
                                 <div className="flex items-center justify-center w-24 h-24 border border-gray-200 rounded-full shadow-md hover:shadow-xl">
                                     <img
-                                        src={`http://localhost:8000${category.category_image}`}
+                                        src=    {category.category_image}
                                         alt={category.name}
                                         className="object-cover w-full h-full rounded-full"
                                         onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => (e.target as HTMLImageElement).src = '/path/to/default-image.png'} // Fallback on error

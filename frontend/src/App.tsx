@@ -14,6 +14,8 @@ import store from './components/store/Store'
 import AllProducts from './components/secondpage/Allproduct';
 import ProductDetail from './components/secondpage/ProductView';
 import Shipping from './components/final/Shipping';
+import Faq from './components/resources/Faq';
+import ProductCarousel from './components/firstpage/ProductCarousel';
 function App() {
   return (
     <Provider store={store}>
@@ -27,8 +29,11 @@ function App() {
           <Route path="/productview" element={<ProductView />} />
           <Route path="/allproducts/:categoryId?" element={<AllProducts />} />
           <Route path="/shipping" element={<Shipping />} />
+          <Route path="/faq" element={<Faq />} />
 
           <Route path="/product/:productId" element={<ProductDetail/>} /> 
+          <Route path="/product" element={<ProductDetail/>} />
+          <Route path="/productcarousel" element={<ProductCarousel />} />
 
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

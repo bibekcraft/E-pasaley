@@ -3,10 +3,6 @@ import { ReactNode } from 'react';
 
 // Define the Product interface
 interface Product {
-    itemnumber: ReactNode;
-    image1: string | undefined;
-    image2: string | undefined;
-    image3: string | undefined;
     feature: ReactNode;
     description: ReactNode;
     categoryId: number;

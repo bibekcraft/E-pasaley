@@ -1,160 +1,52 @@
 import React from "react";
+import { HiOutlineShoppingCart } from "react-icons/hi2";
 import { Link } from "react-router-dom";
-
 function First() {
 
 
 
 
   return (
-    <>
-      <div>
-          <title>MayBell - Online furniture store</title>
 
-
-        <div x-data="{ desktopMenuOpen: false, mobileMenuOpen: false}">
-          {/* Header */}
-          <header className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-5">
-            <a href="index.html">
-              <img
-                className="cursor-pointer sm:h-auto sm:w-auto"
-                src="./assets/images/company-logo.svg"
-                alt="company logo"
-              />
-            </a>
-
-            <div className="md:hidden">
-              <button onClick={() => {}}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="w-8 h-8"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            <form className="items-center hidden w-2/5 border h-9 md:flex">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-4 h-4 mx-3"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                />
-              </svg>
-
-              <input
-                className="hidden w-11/12 outline-none md:block"
-                type="search"
-                placeholder="Search"
-              />
-
-              <button className="h-full px-4 ml-auto bg-amber-400 hover:bg-yellow-300">
-                Search
-              </button>
-            </form>
-
-            <div className="hidden gap-3 md:!flex">
-              {/* Wishlist */}
-              <a
-                href="wishlist.html"
-                className="flex flex-col items-center justify-center cursor-pointer"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
-                  />
-                </svg>
-
-                <p className="text-xs">Wishlist</p>
-              </a>
-
-              {/* Cart with Hover Section */}
-              <div
-                className="relative flex flex-col items-center justify-center cursor-pointer group"
-              >
-                <a>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-6 h-6"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M7.5 6v.75H5.513c-.96 0-1.764.724-1.865 1.679l-1.263 12A1.875 1.875 0 004.25 22.5h15.5a1.875 1.875 0 001.865-2.071l-1.263-12a1.875 1.875 0 00-1.865-1.679H16.5V6a4.5 4.5 0 10-9 0zM12 3a3 3 0 00-3 3v.75h6V6a3 3 0 00-3-3zm-3 8.25a3 3 0 106 0v-.75a.75.75 0 011.5 0v.75a4.5 4.5 0 11-9 0v-.75a.75.75 0 011.5 0v.75z"
-                      clipRule="evenodd"
+        <div className="bg-white shadow-md">
+            <div className="container flex items-center justify-between py-4 mx-auto">
+                <div className="flex items-center">
+                    <button className="p-2 bg-blue-100 rounded-lg">
+                        <span className="block w-4 h-1 mb-1 bg-blue-500"></span>
+                        <span className="block w-4 h-1 mb-1 bg-blue-500"></span>
+                        <span className="block w-4 h-1 bg-blue-500"></span>
+                    </button>
+                    <h2 className="ml-2 text-2xl font-bold text-blue-500">MegaMart</h2>
+                </div>
+                <div className="flex justify-center flex-1">
+                    <input
+                        type="text"
+                        placeholder="Search essentials, groceries and more..."
+                        className="w-2/3 px-4 py-2 border border-gray-300 rounded-lg"
                     />
-                  </svg>
-                  <Link to="checkout">
-                    <p className="text-xs border-l-indigo-600">Cart</p>
-                  </Link>
-                </a>
+                    <button className="p-2 ml-2 text-white bg-blue-500 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M11.742 10.142A5.37 5.37 0 0013 7.5 5.5 5.5 0 107 13a5.37 5.37 0 002.642-1.258l4.368 4.368a1 1 0 001.415-1.415l-4.368-4.368zM10 2a5 5 0 100 10 5 5 0 000-10z" />
+                        </svg>
+                    </button>
+                </div>
+                <div className="flex items-center mr-12 space-x-5">
+                    <a href="#" className="text-blue-500">Track your order</a>
+                    <a href="#" className="text-blue-500">All Offers</a>
+                    <a href="#" className="text-blue-500">Sign Up/Sign In</a>
+                    <div className="flex space-x-4">
+                        <Link to="/checkout" className="text-blue-500">
+    <button className="w-20 h-11">
+        <HiOutlineShoppingCart className="w-full h-full" fill="white" />
+    </button>
+</Link>
+</div>
 
-                {/* Hover Content */}
 
-              </div>
-
-              {/* Account */}
-              <a
-                href="/login"
-                className="relative flex flex-col items-center justify-center cursor-pointer"
-              >
-                <span className="absolute bottom-[33px] right-1 flex h-2 w-2">
-                  <span className="absolute inline-flex w-full h-full bg-red-400 rounded-full opacity-75 animate-ping"></span>
-                  <span className="relative inline-flex w-2 h-2 bg-red-500 rounded-full"></span>
-                </span>
-
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                  />
-                </svg>
-
-                <p className="text-xs">Account</p>
-              </a>
+                </div>
             </div>
-          </header>
-
-
-
         </div>
-      </div>
-    </>
-  );
+    );
 }
 
 export default First;

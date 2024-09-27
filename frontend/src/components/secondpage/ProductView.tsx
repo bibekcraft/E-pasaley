@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { RootState } from '../store/Store';
 import { addItem } from '../slice/cartSlice'; 
+import Faq from '../resources/Faq';
+import First from '../firstpage/First';
 
 const ProductView: React.FC = () => {
 
@@ -35,6 +37,9 @@ const ProductView: React.FC = () => {
   }
 
   return (
+    <div>
+      <First />
+
     <div className="w-full h-full p-6">
       {/* Product Section */}
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
@@ -118,7 +123,10 @@ const ProductView: React.FC = () => {
           </table>
         </div>
       </div>
+      <Faq/>
     </div>
+        </div>
+
   );
 };
 

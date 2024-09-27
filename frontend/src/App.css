@@ -1,0 +1,90 @@
+.header {
+    background-color: white; /* White background */
+    color: #1e3a8a; /* Blue text */
+    padding: 20px;
+    position: relative;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.delivery-info {
+    display: flex;
+    align-items: center;
+}
+
+.promo-toggle {
+    background-color: #ffffff; /* Blue button */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+.marquee {
+    background-color: #ffffff; /* Light blue background */
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 10px;
+}
+
+.marquee-content {
+    display: inline-block;
+    animation: marquee 15s linear infinite;
+}
+
+@keyframes marquee {
+    0% { transform: translate(100%, 0); }
+    100% { transform: translate(-100%, 0); }
+}
+
+.promo-section {
+    background-color: #a7f3d0; /* Green background for promo section */
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow effect */
+}
+
+.promo-input {
+    display: flex;
+    align-items: center;
+}
+
+.promo-input-field {
+    border: 1px solid #d1d5db; /* Light gray border */
+    border-radius: 5px;
+    padding: 10px;
+    margin-right: 10px;
+    flex: 1;
+}
+
+.apply-button {
+    background-color: #10b981; /* Green button */   
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+/* Additional styling for responsiveness */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .promo-input {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

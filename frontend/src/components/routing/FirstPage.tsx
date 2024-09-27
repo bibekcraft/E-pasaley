@@ -8,17 +8,19 @@ import Offer from '../firstpage/Offer'
 import Footer from '../firstpage/Footer'
 import Philosophy from '../firstpage/Philosophy'
 import Whyus from '../firstpage/Whyus'
-import Categories from '../firstpage/Categories'
 import CategorySection from '../firstpage/CategorySection'
+import  ProductCarousel from '../firstpage/ProductCarousel'
+import Header from '../firstpage/Header';
 function FirstPage() {
   return (
     <>
+    <Header />
     <First />
-    <Categories />
     <Crausels />
     <CategorySection />
     <TopArraival />
     <WWW />
+    <ProductCarousel />
     {/* <Testamonials /> */}
     <Offer />
     <Philosophy />

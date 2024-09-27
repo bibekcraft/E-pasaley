@@ -6,7 +6,6 @@ import { Link, useParams } from 'react-router-dom';
 import { AppDispatch } from '../store/Store';
 import { RootState } from '../store/Store';
 import { FaTag } from 'react-icons/fa';
-import { FaPercentage } from 'react-icons/fa'; 
 export interface Product {
   final_price: number;
   id: number;
@@ -41,7 +40,7 @@ const AllProducts: React.FC = () => {
   });
 
   
-  const toggleAccordion = (section) => {
+  const toggleAccordion = (section: AccordionSection) => {
     setAccordionState((prevState) => ({
       ...prevState,
       [section]: !prevState[section],
@@ -126,7 +125,7 @@ const AllProducts: React.FC = () => {
     <div className="flex flex-col gap-6 p-6 font-poppins">
       {/* Categories Accordion */}
       <div className="border-b border-slate-200">
-        <div
+        <div  
           onClick={() => toggleAccordion('categories')}
           className="flex items-center justify-between w-full py-5 cursor-pointer text-slate-800"
         >
