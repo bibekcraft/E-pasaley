@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Product, Coupon, Testimonial, Video, Contact
+from .models import Category, Product, Coupon, Testimonial, Video, Contact,order,faq
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -37,7 +37,15 @@ class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
         fields = '__all__'
+class orderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = order
+        fields = '__all__'
 
+class faqSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = faq
+        fields = '__all__'
 
 from .models import User
 class UserSerializer(serializers.ModelSerializer):

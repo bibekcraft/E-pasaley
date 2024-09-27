@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, Testimonial, Coupon, Contact, Video
+from .models import Category, Product, Testimonial, Coupon, Contact, Video, order,faq
 
 # Register Category model
 @admin.register(Category)
@@ -11,7 +11,7 @@ class CategoryAdmin(admin.ModelAdmin):
 # Register Product model
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'initial_price', 'final_price', 'category',  'description', 'feature','brand')
+    list_display = ('name', 'initial_price', 'final_price', 'category',  'description', 'feature','brand','itemnumber')
     list_filter = ('category', 'initial_price','final_price')  # Remove 'final_price' from here
     search_fields = ('name', 'category__name', 'description', 'feature')
 
@@ -19,7 +19,7 @@ class ProductAdmin(admin.ModelAdmin):
  
 
     # Define the fields to be included in the form
-    fields = ('brand','name', 'initial_price','final_price', 'description', 'feature', 'category', 'discount_rate','discount', 'image', 'image1', 'image2', 'image3', 'image4')
+    fields = ('brand','name', 'initial_price','final_price', 'description', 'feature', 'category', 'discount_rate','discount', 'image', 'image1', 'image2', 'image3', 'image4','itemnumber')
 
     # Optional: Display ordering
 
@@ -81,3 +81,5 @@ class UserModelAdmin(BaseUserAdmin):
 
 # Now register the new UserAdmin...
 admin.site.register(User, UserModelAdmin)
+admin.site.register(order)
+admin.site.register(faq)

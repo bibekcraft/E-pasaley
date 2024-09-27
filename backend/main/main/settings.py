@@ -189,7 +189,11 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 AUTH_USER_MODEL='app.User'
+import os
+from pathlib import Path
 
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',  
-]
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Media files (User-uploaded files)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

@@ -15,7 +15,10 @@ from app.views import (
     CategoryDetailAPIView,
     ProductDetailAPIView,
     CouponListCreateView,
-    CouponDetailView
+    CouponDetailView,
+    orderListCreateAPIView,
+    faqListCreateAPIView,
+    ProductListByCategoryAPIView
 )
 
 urlpatterns = [
@@ -37,11 +40,17 @@ urlpatterns = [
           # Testimonial URLs
     path('testimonials/', TestimonialListCreateAPIView.as_view(), name='testimonial-list-create'),
 
+        path('categories/<int:category_id>/products/', ProductListByCategoryAPIView.as_view(), name='product-list-by-category'),
+
     # Video URLs
     path('videos/', VideoListCreateAPIView.as_view(), name='video-list-create'),
 
     # Contact URLs
     path('contacts/', ContactListCreateAPIView.as_view(), name='contact-list-create'),
+
+    path('orders/', orderListCreateAPIView.as_view(), name='order-list-create'),
+
+    path('faqs/', faqListCreateAPIView.as_view(), name='faq-list-create'),
 
     # User Authentication URLs
     path('register/', UserRegistrationView.as_view(), name='register'),
@@ -51,3 +60,8 @@ urlpatterns = [
     path('send-password-reset-email/', SendPasswordResetEmailView.as_view(), name='send-password-reset-email'),
     path('password-reset/<uid>/<token>/', UserPasswordResetView.as_view(), name='password-reset'),
 ]
+from main import settings
+from django.conf.urls.static import static
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

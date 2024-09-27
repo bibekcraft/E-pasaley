@@ -29,7 +29,7 @@ class Category(models.Model):
         return self.products.all()
 
 class Product(models.Model):
-    brand = models.CharField(max_length=244, default='brand')
+    brand = models.CharField(max_length=244, default='your brand name')
     name = models.CharField(max_length=244)
     initial_price = models.DecimalField(max_digits=10, decimal_places=2)
     final_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
@@ -43,6 +43,8 @@ class Product(models.Model):
     image2 = models.ImageField(default='default_image.jpg', upload_to='images/')
     image3 = models.ImageField(default='default_image.jpg', upload_to='images/')
     image4 = models.ImageField(default='default_image.jpg', upload_to='images/')
+    itemnumber=models.TextField(default='PMS-0001')
+
 
     def __str__(self):
         return self.name
@@ -144,3 +146,32 @@ class User(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
+
+class order(models.Model):
+    name=models.CharField(max_length=244)
+    email=models.EmailField()
+    phone=models.IntegerField()
+    address=models.CharField(max_length=244)
+    city=models.CharField(max_length=244)
+    state=models.CharField(max_length=244)
+    zipcode=models.IntegerField()
+    quantity=models.IntegerField()
+    price=models.IntegerField()
+    total=models.IntegerField()
+    itemnumber=models.TextField(default='nothing')
+
+    product_name=models.CharField(max_length=244)
+    
+    def __str__(self):
+        return f"Order by {self.name} for {self.product_name}"
+    
+
+
+
+class faq(models.Model):
+    title=models.CharField(max_length=244)
+    description=models.TextField()
+
+    def __str__(self):
+        return self.title
+    

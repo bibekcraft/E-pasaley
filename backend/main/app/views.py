@@ -1,12 +1,14 @@
 from rest_framework import generics
-from .models import Category, Product, Coupon, Testimonial, Video, Contact
+from .models import Category, Product, Coupon, Testimonial, Video, Contact,order,faq
 from .serializers import (
     CategorySerializer,
     ProductSerializer,
     CouponSerializer,
     TestimonialSerializer,
     VideoSerializer,
-    ContactSerializer
+    ContactSerializer,
+    orderSerializer,
+    faqSerializer
 )
 
 
@@ -203,3 +205,17 @@ class CouponDetailView(generics.RetrieveAPIView):
     queryset = Coupon.objects.all()
     serializer_class = CouponSerializer
 
+class orderListCreateAPIView(generics.ListCreateAPIView):
+    queryset = order.objects.all()
+    serializer_class = orderSerializer
+
+class faqListCreateAPIView(generics.ListCreateAPIView):
+    queryset = faq.objects.all()
+    serializer_class = faqSerializer
+
+class ProductListByCategoryAPIView(generics.ListAPIView):
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        category_id = self.kwargs.get('category_id')
+        return Product.objects.filter(category_id=category_id)
