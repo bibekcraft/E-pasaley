@@ -148,10 +148,11 @@ class User(AbstractBaseUser):
         return self.is_admin
 
 class order(models.Model):
-    name=models.CharField(max_length=244)
+    firstName=models.CharField(max_length=244,default='nothing')
+    lastName=models.CharField(max_length=244,default='nothing')
     email=models.EmailField()
     phone=models.IntegerField()
-    address=models.CharField(max_length=244)
+    addressLine=models.CharField(max_length=244,default='nothing')
     city=models.CharField(max_length=244)
     state=models.CharField(max_length=244)
     zipcode=models.IntegerField()
