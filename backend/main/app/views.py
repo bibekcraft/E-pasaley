@@ -205,9 +205,6 @@ class CouponDetailView(generics.RetrieveAPIView):
     queryset = Coupon.objects.all()
     serializer_class = CouponSerializer
 
-class orderListCreateAPIView(generics.ListCreateAPIView):
-    queryset = order.objects.all()
-    serializer_class = orderSerializer
 
 class faqListCreateAPIView(generics.ListCreateAPIView):
     queryset = faq.objects.all()
@@ -219,3 +216,17 @@ class ProductListByCategoryAPIView(generics.ListAPIView):
     def get_queryset(self):
         category_id = self.kwargs.get('category_id')
         return Product.objects.filter(category_id=category_id)
+
+    def get_queryset(self):
+        category_id = self.kwargs.get('category_id')
+        return Product.objects.filter(category_id=category_id)
+    
+from app.serializers import orderSerializer
+class OrderListCreateAPIView(generics.ListCreateAPIView):
+    queryset = order.objects.all()
+    serializer_class = orderSerializer
+
+class OrderDetailAPIView(generics.RetrieveAPIView):
+    queryset = order.objects.all()
+    serializer_class = orderSerializer
+    lookup_field = 'pk'  
