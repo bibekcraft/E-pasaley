@@ -12,8 +12,8 @@ const store = configureStore({
     categories: categoryReducer,
     product:productReducer,
     coupons: couponReducer ,
-    orders: orderReducer,
-    faqs: faqReducer,
+    order: orderReducer,
+        faqs: faqReducer,
   },
 });
 

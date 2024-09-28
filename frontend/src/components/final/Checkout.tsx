@@ -5,6 +5,7 @@ import { removeItemFromCart } from '../slice/cartSlice';
 import { validateCoupon, reset } from '../slice/CouponSlice';
 import CategorySection from '../firstpage/CategorySection';
 import { Link } from 'react-router-dom';
+
 interface CartItem {
   id: string;
   image?: string;
@@ -34,7 +35,6 @@ const Checkout: React.FC = () => {
   const handleRemoveItem = (id: string) => {
     dispatch(removeItemFromCart(id));
   };
-
   // Group items and calculate total prices
   const groupedItems = cartItems.map((item, index) => {
     const finalPrice = item.final_price || 0;
@@ -44,10 +44,11 @@ const Checkout: React.FC = () => {
       totalPrice: finalPrice * quantity,
     };
   });
-
+  
   const totalPrice = groupedItems.reduce((total, item) => total + (item.totalPrice || 0), 0);
   const totalWithDiscount = totalPrice - discount;
   const shippingCost = 100;
+  const exactFinalCost = totalWithDiscount + shippingCost;
 
   // Handle applying the coupon
   const handleApplyCoupon = () => {
@@ -110,12 +111,12 @@ const Checkout: React.FC = () => {
               </div>
             ))}
 
-            <a href="#" className="flex mt-10 text-sm font-semibold text-indigo-600">
+            <Link to="/" className="flex mt-10 text-sm font-semibold text-indigo-600">
               <svg className="w-4 mr-2 text-indigo-600 fill-current" viewBox="0 0 448 512">
                 <path d="M134.059 296H436c6.627 0 12-5.373 12-12v-56c0-6.627-5.373-12-12-12H134.059v-46.059c0-21.382-25.851-32.09-40.971-16.971L7.029 239.029c-9.373 9.373-9.373 24.569 0 33.941l86.059 86.059c15.119 15.119 40.971 4.411 40.971-16.971V296z" />
               </svg>
               Continue Shopping
-            </a>
+            </Link>
           </div>
 
           <div id="summary" className="w-full px-8 py-10 sm:w-1/4 md:w-1/2">
@@ -160,19 +161,19 @@ const Checkout: React.FC = () => {
               </div>
             )}
 
-            <div className="mt-8 border-t">
-              <div className="flex justify-between py-6 text-sm font-semibold uppercase">
-                <span>Total cost</span>
-                <span>Rs {totalWithDiscount + shippingCost}</span> {/* Final total with shipping */}
-              </div>
-              <Link to="/shipping"
-              state={{ cartItems: groupedItems }} 
-              >// Pass the items as state
-              <button className="w-full py-3 text-sm font-semibold text-white uppercase bg-indigo-500 hover:bg-indigo-600">
-                Checkout
-              </button>
-              </Link>
-            </div>
+
+<div className="mt-8 border-t">
+  <div className="flex justify-between py-6 text-sm font-semibold uppercase">
+    <span>Total cost</span>
+    <span>Rs {exactFinalCost}</span> {/* Final total with shipping */}
+  </div>
+  <Link to="/shipping" state={{ products: groupedItems, totalCost: exactFinalCost, quantities }}>
+    <button className="w-full py-3 text-sm font-semibold text-white uppercase bg-indigo-500 hover:bg-indigo-600">
+      Checkout
+    </button>
+  </Link>
+</div>
+
           </div>
         </div>
       </div>
