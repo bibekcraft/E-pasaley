@@ -48,8 +48,7 @@ urlpatterns = [
 
     # Contact URLs
     path('contacts/', ContactListCreateAPIView.as_view(), name='contact-list-create'),
-
-    path('orders/', OrderListCreateAPIView.as_view(), name='order-list-create'),  # For listing and creating orders
+    path('orders/', OrderListCreateAPIView.as_view(), name='order-list-create'),
     path('orders/<int:pk>/', OrderDetailAPIView.as_view(), name='order-detail'),
     path('faqs/', faqListCreateAPIView.as_view(), name='faq-list-create'),
 
@@ -62,7 +61,7 @@ urlpatterns = [
     path('password-reset/<uid>/<token>/', UserPasswordResetView.as_view(), name='password-reset'),
 ]
 from main import settings
-from django.conf.urls.static import static
+from django.conf.urls.static import static # type: ignore
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

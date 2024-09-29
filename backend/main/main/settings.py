@@ -115,7 +115,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'main.wsgi.application'
-
+AUTH_USER_MODEL = 'app.MyUser' 
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -197,3 +197,4 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Media files (User-uploaded files)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+

@@ -12,10 +12,8 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-from rest_framework import serializers
 from .models import Coupon
 
-from rest_framework import serializers
 from .models import Coupon
 import datetime 
 class CouponSerializer(serializers.ModelSerializer):
@@ -37,10 +35,21 @@ class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
         fields = '__all__'
-class orderSerializer(serializers.ModelSerializer):
+class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = order
         fields = '__all__'
+
+    def validate_phone(self, value):
+        if len(value) < 10:
+            raise serializers.ValidationError("Phone number must be at least 10 digits.")
+        return value
+
+    def validate_quantity(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("Quantity must be greater than 0.")
+        return value
+
 
 class faqSerializer(serializers.ModelSerializer):
     class Meta:
@@ -77,7 +86,3 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 
-from rest_framework import serializers
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from rest_framework import status

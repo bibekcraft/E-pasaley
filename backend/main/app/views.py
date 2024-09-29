@@ -7,7 +7,6 @@ from .serializers import (
     TestimonialSerializer,
     VideoSerializer,
     ContactSerializer,
-    orderSerializer,
     faqSerializer
 )
 
@@ -167,13 +166,9 @@ class UserPasswordResetView(views.APIView):
             return Response({'error': 'Invalid user'}, status=status.HTTP_400_BAD_REQUEST)
         
 
-from django.utils import timezone
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from .models import Coupon
+
 
 from django.utils import timezone
-from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import Coupon
 
@@ -221,12 +216,12 @@ class ProductListByCategoryAPIView(generics.ListAPIView):
         category_id = self.kwargs.get('category_id')
         return Product.objects.filter(category_id=category_id)
     
-from app.serializers import orderSerializer
+from app.serializers import OrderSerializer
 class OrderListCreateAPIView(generics.ListCreateAPIView):
     queryset = order.objects.all()
-    serializer_class = orderSerializer
+    serializer_class = OrderSerializer
 
 class OrderDetailAPIView(generics.RetrieveAPIView):
     queryset = order.objects.all()
-    serializer_class = orderSerializer
+    serializer_class = OrderSerializer
     lookup_field = 'pk'  
