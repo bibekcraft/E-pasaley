@@ -163,16 +163,16 @@ const Checkout: React.FC = () => {
 
 
 <div className="mt-8 border-t">
-  <div className="flex justify-between py-6 text-sm font-semibold uppercase">
-    <span>Total cost</span>
-    <span>Rs {exactFinalCost}</span> {/* Final total with shipping */}
-  </div>
-  <Link to="/shipping" state={{ products: groupedItems, totalCost: exactFinalCost, quantities }}>
-    <button className="w-full py-3 text-sm font-semibold text-white uppercase bg-indigo-500 hover:bg-indigo-600">
-      Checkout
-    </button>
-  </Link>
-</div>
+              <div className="flex justify-between py-6 text-sm font-semibold uppercase">
+                <span>Total cost</span>
+                <span>Rs {exactFinalCost}</span> {/* Final total with shipping */}
+              </div>
+              <Link to="/shipping" state={{ products: groupedItems, totalCost: exactFinalCost, quantities }}>
+  <button className="w-full py-3 text-sm font-semibold text-white uppercase bg-indigo-500 hover:bg-indigo-600">
+    Checkout
+  </button>
+</Link>
+            </div>
 
           </div>
         </div>
