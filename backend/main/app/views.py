@@ -1,5 +1,5 @@
 from rest_framework import generics
-from .models import Category, Product, Coupon, Testimonial, Video, Contact,order,faq
+from .models import Category, Product, Coupon, Testimonial, Video, Contact,Order,faq
 from .serializers import (
     CategorySerializer,
     ProductSerializer,
@@ -54,8 +54,11 @@ class CategoryDetailAPIView(generics.RetrieveAPIView):
 class ProductDetailAPIView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    lookup_field = 'pk'
 
+    def get_object(self):
+        category_id = self.kwargs['category_id']
+        product_id = self.kwargs['product_id']
+        return Product.objects.get(id=product_id, category_id=category_id)
 
 class CouponDetailAPIView(generics.RetrieveAPIView):
     queryset = Coupon.objects.all()
@@ -218,10 +221,14 @@ class ProductListByCategoryAPIView(generics.ListAPIView):
     
 from app.serializers import OrderSerializer
 class OrderListCreateAPIView(generics.ListCreateAPIView):
-    queryset = order.objects.all()
+    queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
+    def post(self, request, *args, **kwargs):
+        print(request.data)  # Print incoming data to console
+        return super().post(request, *args, **kwargs)
+
 class OrderDetailAPIView(generics.RetrieveAPIView):
-    queryset = order.objects.all()
+    queryset = Order.objects.all()
     serializer_class = OrderSerializer
     lookup_field = 'pk'  

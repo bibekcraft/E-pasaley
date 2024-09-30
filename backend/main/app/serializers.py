@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Product, Coupon, Testimonial, Video, Contact,order,faq
+from .models import Category, Product, Coupon, Testimonial, Video, Contact,faq
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -35,20 +35,27 @@ class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
         fields = '__all__'
-class OrderSerializer(serializers.ModelSerializer):
+class ProductSerializer(serializers.ModelSerializer):
     class Meta:
-        model = order
+        model = Product
         fields = '__all__'
 
-    def validate_phone(self, value):
-        if len(value) < 10:
-            raise serializers.ValidationError("Phone number must be at least 10 digits.")
-        return value
+from .models  import Order
+class OrderSerializer(serializers.ModelSerializer):
+    products = ProductSerializer(many=True)
 
-    def validate_quantity(self, value):
-        if value <= 0:
-            raise serializers.ValidationError("Quantity must be greater than 0.")
-        return value
+    class Meta:
+        model = Order
+        fields = '__all__'
+
+    def create(self, validated_data):
+        products_data = validated_data.pop('products')
+        order = Order.objects.create(**validated_data)
+        for product_data in products_data:
+            Product.objects.create(order=order, **product_data)
+        return order
+
+
 
 
 class faqSerializer(serializers.ModelSerializer):

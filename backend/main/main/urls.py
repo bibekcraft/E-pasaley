@@ -32,8 +32,9 @@ urlpatterns = [
 
     # Product URLs
     path('products/', ProductListCreateAPIView.as_view(), name='product-list-create'),
-    path('products/<int:pk>/', ProductDetailAPIView.as_view(), name='product-detail'),
+    path('allproducts/<int:category_id>/<int:product_id>/', ProductDetailAPIView.as_view(), name='product-detail-by-category'),
 
+    
       path('coupons/', CouponListCreateView.as_view(), name='coupon-list-create'),
     path('coupons/<int:pk>/', CouponDetailView.as_view(), name='coupon-detail'),
        

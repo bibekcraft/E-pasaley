@@ -1,11 +1,8 @@
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.utils.text import slugify
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-
-# Import other necessary modules and models
+from datetime import datetime
 
 class Category(models.Model):
     id = models.AutoField(primary_key=True)
@@ -35,7 +32,7 @@ class Category(models.Model):
 class Product(models.Model):
     brand = models.CharField(max_length=244, default='your brand name')
     name = models.CharField(max_length=244)
-    initial_price = models.DecimalField(max_digits=10, decimal_places=2)
+    initial_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     final_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     description = models.TextField()
     feature = models.TextField()
@@ -47,16 +44,14 @@ class Product(models.Model):
     image2 = models.ImageField(default='default_image.jpg', upload_to='images/')
     image3 = models.ImageField(default='default_image.jpg', upload_to='images/')
     image4 = models.ImageField(default='default_image.jpg', upload_to='images/')
-    itemnumber=models.TextField(default='PMS-0001')
-
+    itemnumber = models.TextField(default='PMS-0001')
 
     def __str__(self):
         return self.name
-    
+
     @property
     def discount_amount(self):
-        discount = self.discount or 0
-        return self.initial_price * (discount / 100)
+        return self.initial_price * (self.discount_rate / 100)
 
 class Testimonial(models.Model):
     name = models.CharField(max_length=244)
@@ -66,7 +61,6 @@ class Testimonial(models.Model):
     def __str__(self):
         return self.name
 
-from datetime import datetime
 class Coupon(models.Model):
     code = models.CharField(max_length=20, unique=True)
     discount_amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -80,6 +74,7 @@ class Coupon(models.Model):
     def is_valid(self):
         now = timezone.now()
         return self.is_active and self.start_date <= now <= self.end_date
+
 class Video(models.Model):
     name = models.CharField(max_length=244)
     video = models.FileField(upload_to='video')
@@ -96,8 +91,8 @@ class Contact(models.Model):
 
     def __str__(self):
         return self.name
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
+# Custom User and Manager
 class MyUserManager(BaseUserManager):
     def create_user(self, email, name, tc, password=None):
         if not email:
@@ -108,8 +103,6 @@ class MyUserManager(BaseUserManager):
             name=name,
             tc=tc,
         )
-        
-
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -152,33 +145,24 @@ class User(AbstractBaseUser):
     def is_staff(self):
         return self.is_admin
 
-class order(models.Model):
-    firstName=models.CharField(max_length=244,default='nothing')
-    lastName=models.CharField(max_length=244,default='nothing')
-    email=models.EmailField()
+class Order(models.Model):
+    firstName = models.CharField(max_length=244, default='nothing')
+    lastName = models.CharField(max_length=244, default='nothing')
+    email = models.EmailField()
     phone = models.CharField(max_length=15)
     zipcode = models.CharField(max_length=10)
-    addressLine=models.CharField(max_length=244,default='nothing')
-    city=models.CharField(max_length=244)
-    state=models.CharField(max_length=244)
-    quantity = models.PositiveIntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    addressLine = models.CharField(max_length=244, default='nothing')
+    city = models.CharField(max_length=244)
+    state = models.CharField(max_length=244)
     total = models.DecimalField(max_digits=10, decimal_places=2)
+    products = models.ManyToManyField(Product)
 
-    itemnumber=models.TextField(default='nothing')
-
-    product_name=models.CharField(max_length=244)
-    
     def __str__(self):
-        return f"Order by {self.name} for {self.product_name}"
-    
-
-
+        return f"Order by {self.firstName}"
 
 class faq(models.Model):
-    title=models.CharField(max_length=244)
-    description=models.TextField()
+    title = models.CharField(max_length=244)
+    description = models.TextField()
 
     def __str__(self):
         return self.title
-    
