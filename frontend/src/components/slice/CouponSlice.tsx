@@ -22,7 +22,7 @@ const couponSlice = createSlice({
   initialState: {
     discount: 0,
     status: 'idle',
-    error: null,
+    error: null as string | null,
   },
   reducers: {
     reset(state) {
@@ -44,7 +44,7 @@ const couponSlice = createSlice({
       })
       .addCase(validateCoupon.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.error.message ?? null;
         state.discount = 0;
       });
   },

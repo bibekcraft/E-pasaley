@@ -1,26 +1,26 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { setPersonalDetails, setShippingAddress, setTotal } from '../slice/orderSlice';
+import fetchProduct from '../slice/ProductSlice';
+import { RootState } from '../store/store';
 import axios from 'axios';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 interface Product {
     id: number;
-    name: string;
+    itemnumber: string;  
     final_price: string | number;
-}
-
-interface ShippingProps {
-    products: Product[];
-    totalCost: number;
-    quantities: number[];
 }
 
 function Shipping() {
     const dispatch = useDispatch();
-    const location = useLocation<ShippingProps>();
-    const { products, totalCost, quantities } = location.state || { products: [], totalCost: 0, quantities: [] };
+    const location = useLocation();
+    const categoryId = location.state?.categoryId;
 
+    const products = useSelector((state: RootState) => state.product.products);
+    const productStatus = useSelector((state: RootState) => state.product.status);
+    const [quantities, setQuantities] = useState<number[]>([]);
+    const [totalCost, setTotalCost] = useState(0);
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -31,13 +31,34 @@ function Shipping() {
         state: '',
         zipCode: '',
     });
-
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({ ...prevData, [name]: value }));
+    useEffect(() => {
+        if (categoryId) {
+            dispatch(fetchProduct(categoryId));
+        }
+    }, [dispatch, categoryId]);
+
+    const calculateTotal = (fetchedProducts: Product[]) => {
+        const total = fetchedProducts.reduce((acc, product, index) => 
+            acc + (Number(product.final_price) * quantities[index]), 0);
+        setTotalCost(total);
+    };
+
+    useEffect(() => {
+        if (productStatus === 'succeeded' && products.length > 0) {
+            const initialQuantities = products.map(() => 1); // Default quantity as 1
+            setQuantities(initialQuantities);
+            calculateTotal(products);
+        }
+    }, [productStatus, products]);
+
+    const handleQuantityChange = (index: number, value: number) => {
+        const updatedQuantities = [...quantities];
+        updatedQuantities[index] = value;
+        setQuantities(updatedQuantities);
+        calculateTotal(products); // Recalculate total whenever quantities change
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -45,51 +66,42 @@ function Shipping() {
         setLoading(true);
         setErrorMessage('');
 
-        // Dispatch form data to Redux store
         dispatch(setPersonalDetails({
             firstName: formData.firstName,
             lastName: formData.lastName,
             email: formData.email,
             phone: formData.phone,
         }));
-
         dispatch(setShippingAddress({
             addressLine: formData.addressLine,
             city: formData.city,
             state: formData.state,
             zipCode: formData.zipCode,
         }));
+        dispatch(setTotal(totalCost));
 
-        const totalAmount = totalCost;
-
-        dispatch(setTotal(totalAmount));
+        const productsData = products.map((product, index) => ({
+            itemnumber: product.itemnumber,
+            final_price: product.final_price,
+            quantity: quantities[index],
+            total: (quantities[index] * Number(product.final_price)).toFixed(2),
+        }));
 
         try {
-            // Make an API request with form data, products, quantities, and total cost
-            const response = await axios.post('/api/save-shipping-details/', {
-                personal_details: {
-                    first_name: formData.firstName,
-                    last_name: formData.lastName,
-                    email: formData.email,
-                    phone: formData.phone,
-                },
-                shipping_address: {
-                    address_line: formData.addressLine,
-                    city: formData.city,
-                    state: formData.state,
-                    zip_code: formData.zipCode,
-                },
-                total: totalAmount,
-                products: products.map((product, index) => ({
-                    id: product.id,
-                    name: product.name,
-                    final_price: product.final_price,
-                    quantity: quantities[index], // Include quantity for each product
-                })),
+            const response = await axios.post('http://127.0.0.1:8000/orders/', {
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                email: formData.email,
+                phone: formData.phone,
+                zipcode: formData.zipCode,
+                addressLine: formData.addressLine,
+                city: formData.city,
+                state: formData.state,
+                total: totalCost,
+                products: productsData,
             });
-
             if (response.status === 201) {
-                console.log("Purchase completed successfully", response.data);
+                console.log("Order completed successfully", response.data);
                 setFormData({
                     firstName: '',
                     lastName: '',
@@ -102,37 +114,45 @@ function Shipping() {
                 });
             }
         } catch (error) {
-            setErrorMessage("Error completing purchase: " + error.response?.data?.detail || error.message);
+            console.error("Error completing order:", error);
+            setErrorMessage("Error completing order: " + (error.response?.data?.detail || error.message));
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
     };
 
     return (
         <div className="font-[sans-serif] bg-white">
             <div className="flex h-full gap-12 max-sm:flex-col max-lg:gap-4">
                 {/* Order Summary */}
-                <div className="bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 sm:h-screen sm:sticky sm:top-0 lg:min-w-[370px] sm:min-w-[300px]">
-                    <h3 className="mb-6 text-2xl font-bold text-white">Order Summary</h3>
-                    <ul>
-                        {products.map((product, index) => (
-                            <li key={product.id}>
-                                {product.itemnumber}: Rs {product.final_price} x {quantities[index]} = Rs {(Number(product.final_price) || 0) * quantities[index]}
-                            </li>
-                        ))}
-                    </ul>
-
-                    {/* Total Cost Section */}
-                    <div className="pt-4 mt-8 border-t">
-                        <div className="flex justify-between py-6 font-semibold text-white uppercase text-10">
-                            <span>Total cost</span>
-                            <span>Rs {totalCost}</span>
+                <div className="bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 sm:h-screen sm:sticky sm:top-0 lg:min-w-[370px] sm:min-w-[300px] p-4">
+                    <h2 className="text-xl font-semibold text-white">Your Order:</h2>
+                    {products.map((product, index) => (
+                        <div key={product.id} className="flex justify-between mt-2 text-white border-b border-gray-600">
+                            <span>{product.itemnumber}</span>
+                            <input
+                                type="number"
+                                value={quantities[index]}
+                                onChange={(e) => handleQuantityChange(index, Number(e.target.value))}
+                                className="w-16 text-center text-black"
+                                min={1} // Prevent negative quantities
+                            />
+                            <span>Rs {Number(product.final_price) * quantities[index]}</span>
                         </div>
-                        <Link to="/shipping" state={{ products, totalCost, quantities }}>
-                            <button className="w-full py-3 text-sm font-semibold text-white uppercase bg-indigo-500 hover:bg-indigo-600">
-                                Checkout
-                            </button>
-                        </Link>
+                    ))}
+                    <div className="pt-4 mt-8 border-t border-gray-600">
+                        <div className="flex justify-between py-6 font-semibold text-white uppercase">
+                            <span>Total cost</span>
+                            <span>Rs {totalCost.toFixed(2)}</span>
+                        </div>
                     </div>
                 </div>
 
@@ -180,9 +200,9 @@ function Shipping() {
                                 </div>
                                 <div>
                                     <input
-                                        type="tel"
+                                        type="text"
                                         name="phone"
-                                        placeholder="Phone Number"
+                                        placeholder="Phone"
                                         value={formData.phone}
                                         onChange={handleChange}
                                         className="w-full px-4 py-3 text-sm text-gray-800 bg-gray-100 rounded-md focus:bg-transparent focus:outline-blue-600"
@@ -191,20 +211,22 @@ function Shipping() {
                                 </div>
                             </div>
                         </div>
-
-                        {/* Shipping Address */}
-                        <div className="mt-6">
+                        
+                        {/* Address Details */}
+                        <div className="mt-8">
                             <h3 className="mb-4 text-base text-gray-800">Shipping Address</h3>
-                            <input
-                                type="text"
-                                name="addressLine"
-                                placeholder="Address Line"
-                                value={formData.addressLine}
-                                onChange={handleChange}
-                                className="w-full px-4 py-3 text-sm text-gray-800 bg-gray-100 rounded-md focus:bg-transparent focus:outline-blue-600"
-                                required
-                            />
-                            <div className="grid gap-4 mt-4 md:grid-cols-2">
+                            <div className="grid gap-4 md:grid-cols-2">
+                                <div>
+                                    <input
+                                        type="text"
+                                        name="addressLine"
+                                        placeholder="Address Line"
+                                        value={formData.addressLine}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-3 text-sm text-gray-800 bg-gray-100 rounded-md focus:bg-transparent focus:outline-blue-600"
+                                        required
+                                    />
+                                </div>
                                 <div>
                                     <input
                                         type="text"
@@ -227,26 +249,26 @@ function Shipping() {
                                         required
                                     />
                                 </div>
-                            </div>
-                            <div className="mt-4">
-                                <input
-                                    type="text"
-                                    name="zipCode"
-                                    placeholder="Zip Code"
-                                    value={formData.zipCode}
-                                    onChange={handleChange}
-                                    className="w-full px-4 py-3 text-sm text-gray-800 bg-gray-100 rounded-md focus:bg-transparent focus:outline-blue-600"
-                                    required
-                                />
+                                <div>
+                                    <input
+                                        type="text"
+                                        name="zipCode"
+                                        placeholder="Zip Code"
+                                        value={formData.zipCode}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-3 text-sm text-gray-800 bg-gray-100 rounded-md focus:bg-transparent focus:outline-blue-600"
+                                        required
+                                    />
+                                </div>
                             </div>
                         </div>
-
+                        
                         <button
                             type="submit"
-                            className="w-full py-3 mt-6 text-sm font-semibold text-white uppercase bg-indigo-500 hover:bg-indigo-600"
+                            className={`mt-8 w-full px-4 py-3 text-base font-semibold text-white bg-blue-600 rounded-md ${loading && 'opacity-50 cursor-not-allowed'}`}
                             disabled={loading}
                         >
-                            {loading ? 'Processing...' : 'Complete Order'}
+                            {loading ? 'Loading...' : 'Complete Order'}
                         </button>
                     </form>
                 </div>

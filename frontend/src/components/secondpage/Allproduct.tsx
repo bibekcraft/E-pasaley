@@ -298,7 +298,7 @@ const AllProducts: React.FC = () => {
 
         {/* Product Information */}
         <div className="flex flex-col items-center w-full">
-          <Link to={`/product/${product.id}`} className="font-semibold text-gray-800 text-md" style={{ fontFamily: 'Poppins' }}>
+          <Link  to={`/productview/${categoryId}/${product.id}`}className="font-semibold text-gray-800 text-md" style={{ fontFamily: 'Poppins' }}>
             {product.name}
           </Link>
 

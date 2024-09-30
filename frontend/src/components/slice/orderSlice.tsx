@@ -9,7 +9,11 @@ export const submitOrder = createAsyncThunk(
             const response = await axios.post('http://127.0.0.1:8000/orders/', orderData);
             return response.data;
         } catch (error) {
-            return rejectWithValue(error.response.data);
+            if (axios.isAxiosError(error) && error.response) {
+                return rejectWithValue(error.response.data);
+            } else {
+                return rejectWithValue('An unknown error occurred');
+            }
         }
     }
 );
@@ -18,7 +22,7 @@ export const submitOrder = createAsyncThunk(
 const orderSlice = createSlice({
     name: 'order',
     initialState: {
-        orders: [],
+        orders: [] as unknown[], // Define the type of the orders array
         ordersList: {
             itemnumber: '',
             price: '',
@@ -39,7 +43,7 @@ const orderSlice = createSlice({
         },
         total: 0,
         status: 'idle',
-        error: null,
+        error: null as string | null,
     },
     reducers: {
         // Set personal details

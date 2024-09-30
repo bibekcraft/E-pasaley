@@ -1,23 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../store/Store';
+import store, { RootState } from '../store/Store';
 import { removeItemFromCart } from '../slice/cartSlice';
 import { validateCoupon, reset } from '../slice/CouponSlice';
 import CategorySection from '../firstpage/CategorySection';
 import { Link } from 'react-router-dom';
 
-interface CartItem {
-  id: string;
-  image?: string;
-  brand: string;
-  final_price: number;
-  quantity: number;
-  name?: string;
-  totalPrice?: number;
-}
 
 const Checkout: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<typeof store.dispatch>();
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const { discount, status, error } = useSelector((state: RootState) => state.coupons);
 
@@ -111,12 +102,11 @@ const Checkout: React.FC = () => {
               </div>
             ))}
 
-            <Link to="/" className="flex mt-10 text-sm font-semibold text-indigo-600">
-              <svg className="w-4 mr-2 text-indigo-600 fill-current" viewBox="0 0 448 512">
-                <path d="M134.059 296H436c6.627 0 12-5.373 12-12v-56c0-6.627-5.373-12-12-12H134.059v-46.059c0-21.382-25.851-32.09-40.971-16.971L7.029 239.029c-9.373 9.373-9.373 24.569 0 33.941l86.059 86.059c15.119 15.119 40.971 4.411 40.971-16.971V296z" />
-              </svg>
-              Continue Shopping
-            </Link>
+<Link to="/shipping" state={{ products: groupedItems, totalCost: exactFinalCost, quantities }}>
+                <button className="w-full py-3 text-sm font-semibold text-white uppercase bg-indigo-500 hover:bg-indigo-600">
+                  Checkout
+                </button>
+              </Link>
           </div>
 
           <div id="summary" className="w-full px-8 py-10 sm:w-1/4 md:w-1/2">

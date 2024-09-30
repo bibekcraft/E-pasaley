@@ -6,14 +6,15 @@ import productReducer from '../slice/ProductSlice';
 import couponReducer from '../slice/CouponSlice';
 import orderReducer from '../slice/orderSlice';
 import faqReducer from '../slice/FaqSlice';
+
 const store = configureStore({
   reducer: {
     cart: cartReducer,
     categories: categoryReducer,
-    product:productReducer,
-    coupons: couponReducer ,
+    product: productReducer,
+    coupons: couponReducer,
     order: orderReducer,
-        faqs: faqReducer,
+    faqs: faqReducer,
   },
 });
 
@@ -22,5 +23,3 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 export default store;
-
-

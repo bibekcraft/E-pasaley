@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 
 // Define the Product interface
 interface Product {
+    itemnumber: ReactNode;
     feature: ReactNode;
     description: ReactNode;
     categoryId: number;
@@ -28,6 +29,7 @@ const initialState: ProductState = {
     error: null,
 };
 
+// Async function to fetch products from the API
 const fetchProductWithAPI = async (categoryId: number) => {
     const response = await fetch(`http://127.0.0.1:8000/products/?category=${categoryId}`);
     if (!response.ok) {
@@ -36,6 +38,7 @@ const fetchProductWithAPI = async (categoryId: number) => {
     return response.json();
 };
 
+// Create an async thunk for fetching products
 const fetchProduct = createAsyncThunk<Product[], number>(
     'product/fetchProducts',
     async (categoryId) => {
