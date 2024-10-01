@@ -19,8 +19,9 @@ from app.views import (
     OrderDetailAPIView,
     faqListCreateAPIView,
     ProductListByCategoryAPIView,
-    OrderListCreateAPIView
+    
 )
+from app.views import OrderCreateView
 
 urlpatterns = [
     # Admin URL
@@ -49,8 +50,7 @@ urlpatterns = [
 
     # Contact URLs
     path('contacts/', ContactListCreateAPIView.as_view(), name='contact-list-create'),
-    path('orders/', OrderListCreateAPIView.as_view(), name='order-list-create'),
-    path('orders/<int:pk>/', OrderDetailAPIView.as_view(), name='order-detail'),
+    path('orders/', OrderCreateView.as_view(), name='order-create'),    path('orders/<int:pk>/', OrderDetailAPIView.as_view(), name='order-detail'),
     path('faqs/', faqListCreateAPIView.as_view(), name='faq-list-create'),
 
     # User Authentication URLs

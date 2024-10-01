@@ -220,13 +220,23 @@ class ProductListByCategoryAPIView(generics.ListAPIView):
         return Product.objects.filter(category_id=category_id)
     
 from app.serializers import OrderSerializer
-class OrderListCreateAPIView(generics.ListCreateAPIView):
+class OrderCreateView(generics.CreateAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
     def post(self, request, *args, **kwargs):
-        print(request.data)  # Print incoming data to console
-        return super().post(request, *args, **kwargs)
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            order = serializer.save()
+            return Response({'detail': 'Order created successfully!', 'order_id': order.id}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+from rest_framework.views import APIView
+
+class OrderCreateView(generics.CreateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
 
 class OrderDetailAPIView(generics.RetrieveAPIView):
     queryset = Order.objects.all()

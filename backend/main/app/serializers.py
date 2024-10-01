@@ -41,21 +41,32 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 from .models  import Order
+
 class OrderSerializer(serializers.ModelSerializer):
-    products = ProductSerializer(many=True)
+    products = serializers.PrimaryKeyRelatedField(many=True, queryset=Product.objects.all())
+    product_details = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
         fields = '__all__'
 
+    def get_product_details(self, obj):
+        # Getting details of products including their category IDs
+        return [
+            {
+                'product_id': product.id,
+                'category_id': product.category.id if product.category else None,
+                'name': product.name,
+                'price': product.price,
+            }
+            for product in obj.products.all()
+        ]
+
     def create(self, validated_data):
+        # Handle products separately
         products_data = validated_data.pop('products')
         order = Order.objects.create(**validated_data)
-        for product_data in products_data:
-            Product.objects.create(order=order, **product_data)
         return order
-
-
 
 
 class faqSerializer(serializers.ModelSerializer):
