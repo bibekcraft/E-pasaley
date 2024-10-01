@@ -2,44 +2,64 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import store, { RootState } from '../store/Store';
 import { removeItemFromCart } from '../slice/cartSlice';
+import { setQuantities } from '../slice/orderSlice';
 import { validateCoupon, reset } from '../slice/CouponSlice';
 import CategorySection from '../firstpage/CategorySection';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
+interface Product {
+  id: string;
+  categoryId: string; // Ensure categoryId is part of the product
+  name: string;
+  image: string;
+  brand: string;
+  final_price: number;
+  quantity: number;
+}
 
 const Checkout: React.FC = () => {
-  const dispatch = useDispatch<typeof store.dispatch>();
+  const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.items);
+  const quantities = useSelector((state: RootState) => state.order.quantities);
   const { discount, status, error } = useSelector((state: RootState) => state.coupons);
+  
+  const location = useLocation();
+  const state = location.state as { products: Product[]; totalCost: number; quantities: number[] }; // Update according to your state structure
 
-  const [quantities, setQuantities] = useState(cartItems.map((item) => item.quantity || 1));
   const [couponCode, setCouponCode] = useState('');
 
-  // Handle quantity change
-  const handleQuantityChange = (index: number, newQuantity: number) => {
-    const updatedQuantities = [...quantities];
-    updatedQuantities[index] = newQuantity;
-    setQuantities(updatedQuantities);
-  };
+  // Log the received state for verification
+  useEffect(() => {
+    console.log('Products passed to Checkout:', state?.products);
+    console.log('Total Cost:', state?.totalCost);
+  }, [state]);
 
+  // Handle quantity change
+  const handleQuantityChange = (index: number, quantity: number) => {
+    const newQuantities = [...quantities];
+    newQuantities[index] = quantity; // Update quantity for the specific item
+    dispatch(setQuantities(newQuantities)); // Dispatch new quantities to Redux
+  };
   // Handle item removal
   const handleRemoveItem = (id: string) => {
     dispatch(removeItemFromCart(id));
   };
+
   // Group items and calculate total prices
   const groupedItems = cartItems.map((item, index) => {
-    const finalPrice = item.final_price || 0;
-    const quantity = quantities[index];
+    const finalPrice = item.final_price || 0; // Default to 0 if undefined
+    const quantity = quantities[index] || 1; // Default to 1 if undefined
     return {
-      ...item,
-      totalPrice: finalPrice * quantity,
+        ...item,
+        totalPrice: finalPrice * quantity,
     };
-  });
-  
-  const totalPrice = groupedItems.reduce((total, item) => total + (item.totalPrice || 0), 0);
-  const totalWithDiscount = totalPrice - discount;
-  const shippingCost = 100;
-  const exactFinalCost = totalWithDiscount + shippingCost;
+});
+
+
+const totalPrice = groupedItems.reduce((total, item) => total + (item.totalPrice || 0), 0);
+const totalWithDiscount = totalPrice - (discount || 0);
+const shippingCost = 100;
+const exactFinalCost = totalWithDiscount + shippingCost;
 
   // Handle applying the coupon
   const handleApplyCoupon = () => {
@@ -75,9 +95,9 @@ const Checkout: React.FC = () => {
                   <p className="text-base font-black leading-none text-gray-800">{item.name as string}</p>
                   <div className="flex items-center justify-between w-full">
                     <select
-                      value={quantities[index]}
+                      value={quantities[index] || 1}
                       onChange={(e) => handleQuantityChange(index, Number(e.target.value))}
-                      aria-label="Select quantity"
+                                            aria-label="Select quantity"
                       className="px-1 py-2 mr-6 border border-gray-200"
                     >
                       {Array.from(Array(10).keys()).map((_, i) => (
@@ -102,11 +122,11 @@ const Checkout: React.FC = () => {
               </div>
             ))}
 
-<Link to="/shipping" state={{ products: groupedItems, totalCost: exactFinalCost, quantities }}>
-                <button className="w-full py-3 text-sm font-semibold text-white uppercase bg-indigo-500 hover:bg-indigo-600">
-                  Checkout
-                </button>
-              </Link>
+            <Link to="/shipping" state={{ products: groupedItems, totalCost: exactFinalCost, quantities }}>
+              <button className="w-full py-3 text-sm font-semibold text-white uppercase bg-indigo-500 hover:bg-indigo-600">
+                Checkout
+              </button>
+            </Link>
           </div>
 
           <div id="summary" className="w-full px-8 py-10 sm:w-1/4 md:w-1/2">
@@ -151,8 +171,7 @@ const Checkout: React.FC = () => {
               </div>
             )}
 
-
-<div className="mt-8 border-t">
+            <div className="mt-8 border-t">
               <div className="flex justify-between py-6 text-sm font-semibold uppercase">
                 <span>Total cost</span>
                 <span>Rs {exactFinalCost}</span> {/* Final total with shipping */}
@@ -162,8 +181,8 @@ const Checkout: React.FC = () => {
     Checkout
   </button>
 </Link>
-            </div>
 
+            </div>
           </div>
         </div>
       </div>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPersonalDetails, setShippingAddress, setTotal } from '../slice/orderSlice';
 import { RootState } from '../store/Store';
-import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 function Shipping() {
@@ -11,10 +10,8 @@ function Shipping() {
   // Fetch cart items and quantities from the Redux store
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const quantities = useSelector((state: RootState) => state.order.quantities); // Get quantities from Redux
-
-  const location = useLocation();
-  const { totalCost } = location.state || { totalCost: 0 }; // Get total cost passed from Checkout
-
+  const [totalCost, setTotalCost] = useState(0);
+  
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -28,6 +25,15 @@ function Shipping() {
 
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // Pre-calculate the total cost based on cart quantities
+    const total = cartItems.reduce((acc, item, index) => {
+      const quantity = quantities[index] || 1; // Default to 1 if undefined
+      return acc + (Number(item.final_price) * quantity);
+    }, 0);
+    setTotalCost(total);
+  }, [cartItems, quantities]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -52,7 +58,7 @@ function Shipping() {
       state: formData.state,
       zipCode: formData.zipCode,
     }));
-    dispatch(setTotal(totalCost)); // Use the total cost passed from Checkout
+    dispatch(setTotal(totalCost));
 
     const productsData = cartItems.map((item, index) => ({
       itemnumber: item.itemnumber,
@@ -71,7 +77,7 @@ function Shipping() {
         addressLine: formData.addressLine,
         city: formData.city,
         state: formData.state,
-        total: totalCost, // Use the total cost passed from Checkout
+        total: totalCost,
         products: productsData,
       });
       if (response.status === 201) {
@@ -112,7 +118,7 @@ function Shipping() {
           <div className="pt-4 mt-8 border-t border-gray-600">
             <div className="flex justify-between py-6 font-semibold text-white uppercase">
               <span>Total cost</span>
-              <span>Rs {totalCost}</span> {/* Display the total cost after discount */}
+              <span>Rs {totalCost}</span>
             </div>
           </div>
         </div>
