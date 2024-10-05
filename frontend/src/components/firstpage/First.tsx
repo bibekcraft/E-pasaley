@@ -33,7 +33,7 @@ function First() {
                 <div className="flex items-center mr-12 space-x-5">
                     <a href="#" className="text-blue-500">Track your order</a>
                     <a href="#" className="text-blue-500">All Offers</a>
-                    <a href="#" className="text-blue-500">Sign Up/Sign In</a>
+                    <a href="/register" className="text-blue-500">Sign Up/Sign In</a>
                     <div className="flex space-x-4">
                         <Link to="/checkout" className="text-blue-500">
     <button className="w-20 h-11">

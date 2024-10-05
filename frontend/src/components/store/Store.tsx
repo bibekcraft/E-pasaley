@@ -6,6 +6,8 @@ import productReducer from '../slice/ProductSlice';
 import couponReducer from '../slice/CouponSlice';
 import orderReducer from '../slice/orderSlice';
 import faqReducer from '../slice/FaqSlice';
+import authReducer from '../slice/loginSlice';
+import registerReducer from '../slice/signupSlice';
 
 const store = configureStore({
   reducer: {
@@ -15,6 +17,8 @@ const store = configureStore({
     coupons: couponReducer,
     order: orderReducer,
     faqs: faqReducer,
+    auth: authReducer,
+    register: registerReducer,
   },
 });
 
