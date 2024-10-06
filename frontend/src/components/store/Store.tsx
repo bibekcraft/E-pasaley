@@ -1,4 +1,3 @@
-// src/store/store.ts
 import { configureStore } from '@reduxjs/toolkit';
 import cartReducer from '../slice/cartSlice';
 import categoryReducer from '../slice/CategorySlice';
@@ -7,8 +6,9 @@ import couponReducer from '../slice/CouponSlice';
 import orderReducer from '../slice/orderSlice';
 import faqReducer from '../slice/FaqSlice';
 import authReducer from '../slice/loginSlice';
-import registerReducer from '../slice/signupSlice';
+import registerReducer from '../slice/registerSlice';
 
+// Configure the Redux store
 const store = configureStore({
   reducer: {
     cart: cartReducer,

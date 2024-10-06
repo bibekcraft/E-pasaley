@@ -1,46 +1,59 @@
+
+
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { reset as resetCoupon } from '../slice/CouponSlice'; // Adjust the import path as necessary
 
-export const fetchLogin = createAsyncThunk('login/fetchLogin', async (loginData, { dispatch }) => {
-  const response = await axios.post('http://127.0.0.1:8000/login/', loginData);
-  dispatch(resetCoupon()); // Dispatch the reset action for coupons
-  return response.data;
-});
-
+// Define the initial state
 const initialState = {
-  items: [],
-  status: sessionStorage.getItem('loggedIn') === 'true' ? 'succeeded' : 'idle',
-  error: null,
+    accessToken: null,
+    refreshToken: null,
+    loading: false,
+    error: null,
 };
 
+// Async thunk for login
+export const loginUser = createAsyncThunk(
+    'login/loginUser',
+    async (userData, { rejectWithValue }) => {
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/auth/login/', userData);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+// Create the login slice
 const loginSlice = createSlice({
-  name: 'login',
-  initialState,
-  reducers: {
-    logout(state) {
-      sessionStorage.removeItem('loggedIn');
-      state.status = 'idle';
-      state.items = [];
+    name: 'login',
+    initialState,
+    reducers: {
+        resetLoginState: (state) => {
+            state.accessToken = null;
+            state.refreshToken = null;
+            state.loading = false;
+            state.error = null;
+        },
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchLogin.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(fetchLogin.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.items = action.payload;
-        sessionStorage.setItem('loggedIn', 'true');
-      })
-      .addCase(fetchLogin.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message;
-      });
-  },
+    extraReducers: (builder) => {
+        builder
+            .addCase(loginUser.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(loginUser.fulfilled, (state, action) => {
+                state.loading = false;
+                state.accessToken = action.payload.access;
+                state.refreshToken = action.payload.refresh;
+            })
+            .addCase(loginUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload.error || action.error.message;
+            });
+    },
 });
-
-export const { logout } = loginSlice.actions;
-
+// Export the actions and reducer
+export const { resetLoginState } = loginSlice.actions;
+export const loginReducer = loginSlice.reducer; // Ensure this line is present
 export default loginSlice.reducer;

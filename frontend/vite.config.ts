@@ -7,6 +7,7 @@ export default defineConfig({
     sourcemap: true, // Enables source maps for debugging
   },
   server: {
+    port: 5173,
     proxy: {
       '/images': {
         target: 'http://localhost:8000',

@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { fetchLogin } from '../slice/loginSlice';
-// Remove or include Footer import as per need
-// import Footer from '../components/Footer';
-// import clearCart action if it's relevant
-// import { clearCart } from '../slice/cartSlice';
+import { loginUser, resetLoginState } from '../slice/loginSlice';
 import First from '../firstpage/First';
+import { RootState, AppDispatch } from '../store/Store'; // Ensure the path is correct
+
+interface FormData {
+  username: string;
+  password: string;
+}
 
 function Login() {
-  const [formData, setFormData] = useState({ username: '', password: '' });
-  const dispatch = useDispatch();
+  const [formData, setFormData] = useState<FormData>({ username: '', password: '' });
+  const dispatch = useDispatch<AppDispatch>(); // Make sure dispatch has the correct type
   const navigate = useNavigate();
-  const loginStatus = useSelector((state: any) => state.login.status);  // Replace `any` with your state type
+  const loading = useSelector((state: RootState) => state.login.loading); // Change to loading state
+  const errorMessage = useSelector((state: RootState) => state.login.error); // Get error message if any
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,16 +23,15 @@ function Login() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      const action = await dispatch(fetchLogin(formData) as any);  // You can refine the typing here
-      if (fetchLogin.fulfilled.match(action)) {
-        // Handle success actions here, like clearing cart or user-related changes
-        // dispatch(clearCart());
-        setFormData({ username: '', password: '' });
-        navigate('/');  // Redirect to home or another page after login success
-      }
-    } catch (error) {
-      console.error('Login failed:', error);
+    
+    const action = await dispatch(loginUser(formData)); // Use loginUser instead of fetchLogin
+    
+    // Handle action state
+    if (loginUser.fulfilled.match(action)) {
+      setFormData({ username: '', password: '' });
+      navigate('/'); // Redirect to home or another page after login success
+    } else {
+      console.error('Login failed:', action.error.message);
     }
   };
 
@@ -39,7 +41,7 @@ function Login() {
       <div className="flex flex-col justify-center min-h-full px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <Link to="/" className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
-            <img className="h-20 mr-2 w-50" src={logo} alt="logo" />
+            <img className="h-20 mr-2 w-50" src="logo" alt="logo" />
           </Link>
           <h2 className="mt-10 text-2xl text-center text-gray-900">Sign in to your account</h2>
         </div>
@@ -79,15 +81,17 @@ function Login() {
             <div>
               <button
                 type="submit"
+                disabled={loading} // Disable button if loading
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                Sign in
+                {loading ? 'Signing in...' : 'Sign in'} {/* Change button text based on loading */}
               </button>
             </div>
           </form>
 
-          {loginStatus === 'failed' && (
-            <p className="mt-2 text-sm text-center text-red-600">Please Enter Correct Values</p>
+          {/* Show error message if login fails */}
+          {errorMessage && (
+            <p className="mt-2 text-sm text-center text-red-600">{errorMessage || "Invalid login credentials."}</p>
           )}
 
           <p className="mt-8 text-sm text-center text-gray-500">
@@ -98,8 +102,6 @@ function Login() {
           </p>
         </div>
       </div>
-      {/* Uncomment Footer if needed */}
-      {/* <Footer /> */}
     </div>
   );
 }

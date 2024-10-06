@@ -7,7 +7,7 @@ import Checkout from './components/final/Checkout';
 import Allproduct from './components/secondpage/Allproduct';
 import HoverCard from './components/secondpage/Hovercard';
 import Login from './components/auth/Login';
-import Signup from './components/auth/signup';
+import Register from './components/auth/Register';
 import { Provider } from 'react-redux';
 import React from 'react';
 import store from './components/store/Store'
@@ -36,7 +36,7 @@ function App() {
           <Route path="/productcarousel" element={<ProductCarousel />} />
 
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Signup />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/hovercard" element={<HoverCard />} />
         </Routes>
       </Router>
