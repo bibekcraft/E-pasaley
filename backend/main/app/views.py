@@ -9,6 +9,33 @@ from .serializers import (
     ContactSerializer,
     faqSerializer
 )
+from django.core.mail import send_mail
+from django.contrib.auth.models import User
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes, force_str
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
+
+from django.utils.http import urlsafe_base64_decode
+from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.tokens import RefreshToken
+from .serializers import  LoginSerializer
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
+from .serializers import LoginSerializer  # Make sure this import is correct
+
+# User authentication views
+from rest_framework import views # type: ignore
+from rest_framework.response import Response # type: ignore
+from rest_framework import status # type: ignore
 
 
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
@@ -64,40 +91,11 @@ class CouponDetailAPIView(generics.RetrieveAPIView):
     queryset = Coupon.objects.all()
     serializer_class = CouponSerializer
 
-# User authentication views
-from rest_framework import views # type: ignore
-from rest_framework.response import Response # type: ignore
-from rest_framework import status # type: ignore
-from .serializers import UserSerializer
 
-class UserRegistrationView(views.APIView):
-    def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-from django.contrib.auth import authenticate
-from rest_framework.authtoken.models import Token
-class UserLoginView(views.APIView):
-    def post(self, request):
-        email = request.data.get('email')
-        password = request.data.get('password')
-        user = authenticate(email=email, password=password)
 
-        if user is not None:
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key}, status=status.HTTP_200_OK)
-        return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
 from rest_framework.permissions import IsAuthenticated
-class UserProfileView(views.APIView):
-    permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        user = request.user
-        serializer = UserSerializer(user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
     
 
 from django.contrib.auth import update_session_auth_hash
@@ -119,17 +117,7 @@ class UserChangePasswordView(views.APIView):
         update_session_auth_hash(request, user)  # Keep the user logged in after password change
         return Response({'message': 'Password updated successfully'}, status=status.HTTP_200_OK)
 
-from django.core.mail import send_mail
-from django.contrib.auth.models import User
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.template.loader import render_to_string
-from django.utils.encoding import force_bytes, force_str
-from django.contrib.auth.tokens import default_token_generator
-from django.contrib.auth.models import User
-from django.contrib.auth.tokens import default_token_generator
 
-from django.utils.http import urlsafe_base64_decode
-from rest_framework.permissions import AllowAny
 class SendPasswordResetEmailView(views.APIView):
     def post(self, request):
         email = request.data.get('email')
@@ -232,13 +220,153 @@ class OrderCreateView(generics.CreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-from rest_framework.views import APIView
 
-class OrderCreateView(generics.CreateAPIView):
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
+
 
 class OrderDetailAPIView(generics.RetrieveAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     lookup_field = 'pk'  
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django.contrib.auth.models import User
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.conf import settings
+
+# Function to get user by email
+def get_user_by_email(email):
+    try:
+        return User.objects.get(email=email)
+    except User.DoesNotExist:
+        return None
+
+from .serializers import UserRegistrationSerializer
+
+@api_view(['POST'])
+def register(request):
+    """
+    User registration view.
+    """
+    email = request.data.get('email')
+    password = request.data.get('password')
+    confirm_password = request.data.get('confirm_password')
+
+    # Validate password match
+    if password != confirm_password:
+        return Response({"error": "Passwords do not match"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Check if email is already registered
+    if User.objects.filter(email=email).exists():
+        return Response({"error": "Email is already registered"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Create the user
+    user = User.objects.create_user(username=email, email=email, password=password)
+    user.save()  # Save the user to the database
+
+    # Generate refresh and access tokens
+    refresh = RefreshToken.for_user(user)
+
+    return Response({
+        "message": "User created successfully",
+        "refresh": str(refresh),
+        "access": str(refresh.access_token),
+    }, status=status.HTTP_201_CREATED)
+
+
+@api_view(['POST'])
+def login(request):
+    """
+    User login view.
+    """
+    email = request.data.get('email')
+    password = request.data.get('password')
+
+    user = get_user_by_email(email)
+    
+    if user is None:
+        return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+
+    if user.check_password(password):
+        # Generate refresh and access tokens
+        refresh = RefreshToken.for_user(user)
+
+        return Response({
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }, status=status.HTTP_200_OK)
+
+    return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def refresh_token(request):
+    refresh_token = request.data.get('refresh_token')
+
+    # Validate the refresh token
+    try:
+        token = RefreshToken(refresh_token)
+        access_token = str(token.access_token)
+        return Response({'access': access_token}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def logout(request):
+    try:
+        # Clear session and remove the refresh token from session
+        request.session.flush()
+        return Response({"message": "Logged out successfully"}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.models import User
+
+# Function to get user by email
+def get_user_by_email(email):
+    try:
+        return User.objects.get(email=email)
+    except User.DoesNotExist:
+        return None
+
+from django.contrib.auth import get_user_model, authenticate
+from django.http import JsonResponse
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import UserRegistrationSerializer, LoginSerializer
+
+from rest_framework_simplejwt.tokens import RefreshToken  # Ensure you have this import
+
+User = get_user_model()
+
+@api_view(['POST'])
+def register(request):
+    serializer = UserRegistrationSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return JsonResponse({'message': 'User created successfully!'}, status=201)
+    return JsonResponse({'errors': serializer.errors}, status=400)
+
+
+@api_view(['POST'])
+def login(request):
+    """
+    User login view.
+    """
+    serializer = LoginSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.validated_data['user']
+        refresh = RefreshToken.for_user(user)
+
+        return Response({
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }, status=status.HTTP_200_OK)
+
+    return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)

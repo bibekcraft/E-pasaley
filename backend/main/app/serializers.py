@@ -1,47 +1,102 @@
+from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Category, Product, Coupon, Testimonial, Video, Contact,faq
+from .models import (
+    Category,
+    Product,
+    Coupon,
+    Testimonial,
+    Video,
+    Contact,
+    faq,
+    Order
 
+)
+from rest_framework.exceptions import ValidationError
+class UserRegistrationSerializer(serializers.ModelSerializer):
+    confirm_password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password', 'confirm_password']
+
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists():
+            raise ValidationError("This email is already registered.")
+        return value
+
+    def validate_username(self, value):
+        if User.objects.filter(username=value).exists():
+            raise ValidationError("This username is already taken.")
+        return value
+
+    def validate(self, attrs):
+        if attrs['password'] != attrs['confirm_password']:
+            raise ValidationError("Passwords do not match.")
+        return attrs
+    
+    def create(self, validated_data):
+        validated_data.pop('confirm_password')  # Remove confirm password from validated data
+        user = User(
+            username=validated_data['username'],
+            email=validated_data['email']  # Set the email
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+    def validate(self, data):
+        from django.contrib.auth import authenticate
+        user = authenticate(username=data['username'], password=data['password'])
+        if user is None:
+            raise serializers.ValidationError("Incorrect username or password")
+        return {'user': user}
+
+# Category Serializer
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'
 
+# Product Serializer
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
 
-
-from .models import Coupon
-
-from .models import Coupon
-import datetime 
+# Coupon Serializer
 class CouponSerializer(serializers.ModelSerializer):
     class Meta:
         model = Coupon
-        fields = '__all__' 
+        fields = '__all__'
 
+# Testimonial Serializer
 class TestimonialSerializer(serializers.ModelSerializer):
     class Meta:
         model = Testimonial
         fields = '__all__'
 
+# Video Serializer
 class VideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Video
         fields = '__all__'
 
+# Contact Serializer
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
         fields = '__all__'
-class ProductSerializer(serializers.ModelSerializer):
+
+# FAQ Serializer
+class faqSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Product
+        model = faq
         fields = '__all__'
 
-from .models  import Order
-
+# Order Serializer
 class OrderSerializer(serializers.ModelSerializer):
     products = serializers.PrimaryKeyRelatedField(many=True, queryset=Product.objects.all())
     product_details = serializers.SerializerMethodField()
@@ -66,41 +121,6 @@ class OrderSerializer(serializers.ModelSerializer):
         # Handle products separately
         products_data = validated_data.pop('products')
         order = Order.objects.create(**validated_data)
+        # You may want to handle adding products to the order here
+        order.products.set(products_data)  # Assuming you want to set the products
         return order
-
-
-class faqSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = faq
-        fields = '__all__'
-
-from .models import User
-class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, required=False)
-
-    class Meta:
-        model = User
-        fields = ('id', 'email', 'name', 'tc', 'password', 'is_active', 'is_admin', 'created_at', 'updated_at')
-
-    def create(self, validated_data):
-        password = validated_data.pop('password', None)
-        user = User.objects.create_user(**validated_data)
-        if password:
-            user.set_password(password)
-            user.save()
-        return user
-
-    def update(self, instance, validated_data):
-        password = validated_data.pop('password', None)
-        instance.email = validated_data.get('email', instance.email)
-        instance.name = validated_data.get('name', instance.name)
-        instance.tc = validated_data.get('tc', instance.tc)
-
-        if password:
-            instance.set_password(password)
-
-        instance.save()
-        return instance
-
-
-

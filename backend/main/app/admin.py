@@ -84,3 +84,4 @@ admin.site.register(User, UserModelAdmin)
 admin.site.register(Order)
 admin.site.register(faq)
 admin.site.register(Product)
+
