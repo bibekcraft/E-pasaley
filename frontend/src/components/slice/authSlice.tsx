@@ -1,33 +1,28 @@
-
-// authSlice.ts
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-interface AuthState {
-  isAuthenticated: boolean;
-  user: null | { username: string; email: string }; // Customize as needed
-}
-
-const initialState: AuthState = {
-  isAuthenticated: !!localStorage.getItem('user'), // Check if user exists in localStorage
-  user: null,
-};
+// src/slice/authSlice.ts
+import { createSlice } from '@reduxjs/toolkit';
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState,
+  initialState: {
+    isLoggedIn: false,
+  },
   reducers: {
-    login(state, action: PayloadAction<{ username: string; email: string }>) {
-      state.isAuthenticated = true;
-      state.user = action.payload;
-      localStorage.setItem('user', JSON.stringify(action.payload)); // Persist user
+    login(state) {
+      state.isLoggedIn = true;
     },
     logout(state) {
-      state.isAuthenticated = false;
-      state.user = null;
-      localStorage.removeItem('user'); // Remove user from localStorage
+      state.isLoggedIn = false;
+    },
+    setUser(state, action) {
+      // Set user details or any other state related to user
+      state.isLoggedIn = true; // Assuming user is set, mark as logged in
+    },
+    clearUser(state) {
+      // Clear user details or any other state related to user
+      state.isLoggedIn = false;
     },
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout, setUser, clearUser } = authSlice.actions;
 export default authSlice.reducer;

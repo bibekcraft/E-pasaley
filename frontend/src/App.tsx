@@ -18,8 +18,20 @@ import Faq from './components/resources/Faq';
 import ProductCarousel from './components/firstpage/ProductCarousel';
 import Second from './components/routing/SndPage';
 import ProtectedRoute from './components/routing/ProtectedRoute';
+import { logout  } from '../src/components/slice/authSlice';
+import { useDispatch , useSelector} from 'react-redux';
+import { useEffect } from 'react';
 
 function App() {
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn); // Select the authentication state
+
+  useEffect(() => {
+    // If the user is not logged in, log them out
+    if (!isLoggedIn) {
+      dispatch(logout());
+    }
+  }, [dispatch, isLoggedIn]);
   return (
     <Provider store={store}>
       <Router>

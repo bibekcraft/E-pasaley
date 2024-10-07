@@ -7,7 +7,7 @@ import orderReducer from '../slice/orderSlice';
 import faqReducer from '../slice/FaqSlice';
 import registerReducer from '../slice/registerSlice';
 import loginReducer from '../slice/loginSlice';
-
+import authReducer from '../slice/authSlice';
 const store = configureStore({
   reducer: {
     cart: cartReducer,
@@ -18,6 +18,7 @@ const store = configureStore({
     faqs: faqReducer,
     register: registerReducer,
     login: loginReducer,
+    auth: authReducer,
   },
 });
 
