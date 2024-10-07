@@ -85,7 +85,10 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'main.wsgi.application'
-AUTH_USER_MODEL = 'auth.User' 
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',  # Adjust this based on where your frontend is running
+]
 
 # Database
 DATABASES = {
@@ -126,12 +129,7 @@ USE_TZ = True
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# REST framework settings
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-}
+
 
 # CORS settings
 CORS_ORIGIN_ALLOW_ALL = True

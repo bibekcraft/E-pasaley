@@ -1,81 +1,45 @@
-from rest_framework import generics
-from .models import Category, Product, Coupon, Testimonial, Video, Contact,Order,faq
-from .serializers import (
-    CategorySerializer,
-    ProductSerializer,
-    CouponSerializer,
-    TestimonialSerializer,
-    VideoSerializer,
-    ContactSerializer,
-    faqSerializer
-)
-from django.core.mail import send_mail
-from django.contrib.auth.models import User
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.template.loader import render_to_string
-from django.utils.encoding import force_bytes, force_str
-from django.contrib.auth.tokens import default_token_generator
-from django.contrib.auth.models import User
-from django.contrib.auth.tokens import default_token_generator
-
-from django.utils.http import urlsafe_base64_decode
-from rest_framework.permissions import AllowAny
-from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import  LoginSerializer
-from django.contrib.auth import authenticate
-from rest_framework.authtoken.models import Token
-
+from rest_framework import  status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
-from rest_framework import status
-from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import LoginSerializer  # Make sure this import is correct
+from rest_framework import generics
+from rest_framework.decorators import api_view
+from django.utils import timezone
+from django.contrib.auth.models import User
+from django.conf import settings
 
-# User authentication views
-from rest_framework import views # type: ignore
-from rest_framework.response import Response # type: ignore
-from rest_framework import status # type: ignore
+from .models import (
+    Category, Product, Coupon, Testimonial, 
+    Video, Contact, Order, faq
+)
+from .serializers import (
+    CategorySerializer, ProductSerializer, CouponSerializer, 
+    TestimonialSerializer, VideoSerializer, ContactSerializer, 
+    faqSerializer, OrderSerializer, 
+)
 
 
+# Category Views
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
-class ProductListCreateAPIView(generics.ListCreateAPIView):
-    serializer_class = ProductSerializer
 
-    def get_queryset(self):
-        queryset = Product.objects.all()
-        category_id = self.request.query_params.get('category', None)
-
-        if category_id:
-            queryset = queryset.filter(category_id=category_id)
-
-        return queryset
-
-
-class CouponListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Coupon.objects.all()
-    serializer_class = CouponSerializer
-
-class TestimonialListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Testimonial.objects.all()
-    serializer_class = TestimonialSerializer
-
-class VideoListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Video.objects.all()
-    serializer_class = VideoSerializer
-
-class ContactListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Contact.objects.all()
-    serializer_class = ContactSerializer
-
-# Detail views
 class CategoryDetailAPIView(generics.RetrieveAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     lookup_field = 'pk'
+
+
+# Product Views
+class ProductListCreateAPIView(generics.ListCreateAPIView):
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        category_id = self.request.query_params.get('category', None)
+        queryset = Product.objects.all()
+        if category_id:
+            queryset = queryset.filter(category_id=category_id)
+        return queryset
 
 
 class ProductDetailAPIView(generics.RetrieveAPIView):
@@ -87,114 +51,7 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
         product_id = self.kwargs['product_id']
         return Product.objects.get(id=product_id, category_id=category_id)
 
-class CouponDetailAPIView(generics.RetrieveAPIView):
-    queryset = Coupon.objects.all()
-    serializer_class = CouponSerializer
 
-
-
-
-from rest_framework.permissions import IsAuthenticated
-
-    
-
-from django.contrib.auth import update_session_auth_hash
-from rest_framework.permissions import IsAuthenticated
-
-class UserChangePasswordView(views.APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        user = request.user
-        old_password = request.data.get('old_password')
-        new_password = request.data.get('new_password')
-
-        if not user.check_password(old_password):
-            return Response({'error': 'Old password is incorrect'}, status=status.HTTP_400_BAD_REQUEST)
-
-        user.set_password(new_password)
-        user.save()
-        update_session_auth_hash(request, user)  # Keep the user logged in after password change
-        return Response({'message': 'Password updated successfully'}, status=status.HTTP_200_OK)
-
-
-class SendPasswordResetEmailView(views.APIView):
-    def post(self, request):
-        email = request.data.get('email')
-        user = User.objects.filter(email=email).first()
-
-        if not user:
-            return Response({'error': 'User with this email does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-
-        token = default_token_generator.make_token(user)
-        uid = urlsafe_base64_encode(force_bytes(user.pk))
-        reset_link = request.build_absolute_uri(f'/password-reset/{uid}/{token}/')
-
-        subject = 'Password Reset Request'
-        message = render_to_string('password_reset_email.html', {
-            'reset_link': reset_link,
-        })
-
-        send_mail(subject, message, 'no-reply@yourdomain.com', [email])
-
-        return Response({'message': 'Password reset email sent'}, status=status.HTTP_200_OK)
-
-class UserPasswordResetView(views.APIView):
-    permission_classes = [AllowAny]
-
-    def post(self, request, uid, token):
-        try:
-            uid = force_str(urlsafe_base64_decode(uid))
-            user = User.objects.get(pk=uid)
-            if default_token_generator.check_token(user, token):
-                new_password = request.data.get('new_password')
-                user.set_password(new_password)
-                user.save()
-                return Response({'message': 'Password reset successful'}, status=status.HTTP_200_OK)
-            else:
-                return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
-        except User.DoesNotExist:
-            return Response({'error': 'Invalid user'}, status=status.HTTP_400_BAD_REQUEST)
-        
-
-
-
-from django.utils import timezone
-from rest_framework.decorators import api_view
-from .models import Coupon
-
-@api_view(['POST'])
-def apply_coupon(request):
-    code = request.data.get('code')
-    product_cost = request.data.get('product_cost')
-    
-    if not code or not product_cost:
-        return Response({'error': 'Coupon code and product cost are required'}, status=status.HTTP_400_BAD_REQUEST)
-    
-    try:
-        coupon = Coupon.objects.get(code=code)
-        if coupon.is_valid():
-            if product_cost < coupon.discount_amount:
-                return Response({'error': 'Product cost is smaller than the discount amount'}, status=status.HTTP_400_BAD_REQUEST)
-            discounted_price = product_cost - coupon.discount_amount
-            return Response({'message': 'Coupon applied!', 'discounted_price': discounted_price}, status=status.HTTP_200_OK)
-        else:
-            return Response({'error': 'This coupon is not valid at this time'}, status=status.HTTP_400_BAD_REQUEST)
-    except Coupon.DoesNotExist:
-        return Response({'error': 'Invalid coupon code'}, status=status.HTTP_400_BAD_REQUEST)
-
-class CouponListCreateView(generics.ListCreateAPIView):
-    queryset = Coupon.objects.all()
-    serializer_class = CouponSerializer
-
-class CouponDetailView(generics.RetrieveAPIView):
-    queryset = Coupon.objects.all()
-    serializer_class = CouponSerializer
-
-
-class faqListCreateAPIView(generics.ListCreateAPIView):
-    queryset = faq.objects.all()
-    serializer_class = faqSerializer
 
 class ProductListByCategoryAPIView(generics.ListAPIView):
     serializer_class = ProductSerializer
@@ -203,11 +60,62 @@ class ProductListByCategoryAPIView(generics.ListAPIView):
         category_id = self.kwargs.get('category_id')
         return Product.objects.filter(category_id=category_id)
 
-    def get_queryset(self):
-        category_id = self.kwargs.get('category_id')
-        return Product.objects.filter(category_id=category_id)
-    
-from app.serializers import OrderSerializer
+
+# Coupon Views
+class CouponListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Coupon.objects.all()
+    serializer_class = CouponSerializer
+
+
+class CouponDetailAPIView(generics.RetrieveAPIView):
+    queryset = Coupon.objects.all()
+    serializer_class = CouponSerializer
+
+
+@api_view(['POST'])
+def apply_coupon(request):
+    code = request.data.get('code')
+    product_cost = request.data.get('product_cost')
+
+    if not code or not product_cost:
+        return Response({'error': 'Coupon code and product cost are required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        coupon = Coupon.objects.get(code=code)
+        if coupon.is_valid():
+            discounted_price = max(0, product_cost - coupon.discount_amount)
+            return Response({'message': 'Coupon applied!', 'discounted_price': discounted_price}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'This coupon is not valid at this time'}, status=status.HTTP_400_BAD_REQUEST)
+    except Coupon.DoesNotExist:
+        return Response({'error': 'Invalid coupon code'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Testimonial Views
+class TestimonialListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Testimonial.objects.all()
+    serializer_class = TestimonialSerializer
+
+
+# Video Views
+class VideoListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Video.objects.all()
+    serializer_class = VideoSerializer
+
+
+# Contact Views
+class ContactListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
+
+
+# FAQ Views
+class faqListCreateAPIView(generics.ListCreateAPIView):
+    queryset = faq.objects.all()
+    serializer_class = faqSerializer
+
+
+# Order Views
 class OrderCreateView(generics.CreateAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
@@ -220,153 +128,10 @@ class OrderCreateView(generics.CreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
-
 class OrderDetailAPIView(generics.RetrieveAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    lookup_field = 'pk'  
-from rest_framework import status
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from django.contrib.auth.models import User
-from rest_framework_simplejwt.tokens import RefreshToken
-from django.conf import settings
-
-# Function to get user by email
-def get_user_by_email(email):
-    try:
-        return User.objects.get(email=email)
-    except User.DoesNotExist:
-        return None
-
-from .serializers import UserRegistrationSerializer
-
-@api_view(['POST'])
-def register(request):
-    """
-    User registration view.
-    """
-    email = request.data.get('email')
-    password = request.data.get('password')
-    confirm_password = request.data.get('confirm_password')
-
-    # Validate password match
-    if password != confirm_password:
-        return Response({"error": "Passwords do not match"}, status=status.HTTP_400_BAD_REQUEST)
-
-    # Check if email is already registered
-    if User.objects.filter(email=email).exists():
-        return Response({"error": "Email is already registered"}, status=status.HTTP_400_BAD_REQUEST)
-
-    # Create the user
-    user = User.objects.create_user(username=email, email=email, password=password)
-    user.save()  # Save the user to the database
-
-    # Generate refresh and access tokens
-    refresh = RefreshToken.for_user(user)
-
-    return Response({
-        "message": "User created successfully",
-        "refresh": str(refresh),
-        "access": str(refresh.access_token),
-    }, status=status.HTTP_201_CREATED)
+    lookup_field = 'pk'
 
 
-@api_view(['POST'])
-def login(request):
-    """
-    User login view.
-    """
-    email = request.data.get('email')
-    password = request.data.get('password')
-
-    user = get_user_by_email(email)
-    
-    if user is None:
-        return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
-
-    if user.check_password(password):
-        # Generate refresh and access tokens
-        refresh = RefreshToken.for_user(user)
-
-        return Response({
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        }, status=status.HTTP_200_OK)
-
-    return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['POST'])
-def refresh_token(request):
-    refresh_token = request.data.get('refresh_token')
-
-    # Validate the refresh token
-    try:
-        token = RefreshToken(refresh_token)
-        access_token = str(token.access_token)
-        return Response({'access': access_token}, status=status.HTTP_200_OK)
-    except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['POST'])
-def logout(request):
-    try:
-        # Clear session and remove the refresh token from session
-        request.session.flush()
-        return Response({"message": "Logged out successfully"}, status=status.HTTP_200_OK)
-    except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-from rest_framework import status
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth.models import User
-
-# Function to get user by email
-def get_user_by_email(email):
-    try:
-        return User.objects.get(email=email)
-    except User.DoesNotExist:
-        return None
-
-from django.contrib.auth import get_user_model, authenticate
-from django.http import JsonResponse
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from .serializers import UserRegistrationSerializer, LoginSerializer
-
-from rest_framework_simplejwt.tokens import RefreshToken  # Ensure you have this import
-
-User = get_user_model()
-
-@api_view(['POST'])
-def register(request):
-    serializer = UserRegistrationSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return JsonResponse({'message': 'User created successfully!'}, status=201)
-    return JsonResponse({'errors': serializer.errors}, status=400)
-
-
-@api_view(['POST'])
-def login(request):
-    """
-    User login view.
-    """
-    serializer = LoginSerializer(data=request.data)
-    if serializer.is_valid():
-        user = serializer.validated_data['user']
-        refresh = RefreshToken.for_user(user)
-
-        return Response({
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        }, status=status.HTTP_200_OK)
-
-    return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+# User Authentication Views (JWT and Token Based)

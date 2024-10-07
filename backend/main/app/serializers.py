@@ -12,37 +12,23 @@ from .models import (
 
 )
 from rest_framework.exceptions import ValidationError
-class UserRegistrationSerializer(serializers.ModelSerializer):
+class RegisterSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
         fields = ['username', 'email', 'password', 'confirm_password']
 
-    def validate_email(self, value):
-        if User.objects.filter(email=value).exists():
-            raise ValidationError("This email is already registered.")
-        return value
+    def validate(self, data):
+        if data['password'] != data['confirm_password']:
+            raise serializers.ValidationError("Passwords do not match.")
+        return data
 
-    def validate_username(self, value):
-        if User.objects.filter(username=value).exists():
-            raise ValidationError("This username is already taken.")
-        return value
-
-    def validate(self, attrs):
-        if attrs['password'] != attrs['confirm_password']:
-            raise ValidationError("Passwords do not match.")
-        return attrs
-    
     def create(self, validated_data):
-        validated_data.pop('confirm_password')  # Remove confirm password from validated data
-        user = User(
-            username=validated_data['username'],
-            email=validated_data['email']  # Set the email
-        )
-        user.set_password(validated_data['password'])
-        user.save()
+        validated_data.pop('confirm_password')
+        user = User.objects.create_user(**validated_data)
         return user
+
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
