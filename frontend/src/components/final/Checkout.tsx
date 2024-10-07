@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import store, { RootState } from '../store/Store';
+import { Link, useLocation } from 'react-router-dom';
 import { removeItemFromCart } from '../slice/cartSlice';
 import { setQuantities } from '../slice/orderSlice';
 import { validateCoupon, reset } from '../slice/CouponSlice';
 import CategorySection from '../firstpage/CategorySection';
-import { Link, useLocation } from 'react-router-dom';
+import { RootState } from '../store/Store';
 
 interface Product {
   id: string;
@@ -24,7 +24,7 @@ const Checkout: React.FC = () => {
   const { discount, status, error } = useSelector((state: RootState) => state.coupons);
   
   const location = useLocation();
-  const state = location.state as { products: Product[]; totalCost: number; quantities: number[] }; // Update according to your state structure
+  const state = location.state as { products: Product[]; totalCost: number; quantities: number[] };
 
   const [couponCode, setCouponCode] = useState('');
 
@@ -40,6 +40,7 @@ const Checkout: React.FC = () => {
     newQuantities[index] = quantity; // Update quantity for the specific item
     dispatch(setQuantities(newQuantities)); // Dispatch new quantities to Redux
   };
+
   // Handle item removal
   const handleRemoveItem = (id: string) => {
     dispatch(removeItemFromCart(id));
@@ -50,16 +51,15 @@ const Checkout: React.FC = () => {
     const finalPrice = item.final_price || 0; // Default to 0 if undefined
     const quantity = quantities[index] || 1; // Default to 1 if undefined
     return {
-        ...item,
-        totalPrice: finalPrice * quantity,
+      ...item,
+      totalPrice: finalPrice * quantity,
     };
-});
+  });
 
-
-const totalPrice = groupedItems.reduce((total, item) => total + (item.totalPrice || 0), 0);
-const totalWithDiscount = totalPrice - (discount || 0);
-const shippingCost = 100;
-const exactFinalCost = totalWithDiscount + shippingCost;
+  const totalPrice = groupedItems.reduce((total, item) => total + (item.totalPrice || 0), 0);
+  const totalWithDiscount = totalPrice - (discount || 0);
+  const shippingCost = 100;
+  const exactFinalCost = totalWithDiscount + shippingCost;
 
   // Handle applying the coupon
   const handleApplyCoupon = () => {
@@ -97,7 +97,7 @@ const exactFinalCost = totalWithDiscount + shippingCost;
                     <select
                       value={quantities[index] || 1}
                       onChange={(e) => handleQuantityChange(index, Number(e.target.value))}
-                                            aria-label="Select quantity"
+                      aria-label="Select quantity"
                       className="px-1 py-2 mr-6 border border-gray-200"
                     >
                       {Array.from(Array(10).keys()).map((_, i) => (
@@ -122,11 +122,7 @@ const exactFinalCost = totalWithDiscount + shippingCost;
               </div>
             ))}
 
-            <Link to="/shipping" state={{ products: groupedItems, totalCost: exactFinalCost, quantities }}>
-              <button className="w-full py-3 text-sm font-semibold text-white uppercase bg-indigo-500 hover:bg-indigo-600">
-                Checkout
-              </button>
-            </Link>
+
           </div>
 
           <div id="summary" className="w-full px-8 py-10 sm:w-1/4 md:w-1/2">
@@ -177,11 +173,10 @@ const exactFinalCost = totalWithDiscount + shippingCost;
                 <span>Rs {exactFinalCost}</span> {/* Final total with shipping */}
               </div>
               <Link to="/shipping" state={{ products: groupedItems, totalCost: exactFinalCost, quantities }}>
-  <button className="w-full py-3 text-sm font-semibold text-white uppercase bg-indigo-500 hover:bg-indigo-600">
-    Checkout
-  </button>
-</Link>
-
+                <button className="w-full py-3 text-sm font-semibold text-white uppercase bg-indigo-500 hover:bg-indigo-600">
+                  Checkout
+                </button>
+              </Link>
             </div>
           </div>
         </div>

@@ -1,32 +1,25 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+// cartSlice.ts
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface CartItem {
-  itemnumber: unknown;
-  quantity: number;
-  image: unknown;
-  name: unknown;
-  brand: unknown;
-  final_price: number;
-  id: string;
-  // Add other properties as needed
+interface CartState {
+  items: Product[];
 }
 
+const initialState: CartState = {
+  items: JSON.parse(localStorage.getItem('cart') || '[]'), // Load cart from localStorage
+};
+
 const cartSlice = createSlice({
-  name: "cart",
-  initialState: {
-    items: [] as CartItem[],
-  },
+  name: 'cart',
+  initialState,
   reducers: {
-    addItem: (state, action: PayloadAction<CartItem>) => {
-      const existingItem = state.items.find(item => item.id === action.payload.id);
-      if (existingItem) {
-        existingItem.quantity += action.payload.quantity; // Increase quantity if item exists
-      } else {
-        state.items.push(action.payload); // Add new item if it doesn't exist
-      }
+    addItem(state, action: PayloadAction<Product>) {
+      state.items.push(action.payload);
+      localStorage.setItem('cart', JSON.stringify(state.items)); // Persist cart
     },
-    removeItemFromCart: (state, action: PayloadAction<string>) => {
+    removeItemFromCart(state, action: PayloadAction<string>) {
       state.items = state.items.filter(item => item.id !== action.payload);
+      localStorage.setItem('cart', JSON.stringify(state.items)); // Update cart
     },
   },
 });
