@@ -7,6 +7,7 @@ import orderReducer from '../slice/orderSlice';
 import faqReducer from '../slice/FaqSlice';
 import authReducer from '../slice/loginSlice';
 import registerReducer from '../slice/registerSlice';
+import loginReducer from '../slice/loginSlice';
 
 // Configure the Redux store
 const store = configureStore({
@@ -19,6 +20,7 @@ const store = configureStore({
     faqs: faqReducer,
     auth: authReducer,
     register: registerReducer,
+    login: loginReducer,
   },
 });
 
