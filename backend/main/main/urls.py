@@ -5,7 +5,7 @@ from django.conf import settings
 from app.views import (
     CategoryListCreateAPIView, CategoryDetailAPIView, ProductListCreateAPIView,
     TestimonialListCreateAPIView, VideoListCreateAPIView, ContactListCreateAPIView,
-    OrderCreateView, faqListCreateAPIView, CouponListCreateAPIView
+    OrderCreateView, faqListCreateAPIView, CouponListCreateAPIView, RegisterView, LoginView
 )
 
 urlpatterns = [
@@ -21,6 +21,8 @@ urlpatterns = [
     path('contacts/', ContactListCreateAPIView.as_view(), name='contact-list-create'),
     path('orders/', OrderCreateView.as_view(), name='order-create'),
     path('faqs/', faqListCreateAPIView.as_view(), name='faq-list-create'),
+    path('auth/register/', RegisterView.as_view(), name='register'),
+    path('auth/login/', LoginView.as_view(), name='login'),
 ]
 
 # Serve media files during development
