@@ -11,6 +11,7 @@ import Whyus from '../firstpage/Whyus'
 import CategorySection from '../firstpage/CategorySection'
 import  ProductCarousel from '../firstpage/ProductCarousel'
 import Header from '../firstpage/Header';
+import Testamonials from '../firstpage/Testimonials';
 function FirstPage() {
   return (
     <>
@@ -21,7 +22,7 @@ function FirstPage() {
     <TopArraival />
     <WWW />
     <ProductCarousel />
-    {/* <Testamonials /> */}
+    <Testamonials />
     <Offer />
     <Philosophy />
     <Whyus />

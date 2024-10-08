@@ -23,6 +23,7 @@ import { useDispatch , useSelector} from 'react-redux';
 import { useEffect } from 'react';
 import TermsAndConditions from '../src/components/firstpage/TermsAndCondition'
 import PrivacyPolicy from '../src/components/firstpage/ProvacyPolicy';
+import Testimonials from './components/firstpage/Testimonials';
 
 function App() {
   const dispatch = useDispatch();
@@ -57,6 +58,8 @@ function App() {
           <Route path="/productcarousel" element={<ProductCarousel />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/testimonials" element={<Testimonials />} />
+
 
 
           {/* Authentication Routes */}

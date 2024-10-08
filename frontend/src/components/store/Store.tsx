@@ -8,6 +8,7 @@ import faqReducer from '../slice/FaqSlice';
 import registerReducer from '../slice/registerSlice';
 import loginReducer from '../slice/loginSlice';
 import authReducer from '../slice/authSlice';
+import testimonialsReducer from '../slice/testimonialsSlice';
 const store = configureStore({
   reducer: {
     cart: cartReducer,
@@ -19,6 +20,7 @@ const store = configureStore({
     register: registerReducer,
     login: loginReducer,
     auth: authReducer,
+    testimonials: testimonialsReducer,
   },
 });
 
