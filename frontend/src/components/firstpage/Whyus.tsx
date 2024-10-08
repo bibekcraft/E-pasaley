@@ -3,8 +3,8 @@ function Whyus() {
   return (
     <div><div className="w-screen">
     <div className="w-full max-w-screen-xl px-4 mx-auto mt-10">
-    <div className="w-12 border-b-2 border-pink-500 lg:border-b-4"></div>
-    <h2 className="mt-6 mb-10 text-3xl font-semibold tracking-wide text-gray-800 sm:text-6xl">Why Us    ?</h2> 
+    <div className="w-12 border-b-2 border-red-500 lg:border-b-4"></div>
+    <h2 className="mt-6 mb-10 text-3xl font-semibold tracking-wide text-gray-600 sm:text-6xl">Why Us?</h2>
     <div className="flex flex-col justify-between lg:flex-row lg:flex-wrap">
       <div className="mt-8 lg:mt-10 lg:w-1/2">
         <div className="flex flex-col items-start lg:pr-16">
@@ -23,10 +23,14 @@ function Whyus() {
               <path d="M131.7,473c0,4.4-3.6,8-8,8H44.1c-4.4,0-8-3.6-8-8s3.6-8,8-8h79.5C128.1,465,131.7,468.6,131.7,473z M432.7,31.1        c-4.4,0-8,3.6-8,8c0,11.4-9.3,20.8-20.8,20.8c-4.4,0-8,3.6-8,8s3.6,8,8,8c20.3,0,36.8-16.5,36.8-36.8        C440.7,34.7,437.1,31.1,432.7,31.1z M482.7,75.8c4.4,0,8-3.6,8-8s-3.6-8-8-8c-11.4,0-20.8-9.3-20.8-20.8c0-4.4-3.6-8-8-8s-8,3.6-8,8        C446,59.3,462.4,75.8,482.7,75.8z M482.7,81.1c-20.3,0-36.8,16.5-36.8,36.8c0,4.4,3.6,8,8,8s8-3.6,8-8c0-11.4,9.3-20.8,20.8-20.8        c4.4,0,8-3.6,8-8S487.1,81.1,482.7,81.1z M404,81.1c-4.4,0-8,3.6-8,8s3.6,8,8,8c11.4,0,20.8,9.3,20.8,20.8c0,4.4,3.6,8,8,8        s8-3.6,8-8C440.7,97.6,424.2,81.1,404,81.1z M89.7,179.7c4.4,0,8-3.6,8-8s-3.6-8-8-8c-5.7,0-10.4-4.7-10.4-10.4        c0-5.7,4.7-10.4,10.4-10.4c4.4,0,8-3.6,8-8s-3.6-8-8-8c-14.6,0-26.4,11.8-26.4,26.4S75.1,179.7,89.7,179.7z M44.3,408.4h3.9v3.9        c0,4.4,3.6,8,8,8s8-3.6,8-8v-3.9h3.9c4.4,0,8-3.6,8-8s-3.6-8-8-8h-3.9v-3.9c0-4.4-3.6-8-8-8s-8,3.6-8,8v3.9h-3.9c-4.4,0-8,3.6-8,8        S39.9,408.4,44.3,408.4z"></path>
             </svg>
           </div>
-          <h2 className="flex items-center mt-6 text-base font-semibold tracking-wide text-gray-800 lg: lg:mt-6 lg:text-2xl">
-            <span className="mr-5 text-2xl">Supply and Delivery            </span>
-          </h2>
-          <p className="mt-1 text-sm tracking-normal text-gray-800 lg: lg:mt-1 lg:text-xl">Use Dropshipping Nepal to efficiently supply products across Nepal. They handle inventory and shipping, allowing you to focus on marketing.</p>
+          <h2 className="flex items-center mt-6 text-base font-semibold tracking-wide text-green-800 lg:lg:mt-6 lg:text-2xl">
+  <span className="mr-5 text-2xl">Supply and Delivery</span>
+</h2>
+<p className="mt-1 text-sm tracking-normal text-gray-600 lg:lg:mt-1 lg:text-xl">
+  With  us,you can easily access a wide range of products at discounted prices, 
+  delivered all across Nepal. We manage inventory and shipping, so you can focus on growing your
+   business and customer satisfaction.
+</p>
         </div>
       </div>
       <div className="mt-8 lg:mt-10 lg:w-1/2">
@@ -47,11 +51,13 @@ function Whyus() {
               </g>
             </svg>
           </div>
-          <h2 className="flex items-center mt-6 text-base font-semibold tracking-wide text-gray-800 lg: lg:mt-6 lg:text-2xl">
-            <span className="mr-5 text-2xl">Trusted Brands from India</span>
-          </h2>
-          <p className="mt-1 text-sm tracking-normal text-gray-800 lg: lg:mt-1 lg:text-xl">Import products from reliable Indian e-commerce sites like Amazon India, Flipkart, and Myntra. Consider using Merowish.com for seamless delivery.
-          </p>
+          <h2 className="flex items-center mt-6 text-base font-semibold tracking-wide text-green-800 lg:lg:mt-6 lg:text-2xl">
+  <span className="mr-5 text-2xl">Trusted Indian Brands</span>
+</h2>
+<p className="mt-1 text-sm tracking-normal text-gray-600 lg:lg:mt-1 lg:text-xl">
+  Access top-quality products from trusted Indian brands like iPhone, Firebolt, Boat, and popular platforms such as Amazon India, Flipkart, Myntra, and more, all delivered to your doorstep through us.
+</p>
+
         </div>
       </div>
       <div className="mt-8 lg:mt-10 lg:w-1/2">
@@ -68,8 +74,8 @@ function Whyus() {
               <path d="M498.8,287.4c0,4.4-3.6,8-8,8h-3.9v3.9c0,4.4-3.6,8-8,8s-8-3.6-8-8v-3.9H467c-4.4,0-8-3.6-8-8s3.6-8,8-8h3.9v-3.9        c0-4.4,3.6-8,8-8s8,3.6,8,8v3.9h3.9C495.2,279.4,498.8,282.9,498.8,287.4z M336.2,411.4h-43c-4.4,0-8,3.6-8,8s3.6,8,8,8h43        c4.4,0,8-3.6,8-8S340.7,411.4,336.2,411.4z M415.1,374.2H299.8c-4.4,0-8,3.6-8,8s3.6,8,8,8h115.2c4.4,0,8-3.6,8-8        S419.5,374.2,415.1,374.2z M459,57.3c0,4.4,3.6,8,8,8s8-3.6,8-8v-3.9h3.9c4.4,0,8-3.6,8-8s-3.6-8-8-8H475v-3.9c0-4.4-3.6-8-8-8        s-8,3.6-8,8v3.9h-3.9c-4.4,0-8,3.6-8,8s3.6,8,8,8h3.9V57.3z M69,173.3c-4.2,4.2-4.2,11,0,15.2s11,4.2,15.2,0c4.2-4.2,4.2-11,0-15.2        C80,169.1,73.2,169.1,69,173.3z M37.2,84.9c20.3,0,36.8-16.5,36.8-36.8c0-4.4-3.6-8-8-8s-8,3.6-8,8c0,11.4-9.3,20.8-20.8,20.8        c-4.4,0-8,3.6-8,8S32.8,84.9,37.2,84.9z M115.9,68.9c-11.4,0-20.8-9.3-20.8-20.8c0-4.4-3.6-8-8-8s-8,3.6-8,8        c0,20.3,16.5,36.8,36.8,36.8c4.4,0,8-3.6,8-8S120.4,68.9,115.9,68.9z M115.9,90.2c-20.3,0-36.8,16.5-36.8,36.8c0,4.4,3.6,8,8,8        s8-3.6,8-8c0-11.4,9.3-20.8,20.8-20.8c4.4,0,8-3.6,8-8S120.4,90.2,115.9,90.2z M73.9,126.9c0-20.3-16.5-36.8-36.8-36.8        c-4.4,0-8,3.6-8,8s3.6,8,8,8c11.4,0,20.8,9.3,20.8,20.8c0,4.4,3.6,8,8,8S73.9,131.4,73.9,126.9z M249.5,218.1h-92.9        c-4.4,0-8,3.6-8,8s3.6,8,8,8h92.9c4.4,0,8-3.6,8-8S254,218.1,249.5,218.1z M212.3,97.2c4.4,0,8-3.6,8-8s-3.6-8-8-8        c-5.7,0-10.4-4.7-10.4-10.4s4.7-10.4,10.4-10.4c4.4,0,8-3.6,8-8s-3.6-8-8-8c-14.6,0-26.4,11.8-26.4,26.4S197.7,97.2,212.3,97.2z         M249,156.7l-24.9,22.5l-36.5,0.2c-4.4,0-8,3.6-7.9,8.1c0,4.4,3.6,7.9,8,7.9c0,0,0,0,0.1,0l39.6-0.3c2,0,3.9-0.8,5.3-2.1l27.1-24.6        c3.3-3,3.5-8,0.6-11.3C257.3,154,252.2,153.7,249,156.7z"></path>
             </svg>
           </div>
-          <h2 className="flex items-center mt-6 text-base font-semibold tracking-wide text-gray-800 lg: lg:mt-6 lg:text-2xl"><span className="mr-5 text-2xl">Personalize Your Learning</span><span className="px-3 py-px text-xs font-bold text-green-900 uppercase bg-teal-200 border border-teal-300">Payment Methods:</span></h2>
-          <p className="mt-1 text-sm tracking-normal text-gray-800 lg: lg:mt-1 lg:text-xl">All payment method that are avaialble in Nepal  is approved</p>
+          <h2 className="flex items-center mt-6 text-base font-semibold tracking-wide text-green-800 lg: lg:mt-6 lg:text-2xl"><span className="mr-5 text-2xl">Personalize Your Learning</span><span className="px-3 py-px text-xs font-bold text-green-900 uppercase bg-teal-200 border border-teal-300">Payment Methods:</span></h2>
+          <p className="mt-1 text-sm tracking-normal text-gray-600 lg: lg:mt-1 lg:text-xl">All payment method that are avaialble in Nepal  is approved</p>
         </div>
       </div>
       <div className="mt-8 lg:mt-10 lg:w-1/2">
@@ -84,11 +90,14 @@ function Whyus() {
               <path d="M510.4,103.4v322.9c0,8.8-7.2,16-16,16H265.9v33.9h178.4c4.4,0,8,3.6,8,8s-3.6,8-8,8H67.8c-4.4,0-8-3.6-8-8s3.6-8,8-8h182.1        v-38.8c0-0.5,0.1-1,0.1-1.5c-0.1-0.5-0.1-1-0.1-1.5c0-4.4,3.6-8,8-8h236.6v-48.6H385.9c-4.4,0-8-3.6-8-8s3.6-8,8-8h108.6V103.4        c0-4.4,3.6-8,8-8S510.4,99,510.4,103.4z M48.8,391.6c5,0,9,4.1,9,9s-4.1,9-9,9s-9-4.1-9-9S43.8,391.6,48.8,391.6z M78.8,391.6        c5,0,9,4.1,9,9s-4.1,9-9,9s-9-4.1-9-9S73.8,391.6,78.8,391.6z M108.8,391.6c5,0,9,4.1,9,9s-4.1,9-9,9s-9-4.1-9-9        S103.8,391.6,108.8,391.6z M232,434.3c0-4.4-3.6-8-8-8H17.6V111.4h380.5c4.4,0,8-3.6,8-8s-3.6-8-8-8H17.6c-8.8,0-16,7.2-16,16v314.9        c0,8.8,7.2,16,16,16H224C228.4,442.3,232,438.7,232,434.3z"></path>
               <path d="M312.4,24.6c0-5,4.1-9,9-9s9,4.1,9,9s-4.1,9-9,9S312.4,29.6,312.4,24.6z M281.5,33.7c5,0,9-4.1,9-9s-4.1-9-9-9s-9,4.1-9,9        S276.5,33.7,281.5,33.7z M77.8,36H62V20.2c0-4.4-3.6-8-8-8s-8,3.6-8,8V36H30.2c-4.4,0-8,3.6-8,8s3.6,8,8,8H46v15.8c0,4.4,3.6,8,8,8        s8-3.6,8-8V52h15.8c4.4,0,8-3.6,8-8S82.2,36,77.8,36z M361.5,33.7c5,0,9-4.1,9-9s-4.1-9-9-9s-9,4.1-9,9S356.5,33.7,361.5,33.7z         M478.6,90.1c4.4,0,8-3.6,8-8s-3.6-8-8-8c-11.4,0-20.8-9.3-20.8-20.8c0-4.4-3.6-8-8-8s-8,3.6-8,8C441.9,73.7,458.4,90.1,478.6,90.1z         M363.5,59.8h-215c-4.4,0-8,3.6-8,8s3.6,8,8,8h215c4.4,0,8-3.6,8-8S367.9,59.8,363.5,59.8z M478.6,95.4c-20.3,0-36.8,16.5-36.8,36.8        c0,4.4,3.6,8,8,8s8-3.6,8-8c0-11.4,9.3-20.8,20.8-20.8c4.4,0,8-3.6,8-8S483,95.4,478.6,95.4z M428.6,45.4c-4.4,0-8,3.6-8,8        c0,11.4-9.3,20.8-20.8,20.8c-4.4,0-8,3.6-8,8s3.6,8,8,8c20.3,0,36.8-16.5,36.8-36.8C436.6,49,433,45.4,428.6,45.4z M399.9,95.4        c-4.4,0-8,3.6-8,8s3.6,8,8,8c11.4,0,20.8,9.3,20.8,20.8c0,4.4,3.6,8,8,8s8-3.6,8-8C436.6,111.9,420.1,95.4,399.9,95.4z"></path>
             </svg>
-          </div>
-          <h2 className="flex items-center mt-6 text-base font-semibold tracking-wide text-gray-800 lg: lg:mt-6 lg:text-2xl"><span className="mr-5 text-2xl">Product Quality Assurance:
-          </span><span className="px-3 py-px text-xs font-bold text-green-900 uppercase bg-teal-200 border border-teal-300">Premium</span></h2>
-          <p className="mt-1 text-sm tracking-normal text-gray-800 lg: lg:mt-1 lg:text-xl">Research suppliers, conduct pre-shipment inspections, and communicate quality standards. Trustworthy suppliers are essential.
-          </p>
+          </div>        <h2 className="flex items-center mt-6 text-base font-semibold tracking-wide text-green-800 lg:lg:mt-6 lg:text-2xl">
+  <span className="mr-5 text-2xl">Product Quality Assurance:</span>
+  <span className="px-3 py-px text-xs font-bold text-green-900 uppercase bg-teal-200 border border-teal-300">Premium</span>
+</h2>
+<p className="mt-1 text-sm tracking-normal text-gray-600 lg:lg:mt-1 lg:text-xl">
+  At e-pasaley, we ensure top-quality products by partnering with trusted suppliers, conducting thorough pre-shipment inspections, and maintaining strict quality standards. Your satisfaction is our priority.
+</p>
+
         </div>
       </div>
     </div>

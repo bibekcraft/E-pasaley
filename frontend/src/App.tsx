@@ -21,6 +21,8 @@ import ProtectedRoute from './components/routing/ProtectedRoute';
 import { logout  } from '../src/components/slice/authSlice';
 import { useDispatch , useSelector} from 'react-redux';
 import { useEffect } from 'react';
+import TermsAndConditions from '../src/components/firstpage/TermsAndCondition'
+import PrivacyPolicy from '../src/components/firstpage/ProvacyPolicy';
 
 function App() {
   const dispatch = useDispatch();
@@ -53,6 +55,9 @@ function App() {
           <Route path="/product/:productId" element={<ProductDetail />} />
           <Route path="/product" element={<ProductDetail />} />
           <Route path="/productcarousel" element={<ProductCarousel />} />
+          <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+
 
           {/* Authentication Routes */}
           <Route path="/login" element={<Login />} />
