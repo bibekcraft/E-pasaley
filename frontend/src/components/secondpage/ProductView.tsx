@@ -8,6 +8,7 @@ import Second from '../firstpage/Second';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Footer from '../firstpage/Footer';
+import First from 'components/firstpage/First';
 const ProductView: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const dispatch = useDispatch();

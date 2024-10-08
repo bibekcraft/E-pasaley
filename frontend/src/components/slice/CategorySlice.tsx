@@ -16,7 +16,6 @@ const fetchCategories = createAsyncThunk('categories/fetchCategories', async () 
 });
 
 // Creating the slice
-// eslint-disable-next-line react-refresh/only-export-components
 const CategorySlice = createSlice({
     name: 'categories',
     initialState: {

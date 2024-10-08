@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 
 // Define the Product interface
 interface Product {
+    discount: ReactNode;
     itemnumber: ReactNode;
     feature: ReactNode;
     description: ReactNode;
