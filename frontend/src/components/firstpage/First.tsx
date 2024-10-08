@@ -2,7 +2,7 @@ import React from "react";
 import { HiOutlineShoppingCart } from "react-icons/hi2";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux"; // Import useSelector to access Redux state
-
+import epsl from "../../assets/epsl.png";
 function First() {
   // Access the authentication state from the Redux store
   const isAuthenticated = useSelector((state) => state.login.isAuthenticated); // Adjust this based on your Redux structure
@@ -11,12 +11,12 @@ function First() {
     <div className="bg-white shadow-md">
       <div className="container flex items-center justify-between py-4 mx-auto">
         <div className="flex items-center">
-          <button className="p-2 bg-blue-100 rounded-lg">
-            <span className="block w-4 h-1 mb-1 bg-blue-500"></span>
-            <span className="block w-4 h-1 mb-1 bg-blue-500"></span>
-            <span className="block w-4 h-1 bg-blue-500"></span>
+          <button className="p-2 rounded-lg">
+          <a href="/" aria-label="Go home" title="Company" className="inline-flex items-center">
+              <img src={epsl} alt="E-pasaley Logo" className="w-auto h-20" />
+            </a>
           </button>
-          <h2 className="ml-2 text-2xl font-bold text-blue-500">MegaMart</h2>
+          <h2 className="ml-2 text-2xl font-bold text-green-600">E-pasaley</h2>
         </div>
         <div className="flex justify-center flex-1">
           <input
@@ -24,7 +24,7 @@ function First() {
             placeholder="Search essentials, groceries and more..."
             className="w-2/3 px-4 py-2 border border-gray-300 rounded-lg"
           />
-          <button className="p-2 ml-2 text-white bg-blue-500 rounded-lg">
+          <button className="p-2 ml-2 text-white bg-green-600 rounded-lg">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="w-5 h-5"
@@ -36,15 +36,15 @@ function First() {
           </button>
         </div>
         <div className="flex items-center mr-12 space-x-5">
-          <a href="#" className="text-blue-500">Track your order</a>
-          <a href="#" className="text-blue-500">All Offers</a>
+          <a href="#" className="text-green-600">Track your order</a>
+          <a href="#" className="text-green-600">All Offers</a>
           {!isAuthenticated ? ( // Conditionally render Sign Up/Sign In link
-            <Link to="/login" className="text-blue-500">Sign Up/Sign In</Link>
+            <Link to="/login" className="text-green-600">Sign Up/Sign In</Link>
           ) : (
-            <Link to="/allproducts" className="text-blue-500">ShopNow</Link>
+            <Link to="/allproducts" className="text-green-600">ShopNow</Link>
 )}
           <div className="flex space-x-4">
-            <Link to="/checkout" className="text-blue-500">
+            <Link to="/checkout" className="text-green-600">
               <button className="w-20 h-11">
                 <HiOutlineShoppingCart className="w-full h-full" fill="white" />
               </button>

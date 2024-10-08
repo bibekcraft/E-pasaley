@@ -4,10 +4,10 @@ import { useParams } from 'react-router-dom';
 import { RootState } from '../store/Store';
 import { addItem } from '../slice/cartSlice'; 
 import Faq from '../resources/Faq';
-import First from '../firstpage/First';
+import Second from '../firstpage/Second';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import Footer from '../firstpage/Footer';
 const ProductView: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const dispatch = useDispatch();
@@ -40,7 +40,7 @@ const ProductView: React.FC = () => {
 
   return (
     <div>
-      <First />
+      <Second />
       <div className="w-full h-full p-6">
         <ToastContainer />
         {/* Product Section */}
@@ -89,7 +89,7 @@ const ProductView: React.FC = () => {
                 {product.final_price}
                 <span className="ml-2 text-red-500 line-through">{product.initial_price}</span>
               </p>
-              <p className="text-sm text-green-600">You Save: {product.discount_rate}</p>
+              <p className="text-sm text-green-600">You Save: {product.discount}</p>
             </div>
 
             {/* Buttons Section */}
@@ -130,6 +130,7 @@ const ProductView: React.FC = () => {
         </div>
         <Faq/>
       </div>
+      <Footer />
     </div>
   );
 };

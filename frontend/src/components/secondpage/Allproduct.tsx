@@ -6,6 +6,8 @@ import { Link, useParams } from 'react-router-dom';
 import { AppDispatch } from '../store/Store';
 import { RootState } from '../store/Store';
 import { FaTag } from 'react-icons/fa';
+import Footer from '../firstpage/Footer';
+import Header from '../firstpage/Header';
 export interface Product {
   final_price: number;
   id: number;
@@ -88,6 +90,7 @@ const AllProducts: React.FC = () => {
 
   return (
     <div>
+      <Header />
       <section>
         <div className="w-full px-5 py-16 mx-auto md:px-10 md:py-24">
           <div className="flex flex-col gap-12">
@@ -330,6 +333,7 @@ const AllProducts: React.FC = () => {
             </div>
           </div>
         </div>
+        <Footer />
       </section>
     </div>
   );
