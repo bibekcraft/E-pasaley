@@ -180,3 +180,9 @@ class LoginView(APIView):
             })
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+from .serializers import crauselSerializer
+from .models import crausel
+class crauselListCreateAPIView(generics.ListCreateAPIView):
+    queryset = crausel.objects.all()
+    serializer_class = crauselSerializer

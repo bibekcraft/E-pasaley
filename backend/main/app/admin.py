@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, Testimonial, Coupon, Contact, Video, Order,faq
+from .models import Category, Product, Testimonial, Coupon, Contact, Video, Order,faq,crausel
 
 # Register Category model
 @admin.register(Category)
@@ -54,5 +54,6 @@ class ContactAdmin(admin.ModelAdmin):
 # Now register the new UserAdmin...
 admin.site.register(Order)
 admin.site.register(faq)
+admin.site.register(crausel)
 admin.site.register(Product)
 

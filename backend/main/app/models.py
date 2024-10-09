@@ -115,3 +115,11 @@ class faq(models.Model):
 
     def __str__(self):
         return self.title
+
+class crausel(models.Model):
+    title = models.CharField(max_length=244)
+    description = models.TextField()
+    image = models.ImageField(upload_to='crausel')
+
+    def __str__(self):
+        return self.title

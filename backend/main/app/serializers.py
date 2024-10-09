@@ -110,3 +110,10 @@ class OrderSerializer(serializers.ModelSerializer):
         # You may want to handle adding products to the order here
         order.products.set(products_data)  # Assuming you want to set the products
         return order
+
+from .models import crausel
+
+class crauselSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = crausel
+        fields = '__all__'
