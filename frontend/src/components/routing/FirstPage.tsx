@@ -19,13 +19,14 @@ function FirstPage() {
     <First />
     <Crausels />
     <CategorySection />
-    <TopArraival />
     <WWW />
     <ProductCarousel />
     <Testamonials />
     <Offer />
     <Philosophy />
     <Whyus />
+    <TopArraival />
+
     <Footer />
     </>
 

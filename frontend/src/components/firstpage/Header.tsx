@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import '../../App.css'; // Import the CSS file for styles
-import epsl from '../../assets/epsl.png'; // Import the logo image
+import '../../App.css'; // Import the CSS file for additional custom styles if needed
+
 const Header = () => {
     const [promoCodes, setPromoCodes] = useState([]); // Store promo codes from the API
 
@@ -20,26 +20,24 @@ const Header = () => {
     }, []);
 
     return (
-        <header className="header font-poppins">
-            <div className="header-content">
-                <h1 className="logo">
-                <a href="/" aria-label="Go home" title="Company" className="inline-flex items-center">
-              <img src={epsl} alt="E-pasaley Logo" className="w-auto h-20" />
-              <span className="ml-2 text-xl font-bold tracking-wide text-green-600 uppercase">e-pasaley</span>
-            </a>
-                </h1>
-                <div className="delivery-info">
+        <header className="w-full py-0 text-blue-900 bg-white font-poppins">
 
-                </div>
-            </div>
 
             {/* Sliding Text Section */}
-            <div className="marquee">
-                <div className="text-green-600 marquee-content">
-                    Contact us at: E-pasaley | Follow us on Instagram: @Epasaley | 
-                    {promoCodes.length > 0 
-                        ? <span className="text-red-600"> Promo Codes: {promoCodes.join(', ')}</span>
-                        : ' No promo codes available.'}
+            <div className="w-full py-2 overflow-hidden bg-black">
+                <div className="marquee ">
+                    <div 
+                        className="text-white animate-marquee"  
+                        style={{ fontSize: '0.75rem' }} // Reduced font size for sliding text
+                    >
+                        Contact us at: E-pasaley | Follow us on Instagram: @Epasaley | 
+                        Add promocode to get a certain discount on our products ||
+                        {promoCodes.length > 0 
+                            ? <span className="text-white font-extralight">
+                                      Promo Codes: {promoCodes.map(promo => promo.code).join(', ')}
+                              </span>
+                            : ' No promo codes available.'}
+                    </div>
                 </div>
             </div>
         </header>

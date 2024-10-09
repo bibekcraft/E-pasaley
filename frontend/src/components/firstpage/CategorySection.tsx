@@ -12,6 +12,17 @@ function CategorySection() {
     useEffect(() => {
         dispatch(fetchCategories() as unknown as UnknownAction);
     }, [dispatch]);
+    
+    
+    if (status === 'loading') {
+        return <p>Loading...</p>;
+      }
+    
+      if (!categories) {
+        return <p>Categories not found.</p>;
+      }
+    
+    
 
     return (
         <div className="py-10">
