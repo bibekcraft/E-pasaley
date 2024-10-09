@@ -1,147 +1,123 @@
-import React from "react";
+// src/components/Crausels.js
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCrausel } from '../slice/crauselSlice'; // Adjust path as necessary
+
 function Crausels() {
-    return (
-      <>
-          <div>
-        <div id="default-carousel" className="relative w-full bg-black" data-carousel="slide">
-          {/* <!-- Carousel wrapper --> */}
-          <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
-            {/* <!-- Item 1 --> */}
-            <div className="hidden duration-700 ease-in-out" data-carousel-item>
-              <img
-                src="/docs/images/carousel/carousel-1.svg"
-                className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-                alt="..."
-              />
-            </div>
-            {/* <!-- Item 2 --> */}
-            <div className="hidden duration-700 ease-in-out" data-carousel-item>
-              <img
-                src="/docs/images/carousel/carousel-2.svg"
-                className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-                alt="..."
-              />
-            </div>
-            {/* <!-- Item 3 --> */}
-            <div className="hidden duration-700 ease-in-out" data-carousel-item>
-              <img
-                src="/docs/images/carousel/carousel-3.svg"
-                className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-                alt="..."
-              />
-            </div>
-            {/* <!-- Item 4 --> */}
-            <div className="hidden duration-700 ease-in-out" data-carousel-item>
-              <img
-                src="/docs/images/carousel/carousel-4.svg"
-                className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-                alt="..."
-              />
-            </div>
-            {/* <!-- Item 5 --> */}
-            <div className="hidden duration-700 ease-in-out" data-carousel-item>
-              <img
-                src="/docs/images/carousel/carousel-5.svg"
-                className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-                alt="..."
-              />
-            </div>
-          </div>
-          {/* <!-- Slider indicators --> */}
-          <div className="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2 rtl:space-x-reverse">
-            <button
-              type="button"
-              className="w-3 h-3 rounded-full"
-              aria-current="true"
-              aria-label="Slide 1"
-              data-carousel-slide-to="0"
-            ></button>
-            <button
-              type="button"
-              className="w-3 h-3 rounded-full"
-              aria-current="false"
-              aria-label="Slide 2"
-              data-carousel-slide-to="1"
-            ></button>
-            <button
-              type="button"
-              className="w-3 h-3 rounded-full"
-              aria-current="false"
-              aria-label="Slide 3"
-              data-carousel-slide-to="2"
-            ></button>
-            <button
-              type="button"
-              className="w-3 h-3 rounded-full"
-              aria-current="false"
-              aria-label="Slide 4"
-              data-carousel-slide-to="3"
-            ></button>
-            <button
-              type="button"
-              className="w-3 h-3 rounded-full"
-              aria-current="false"
-              aria-label="Slide 5"
-              data-carousel-slide-to="4"
-            ></button>
-          </div>
-          {/* <!-- Slider controls --> */}
-          <button
-            type="button"
-            className="absolute top-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer start-0 group focus:outline-none"
-            data-carousel-prev
-          >
-            <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-              <svg
-                className="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 6 10"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M5 1 1 5l4 4"
-                />
-              </svg>
-              <span className="sr-only">Previous</span>
-            </span>
-          </button>
-          <button
-            type="button"
-            className="absolute top-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer end-0 group focus:outline-none"
-            data-carousel-next
-          >
-            <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-              <svg
-                className="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"  
-                fill="none"
-                viewBox="0 0 6 10"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="m1 9 4-4-4-4"
-                />
-              </svg>
-              <span className="sr-only">Next</span>
-            </span>
-          </button>
-        </div>
-  
+  const dispatch = useDispatch();
+  const { crausel, status, error } = useSelector((state) => state.crausel);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-      </div>
-      </>
+  // Fetch the carousel data when the component mounts
+  useEffect(() => {
+    dispatch(fetchCrausel());
+  }, [dispatch]);
 
-    );
+  // Handle loading and error states
+  if (status === 'loading') {
+    return <div>Loading...</div>;
   }
-  
-  export default Crausels;
-  
+
+  if (status === 'failed') {
+    return <div>Error: {error}</div>;
+  }
+
+  // Function to handle next slide
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % crausel.length);
+  };
+
+  // Function to handle previous slide
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + crausel.length) % crausel.length);
+  };
+
+  return (
+    <div>
+      <div id="default-carousel" className="relative w-full bg-black" data-carousel="slide">
+        {/* Carousel wrapper */}
+        <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
+          {crausel.map((item, index) => (
+            <div
+              key={item.id}
+              className={`absolute w-full h-full transition-all duration-700 ease-in-out ${index === currentIndex ? 'block' : 'hidden'}`}
+              data-carousel-item
+            >
+              <img
+                src={item.image} // Display the image based on the fetched data
+                className="absolute object-cover w-full h-full"
+                alt={item.title || "Carousel image"} // Add an alt text if available
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Slider indicators */}
+        <div className="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2 rtl:space-x-reverse">
+          {crausel.map((_, index) => (
+            <button
+              key={index}
+              type="button"
+              className={`w-3 h-3 rounded-full ${index === currentIndex ? 'bg-white' : 'bg-gray-500'}`}
+              aria-current={index === currentIndex ? "true" : "false"}
+              aria-label={`Slide ${index + 1}`}
+              onClick={() => setCurrentIndex(index)} // Change slide on indicator click
+            ></button>
+          ))}
+        </div>
+
+        {/* Slider controls */}
+        <button
+          type="button"
+          className="absolute top-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer start-0 group focus:outline-none"
+          onClick={prevSlide} // Call prevSlide on click
+        >
+          <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 focus:ring-4 focus:ring-white">
+            <svg
+              className="w-4 h-4 text-white"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 6 10"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M5 1 1 5l4 4"
+              />
+            </svg>
+            <span className="sr-only">Previous</span>
+          </span>
+        </button>
+        <button
+          type="button"
+          className="absolute top-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer end-0 group focus:outline-none"
+          onClick={nextSlide} // Call nextSlide on click
+        >
+          <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 focus:ring-4 focus:ring-white">
+            <svg
+              className="w-4 h-4 text-white"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 6 10"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="m1 9 4-4-4-4"
+              />
+            </svg>
+            <span className="sr-only">Next</span>
+          </span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default Crausels;

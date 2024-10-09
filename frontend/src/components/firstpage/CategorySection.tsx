@@ -14,15 +14,7 @@ function CategorySection() {
     }, [dispatch]);
     
     
-    if (status === 'loading') {
-        return <p>Loading...</p>;
-      }
-    
-      if (!categories) {
-        return <p>Categories not found.</p>;
-      }
-    
-    
+
 
     return (
         <div className="py-10">
