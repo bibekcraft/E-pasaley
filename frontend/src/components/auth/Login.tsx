@@ -7,24 +7,19 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Accessing the login state from Redux
   const { loading, error, isAuthenticated } = useSelector((state) => state.login);
 
-  // Local state for form inputs
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Dispatch the login action with username and password
     dispatch(loginUser({ username, password }));
   };
 
-  // Redirect if the user is authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/'); // Redirect to the homepage upon successful login
+      navigate('/'); // Redirect to homepage upon successful login
     }
   }, [isAuthenticated, navigate]);
 
@@ -32,11 +27,7 @@ const Login = () => {
     <section className="bg-white">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <a href="#" className="flex items-center mb-6 text-3xl font-semibold text-gray-900">
-          <img
-            className="w-10 h-10 mr-2"
-            src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
-            alt="logo"
-          />
+          <img className="w-10 h-10 mr-2" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg" alt="logo" />
           E-pasaley
         </a>
         <div className="w-full bg-white rounded-lg shadow-md sm:max-w-md xl:p-0">
@@ -44,14 +35,10 @@ const Login = () => {
             <h1 className="text-2xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
               Sign in to your account
             </h1>
-            {/* Show error message if login fails */}
             {error && <p className="text-red-500">{error}</p>}
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
-                <label
-                  htmlFor="username"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
+                <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-900">
                   Username
                 </label>
                 <input
@@ -66,10 +53,7 @@ const Login = () => {
                 />
               </div>
               <div>
-                <label
-                  htmlFor="password"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
+                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900">
                   Password
                 </label>
                 <input
@@ -83,41 +67,16 @@ const Login = () => {
                   required
                 />
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-start">
-                  <div className="flex items-center h-5">
-                    <input
-                      id="remember"
-                      type="checkbox"
-                      className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300"
-                    />
-                  </div>
-                  <div className="ml-3 text-sm">
-                    <label htmlFor="remember" className="text-gray-500">
-                      Remember me
-                    </label>
-                  </div>
-                </div>
-                <a
-                  href="#"
-                  className="text-sm font-medium text-primary-600 hover:underline"
-                >
-                  Forgot password?
-                </a>
-              </div>
               <button
                 type="submit"
-                className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                className="w-full text-black bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                 disabled={loading}
               >
                 {loading ? 'Signing in...' : 'Sign in'}
               </button>
               <p className="text-sm font-light text-gray-500">
                 Don’t have an account yet?{' '}
-                <a
-                  href="/register"
-                  className="font-medium text-primary-600 hover:underline"
-                >
+                <a href="/register" className="font-medium text-primary-600 hover:underline">
                   Sign up
                 </a>
               </p>

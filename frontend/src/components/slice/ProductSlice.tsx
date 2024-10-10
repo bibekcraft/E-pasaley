@@ -31,12 +31,15 @@ const initialState: ProductState = {
 };
 
 // Async function to fetch products from the API
-const fetchProductWithAPI = async (categoryId: number) => {
+const fetchProductWithAPI = async (categoryId: number): Promise<Product[]> => {
     const response = await fetch(`http://127.0.0.1:8000/products/?category=${categoryId}`);
     if (!response.ok) {
+        const errorText = await response.text(); // Get the error response text
+        console.error('Error fetching products:', errorText); // Log the error for debugging
         throw new Error('Error fetching products');
     }
-    return response.json();
+    const data = await response.json();
+    return data; // Ensure the data matches Product[]
 };
 
 // Create an async thunk for fetching products

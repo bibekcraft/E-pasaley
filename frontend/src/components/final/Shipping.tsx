@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPersonalDetails, setShippingAddress, setTotal } from '../slice/orderSlice';
 import { RootState } from '../store/Store';
@@ -7,7 +7,7 @@ import axios from 'axios';
 
 function Shipping() {
   const dispatch = useDispatch();
-  
+
   // Fetch cart items and quantities from the Redux store
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const quantities = useSelector((state: RootState) => state.order.quantities); // Get quantities from Redux
@@ -63,15 +63,15 @@ function Shipping() {
 
     try {
       const response = await axios.post('http://127.0.0.1:8000/orders/', {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
+        first_name: formData.firstName,
+        last_name: formData.lastName,
         email: formData.email,
         phone: formData.phone,
         zipcode: formData.zipCode,
-        addressLine: formData.addressLine,
+        address_line: formData.addressLine,
         city: formData.city,
         state: formData.state,
-        total: totalCost, // Use the total cost passed from Checkout
+        total_cost: totalCost, // Use the total cost passed from Checkout
         products: productsData,
       });
       if (response.status === 201) {
@@ -100,20 +100,22 @@ function Shipping() {
     <div className="font-[sans-serif] bg-white">
       <div className="flex h-full gap-12 max-sm:flex-col max-lg:gap-4">
         {/* Order Summary */}
-        <div className="bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 sm:h-screen sm:sticky sm:top-0 lg:min-w-[370px] sm:min-w-[300px] p-4">
+        <div className="bg-gradient-to-r from-green-800 via-green-700 to-green-800 sm:h-screen sm:sticky sm:top-0 lg:min-w-[370px] sm:min-w-[300px] p-4">
           <h2 className="text-xl font-semibold text-white">Your Order:</h2>
           {cartItems.map((product, index) => (
-            <div key={product.id} className="flex justify-between mt-2 text-white border-b border-gray-600">
+            <div key={product.id} className="flex justify-between mt-2 text-white border-b border-green-600">
               <span>{product.itemnumber}</span>
               <span>{quantities[index] || 1}</span> {/* Show quantity */}
-              <span>Rs {(Number(product.final_price) * (quantities[index] || 1))}</span>
+              <span>Rs {(Number(product.final_price) * (quantities[index] || 1)).toFixed(2)}</span>
             </div>
           ))}
-          <div className="pt-4 mt-8 border-t border-gray-600">
+          <div className="pt-4 mt-8 border-t border-green-600">
+          <div className="pt-4 mt-8 border-t border-green-600">
             <div className="flex justify-between py-6 font-semibold text-white uppercase">
               <span>Total cost</span>
               <span>Rs {totalCost}</span> {/* Display the total cost after discount */}
             </div>
+          </div>
           </div>
         </div>
 

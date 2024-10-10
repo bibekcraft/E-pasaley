@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'; // Import useNavigate
 import { RootState } from '../store/Store';
 import { addItem } from '../slice/cartSlice'; 
 import Faq from '../resources/Faq';
@@ -9,9 +9,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Footer from '../firstpage/Footer';
 import First from 'components/firstpage/First';
+
 const ProductView: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // Initialize useNavigate
   const { products, status } = useSelector((state: RootState) => state.product);
 
   useEffect(() => {
@@ -35,8 +37,10 @@ const ProductView: React.FC = () => {
     return <p>Loading...</p>;
   }
 
+  // Navigate to a products list page if product is not found
   if (!product) {
-    return <p>Product not found.</p>;
+    navigate('/products'); // Adjust this path as needed
+    return null; // Return null to avoid rendering the component
   }
 
   return (

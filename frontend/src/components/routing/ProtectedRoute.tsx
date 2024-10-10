@@ -1,7 +1,8 @@
+// src/components/routing/ProtectedRoute.tsx
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { RootState } from '../store/Store'; // Update this to the correct path where your RootState is defined
+import { RootState } from '../store/Store'; // Import the correct RootState type
 
 interface ProtectedRouteProps {
   Component: React.ComponentType;
@@ -9,15 +10,16 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ Component }) => {
   const navigate = useNavigate();
-  const isLoggedIn = useSelector((state: RootState) => state.login.status === 'succeeded');
+  const isAuthenticated = useSelector((state: RootState) => state.login.isAuthenticated); // Check login status
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    // If the user is not authenticated, navigate to the login page
+    if (!isAuthenticated) {
       navigate('/login');
     }
-  }, [isLoggedIn, navigate]);
+  }, [isAuthenticated, navigate]);
 
-  return isLoggedIn ? <Component /> : null;
+  return isAuthenticated ? <Component /> : null; // Render component only if authenticated
 };
 
 export default ProtectedRoute;

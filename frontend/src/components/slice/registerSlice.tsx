@@ -1,15 +1,16 @@
+// src/components/slice/registerSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// Thunk for user registration
+// Async thunk for registering a user
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async (userData: { username: string; email: string; password: string }, { rejectWithValue }) => {
     try {
       const response = await axios.post('http://localhost:8000/auth/register/', userData);
-      return response.data; // Return user data on successful registration
+      return response.data; // Adjust this to your response structure if needed
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.error || 'Registration failed'); // Handle error
+      return rejectWithValue(error.response?.data?.error || 'Registration failed');
     }
   }
 );
@@ -38,15 +39,17 @@ const registerSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.success = true; // Registration was successful
-        state.userInfo = payload; // Save user data
+        state.success = true;
+        state.userInfo = payload; // Store user information if needed
+        // Optionally, you can add a token to local storage here if your API returns one
       })
       .addCase(registerUser.rejected, (state, { payload }) => {
         state.loading = false;
-        state.error = payload; // Save error message
+        state.error = payload; // Store the error message
       });
   },
 });
 
+// Export the action and reducer
 export const { resetRegisterState } = registerSlice.actions;
 export default registerSlice.reducer;

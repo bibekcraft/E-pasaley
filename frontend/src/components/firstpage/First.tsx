@@ -3,11 +3,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchProduct } from "../slice/ProductSlice";
 import epsl from "../../assets/epsl.png";
+import { RootState } from "../store/Store"; // Import RootState if needed for typing
 
 function First() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { products } = useSelector((state) => state.product);
+
+  // Fetch products from the Redux store
+  const { products } = useSelector((state: RootState) => state.product);
+
+  // Check if the user is authenticated
+  const isAuthenticated = useSelector((state: RootState) => state.login.isAuthenticated);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [matchedProducts, setMatchedProducts] = useState([]);
@@ -48,7 +54,7 @@ function First() {
           placeholder="Search essentials..."
           className="w-1/2 px-4 py-2 transition duration-300 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
+            if (e.key === "Enter") {
               handleSearch();
             }
           }}
@@ -77,26 +83,32 @@ function First() {
         )}
       </div>
 
+      {/* Links Section */}
       <div className="flex justify-center w-full mt-4 space-x-4">
-  <Link to="/trackorder" className="relative font-medium text-black group">
-    Track Order
-    <span className="absolute left-0 w-0 h-1.5 transition-all duration-300 bg-green-600 -bottom-1 group-hover:w-full"></span>
-  </Link>
-  <Link to="/offers" className="relative font-medium text-black group">
-    Offers
-    <span className="absolute left-0 -bottom-1 h-1.5 w-0 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
-  </Link>
-  <Link to="/login" className="relative font-medium text-black group">
-    Sign In
-    <span className="absolute left-0 -bottom-1 h-1.5 w-0 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
-  </Link>
-  <Link to="/register" className="relative font-medium text-black group">
-    Sign Up
-    <span className="absolute left-0 -bottom-1 h-1.5 w-0 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
-  </Link>
-</div>
+        <Link to="/trackorder" className="relative font-medium text-black group">
+          Track Order
+          <span className="absolute left-0 w-0 h-1.5 transition-all duration-300 bg-green-600 -bottom-1 group-hover:w-full"></span>
+        </Link>
 
-
+        {/* Conditionally Render Offers or Auth Links */}
+        {isAuthenticated ? (
+          <Link to="/offers" className="relative font-medium text-black group">
+            Offers
+            <span className="absolute left-0 -bottom-1 h-1.5 w-0 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
+          </Link>
+        ) : (
+          <>
+            <Link to="/login" className="relative font-medium text-black group">
+              Sign In
+              <span className="absolute left-0 -bottom-1 h-1.5 w-0 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
+            </Link>
+            <Link to="/register" className="relative font-medium text-black group">
+              Sign Up
+              <span className="absolute left-0 -bottom-1 h-1.5 w-0 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
+            </Link>
+          </>
+        )}
+      </div>
     </div>
   );
 }
