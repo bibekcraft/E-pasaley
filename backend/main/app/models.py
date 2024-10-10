@@ -94,20 +94,34 @@ class Contact(models.Model):
 # Custom User and Manager
 
 
+from django.db import models
+
 class Order(models.Model):
-    firstName = models.CharField(max_length=244, default='nothing')
-    lastName = models.CharField(max_length=244, default='nothing')
-    email = models.EmailField()
-    phone = models.CharField(max_length=15)
-    zipcode = models.CharField(max_length=10)
-    addressLine = models.CharField(max_length=244, default='nothing')
-    city = models.CharField(max_length=244)
-    state = models.CharField(max_length=244)
-    total = models.DecimalField(max_digits=10, decimal_places=2)
-    products = models.ManyToManyField(Product)
+    # Personal Details
+    first_name = models.CharField(max_length=100, default='your first name')
+    last_name = models.CharField(max_length=100, default='your last name')
+    email = models.EmailField(default='your email')
+    phone = models.CharField(max_length=15,default='your phone number')
+
+    # Shipping Address
+    address_line = models.CharField(max_length=255,default='your address')
+    city = models.CharField(max_length=100,default='your city')
+    state = models.CharField(max_length=100,default='your state')
+    zip_code = models.CharField(max_length=10,default='your zip code')
+
+    # Order Details
+    total_cost = models.DecimalField(max_digits=10, decimal_places=2)
+
+    # Product Details
+    item_numbers = models.JSONField(default='number')  # Store item numbers in a JSON array
+    quantities = models.JSONField(default='quantites')  # Store quantities in a JSON array
+
+    # Optional: Timestamp for when the order was created
+    created_at = models.DateTimeField( default=timezone.now)
 
     def __str__(self):
-        return f"Order by {self.firstName}"
+        return f"Order {self.id} by {self.first_name} {self.last_name}"
+
 
 class faq(models.Model):
     title = models.CharField(max_length=244)
