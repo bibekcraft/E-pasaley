@@ -5,7 +5,7 @@ import { fetchCategories } from '../slice/CategorySlice';
 import { UnknownAction } from 'redux';
 import { RootState } from '../store/Store';
 import { Link } from 'react-router-dom';
-
+import epsl from '../assets/epsl.png';
 function Categories() {
     const dispatch = useDispatch();
     const { categories, status, error } = useSelector((state: RootState) => state.categories);
@@ -14,6 +14,17 @@ function Categories() {
       dispatch(fetchCategories() as unknown as UnknownAction);
     }, [dispatch]);
 
+    if (status === 'idle' || status === 'loading') {
+      return <p>    <div className="flex items-center justify-center min-h-screen bg-white">
+      <div className="relative animate-spin-slow">
+        <img
+          src={epsl} // Replace this with the path to your uploaded logo
+          alt="ePasaley Logo"
+          className="w-40 h-40"
+        />
+      </div>
+    </div></p>;
+    }
   return (
     <div>
       {/* Navigation Bar */}

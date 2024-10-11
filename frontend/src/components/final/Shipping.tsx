@@ -4,7 +4,7 @@ import { setPersonalDetails, setShippingAddress, setTotal } from '../slice/order
 import { RootState } from '../store/Store';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-
+import LoadingScreen from '../modal/LoadingScreen';
 function Shipping() {
   const dispatch = useDispatch();
 
@@ -93,6 +93,12 @@ function Shipping() {
       setErrorMessage("Error completing order: " + (error.response?.data?.detail || error.message));
     } finally {
       setLoading(false);
+    }
+
+    
+    if (status === 'idle' || status === 'loading') {
+      return     <LoadingScreen />;
+
     }
   };
 

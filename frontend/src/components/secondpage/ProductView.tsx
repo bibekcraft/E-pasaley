@@ -4,11 +4,11 @@ import { useParams, useNavigate } from 'react-router-dom'; // Import useNavigate
 import { RootState } from '../store/Store';
 import { addItem } from '../slice/cartSlice'; 
 import Faq from '../resources/Faq';
-import Second from '../firstpage/Second';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Footer from '../firstpage/Footer';
-import First from 'components/firstpage/First';
+import First from '../firstpage/First';
+import LoadingScreen from '../modal/LoadingScreen';
 
 const ProductView: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
@@ -33,8 +33,10 @@ const ProductView: React.FC = () => {
     }
   };
 
-  if (status === 'loading') {
-    return <p>Loading...</p>;
+
+  if (status === 'idle' || status === 'loading') {
+    return     <LoadingScreen />;
+
   }
 
   // Navigate to a products list page if product is not found
@@ -45,7 +47,7 @@ const ProductView: React.FC = () => {
 
   return (
     <div>
-      <Second />
+      <First />
       <div className="w-full h-full p-6">
         <ToastContainer />
         {/* Product Section */}

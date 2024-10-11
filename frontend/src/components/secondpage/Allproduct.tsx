@@ -6,6 +6,7 @@ import { Link, useParams } from 'react-router-dom';
 import { AppDispatch } from '../store/Store';
 import { RootState } from '../store/Store';
 import { FaTag } from 'react-icons/fa';
+import LoadingScreen from '../modal/LoadingScreen';
 export interface Product {
   final_price: number;
   id: number;
@@ -78,10 +79,11 @@ const AllProducts: React.FC = () => {
     });
   }, [products, minPrice, maxPrice, selectedBrand, searchTerm, selectedDiscount]);
 
-  if (productStatus === 'loading' || categoryStatus === 'loading') {
-    return <p>Loading...</p>;
-  }
 
+  if (status === 'idle' || status === 'loading') {
+    return     <LoadingScreen />;
+
+  }
   if (productStatus === 'failed' || categoryStatus === 'failed') {
     return <p>Error fetching data. Please try again later.</p>;
   }

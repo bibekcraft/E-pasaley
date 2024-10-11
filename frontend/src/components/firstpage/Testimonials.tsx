@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchTestimonials } from "../slice/testimonialsSlice";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css"; 
+import LoadingScreen from "../modal/LoadingScreen";
 import "slick-carousel/slick/slick-theme.css"; 
 
 function Testimonials() {
@@ -25,6 +26,11 @@ function Testimonials() {
     autoplay: true,
     autoplaySpeed: 3000,
   };
+  
+  if (status === 'idle' || status === 'loading') {
+    return     <LoadingScreen />;
+
+  }
 
   return (
     <div className="px-4 mt-40 mb-20">

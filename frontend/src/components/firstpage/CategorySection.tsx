@@ -4,7 +4,7 @@ import { fetchCategories } from '../slice/CategorySlice';
 import { UnknownAction } from 'redux';
 import { RootState } from '../store/Store';
 import { Link } from 'react-router-dom';
-
+import LoadingScreen from '../modal/LoadingScreen';
 function CategorySection() {
     const dispatch = useDispatch();
     const { categories, status, error } = useSelector((state: RootState) => state.categories);
@@ -15,7 +15,10 @@ function CategorySection() {
     
     
 
+    if (status === 'idle' || status === 'loading') {
+        return     <LoadingScreen />;
 
+      }
     return (
         <div className="py-10">
             {/* Title and View All Link */}
@@ -24,11 +27,7 @@ function CategorySection() {
                 <Link to="/allproducts" className="text-green-600">View All &rarr;</Link>
             </div>
 
-            {/* Categories List */}
-            <div className="flex justify-around">
-                {/* Loading and Error States */}
-                {status === 'loading' && <p>Loading categories...</p>}
-                {status === 'failed' && <p>Error: {error}</p>}
+            
 
                 {/* Render Categories if Data is Available */}
                 {status === 'succeeded' && (
@@ -53,7 +52,6 @@ function CategorySection() {
                     </div>
                 )}
             </div>
-        </div>
     );
 }
 

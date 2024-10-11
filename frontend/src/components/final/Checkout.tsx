@@ -7,6 +7,8 @@ import { validateCoupon, reset } from '../slice/CouponSlice';
 import CategorySection from '../firstpage/CategorySection';
 import { RootState } from '../store/Store';
 
+import LoadingScreen from '../modal/LoadingScreen';
+
 interface Product {
   id: string;
   categoryId: string;
@@ -69,7 +71,14 @@ const Checkout: React.FC = () => {
     return () => {
       dispatch(reset());
     };
+
   }, [dispatch]);
+
+  
+  if (status === 'idle' || status === 'loading') {
+    return     <LoadingScreen />;
+
+  }
 
   return (
     <div>

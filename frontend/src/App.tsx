@@ -20,7 +20,7 @@ import ProtectedRoute from './components/routing/ProtectedRoute';
 import TermsAndConditions from './components/firstpage/TermsAndCondition';
 import PrivacyPolicy from './components/firstpage/ProvacyPolicy';
 import Testimonials from './components/firstpage/Testimonials';
-
+import LoadingScreen from '../src/components/modal/LoadingScreen';
 function App() {
   return (
     <Provider store={store}>
@@ -40,6 +40,7 @@ function App() {
           <Route path="/product/:productId" element={<ProductDetail />} />
           <Route path="/productcarousel" element={<ProductCarousel />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+          <Route path="/loading" element={<LoadingScreen />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/testimonials" element={<Testimonials />} />
           {/* Authentication Routes */}
