@@ -12,9 +12,14 @@ import CategorySection from '../firstpage/CategorySection'
 import  ProductCarousel from '../firstpage/ProductCarousel'
 import Header from '../firstpage/Header';
 import Testamonials from '../firstpage/Testimonials';
+import WelcomeModal from '../modal/WelcomeModal'
+import DesignModal from '../modal/DesignModal';
 function FirstPage() {
   return (
     <>
+    
+    <DesignModal />
+    <WelcomeModal />
     <Header />
     <First />
     <Crausels />
