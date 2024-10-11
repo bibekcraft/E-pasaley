@@ -9,7 +9,7 @@ import { RootState } from '../store/Store';
 
 interface Product {
   id: string;
-  categoryId: string; // Ensure categoryId is part of the product
+  categoryId: string;
   name: string;
   image: string;
   brand: string;
@@ -47,14 +47,10 @@ const Checkout: React.FC = () => {
   };
 
   // Group items and calculate total prices
-  const groupedItems = cartItems.map((item, index) => {
-    const finalPrice = item.final_price || 0; // Default to 0 if undefined
-    const quantity = quantities[index] || 1; // Default to 1 if undefined
-    return {
-      ...item,
-      totalPrice: finalPrice * quantity,
-    };
-  });
+  const groupedItems = cartItems.map((item, index) => ({
+    ...item,
+    totalPrice: (item.final_price || 0) * (quantities[index] || 1),
+  }));
 
   const totalPrice = groupedItems.reduce((total, item) => total + (item.totalPrice || 0), 0);
   const totalWithDiscount = totalPrice - (discount || 0);
@@ -89,10 +85,10 @@ const Checkout: React.FC = () => {
             {groupedItems.map((item, index) => (
               <div key={item.id} className="items-stretch py-8 border-t md:flex md:py-10 lg:py-8 border-gray-50">
                 <div className="w-full md:w-4/12 2xl:w-1/4">
-                  <img src={item.image as string | undefined} alt={item.name as string | undefined} className="object-cover object-center w-full h-full" />
+                  <img src={item.image} alt={item.name} className="object-cover object-center w-full h-full" />
                 </div>
                 <div className="flex flex-col justify-center md:pl-3 md:w-8/12 2xl:w-3/4">
-                  <p className="text-base font-black leading-none text-gray-800">{item.name as string}</p>
+                  <p className="text-base font-black leading-none text-gray-800">{item.name}</p>
                   <div className="flex items-center justify-between w-full">
                     <select
                       value={quantities[index] || 1}
@@ -100,7 +96,8 @@ const Checkout: React.FC = () => {
                       aria-label="Select quantity"
                       className="px-1 py-2 mr-6 border border-gray-200"
                     >
-                      {Array.from(Array(10).keys()).map((_, i) => (
+                      {/* Populate select options for 1-10 */}
+                      {Array.from({ length: 10 }, (_, i) => (
                         <option key={i} value={i + 1}>
                           {i + 1}
                         </option>
@@ -108,7 +105,7 @@ const Checkout: React.FC = () => {
                     </select>
                     <p className="text-base font-black leading-none text-gray-800">Rs {item.totalPrice}</p>
                   </div>
-                  <p className="text-xs leading-3 text-gray-600">Brand: {item.brand as string}</p>
+                  <p className="text-xs leading-3 text-gray-600">Brand: {item.brand}</p>
                   <div className="flex items-center justify-between pt-5">
                     <p className="text-xs leading-3 text-gray-800 underline cursor-pointer">Add to favorites</p>
                     <p
@@ -121,7 +118,6 @@ const Checkout: React.FC = () => {
                 </div>
               </div>
             ))}
-
 
           </div>
 
@@ -159,7 +155,6 @@ const Checkout: React.FC = () => {
             {status === 'loading' && <p className="text-sm text-gray-500">Validating coupon...</p>}
             {error && <p className="text-sm text-red-500">{error}</p>}
 
-            {/* Show discount if applied */}
             {discount > 0 && (
               <div className="flex justify-between mt-5 text-sm font-semibold uppercase">
                 <span>Discount Applied</span>
@@ -170,7 +165,7 @@ const Checkout: React.FC = () => {
             <div className="mt-8 border-t">
               <div className="flex justify-between py-6 text-sm font-semibold uppercase">
                 <span>Total cost</span>
-                <span>Rs {exactFinalCost}</span> {/* Final total with shipping */}
+                <span>Rs {exactFinalCost}</span>
               </div>
               <Link to="/shipping" state={{ products: groupedItems, totalCost: exactFinalCost, quantities }}>
                 <button className="w-full py-3 text-sm font-semibold text-white uppercase bg-indigo-500 hover:bg-indigo-600">
