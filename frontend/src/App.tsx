@@ -21,6 +21,7 @@ import TermsAndConditions from './components/firstpage/TermsAndCondition';
 import PrivacyPolicy from './components/firstpage/ProvacyPolicy';
 import Testimonials from './components/firstpage/Testimonials';
 import LoadingScreen from '../src/components/modal/LoadingScreen';
+import TrackOrder from '../src/components/secondpage/TrackOrder';
 function App() {
   return (
     <Provider store={store}>
@@ -43,10 +44,12 @@ function App() {
           <Route path="/loading" element={<LoadingScreen />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/testimonials" element={<Testimonials />} />
+          <Route path="/trackorder" element={<TrackOrder />} />
           {/* Authentication Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/hovercard" element={<HoverCard />} />
+
         </Routes>
       </Router>
     </Provider>

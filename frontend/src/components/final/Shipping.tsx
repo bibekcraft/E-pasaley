@@ -5,6 +5,7 @@ import { RootState } from '../store/Store';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import LoadingScreen from '../modal/LoadingScreen';
+
 function Shipping() {
   const dispatch = useDispatch();
 
@@ -94,13 +95,12 @@ function Shipping() {
     } finally {
       setLoading(false);
     }
-
-    
-    if (status === 'idle' || status === 'loading') {
-      return     <LoadingScreen />;
-
-    }
   };
+
+  // Show loading screen while processing
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="font-[sans-serif] bg-white">
@@ -116,12 +116,10 @@ function Shipping() {
             </div>
           ))}
           <div className="pt-4 mt-8 border-t border-green-600">
-          <div className="pt-4 mt-8 border-t border-green-600">
             <div className="flex justify-between py-6 font-semibold text-white uppercase">
               <span>Total cost</span>
               <span>Rs {totalCost}</span> {/* Display the total cost after discount */}
             </div>
-          </div>
           </div>
         </div>
 
