@@ -1,27 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCrausel } from '../slice/crauselSlice'; // Adjust path as necessary
+import { fetchSecondCrausel } from '../slice/secondCrauselSlice '; // Adjust path as necessary
 
-function Crausels() {
+function SecondCrausels() {
   const dispatch = useDispatch();
-  const { crausel, status, error } = useSelector((state) => state.crausel);
+  const { secondCrausel, status, error } = useSelector((state) => state.secondCrausel);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Fetch the carousel data when the component mounts
   useEffect(() => {
-    dispatch(fetchCrausel());
+    dispatch(fetchSecondCrausel());
   }, [dispatch]);
 
   // Automatically change the slide every 3 seconds
   useEffect(() => {
-    if (crausel.length > 0) {
+    if (secondCrausel.length > 0) {
       const interval = setInterval(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % crausel.length);
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % secondCrausel.length);
       }, 3000); // Change slide every 3 seconds
 
       return () => clearInterval(interval); // Cleanup interval on unmount
     }
-  }, [crausel.length]);
+  }, [secondCrausel.length]);
 
   // Handle loading and error states
   if (status === 'loading') {
@@ -33,10 +33,10 @@ function Crausels() {
   }
 
   return (
-    <div className="relative w-full">
-      {/* Carousel wrapper with increased height */}
-      <div className="relative overflow-hidden rounded-lg h-[400px] md:h-[500px] lg:h-[600px]"> {/* Adjusted height */}
-        {crausel.map((item, index) => (
+    <div className="flex justify-center w-full p-2"> {/* Flexbox to center the carousel */}
+      {/* Wider and taller carousel wrapper */}
+      <div className="relative overflow-hidden rounded-lg shadow-md w-[900px] h-[250px] md:w-[1000px] md:h-[300px] lg:w-[1100px] lg:h-[350px]"> {/* Increased width and height */}
+        {secondCrausel.map((item, index) => (
           <div
             key={item.id}
             className={`absolute w-full h-full transition-opacity duration-700 ease-in-out ${
@@ -45,16 +45,14 @@ function Crausels() {
           >
             <img
               src={item.image} // Display the image based on the fetched data
-              className="absolute object-cover w-full h-full"
+              className="absolute object-cover w-full h-full rounded-lg"
               alt={item.title || "Carousel image"}
             />
           </div>
         ))}
       </div>
-
-      {/* Removed the slider indicators */}
     </div>
   );
 }
 
-export default Crausels;
+export default SecondCrausels;

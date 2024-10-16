@@ -10,9 +10,11 @@ import loginReducer from '../slice/loginSlice';
 import authReducer from '../slice/authSlice';
 import testimonialsReducer from '../slice/testimonialsSlice';
 import CrauselReducer from '../slice/crauselSlice';
+import secondCrauselReducer  from '../slice/secondCrauselSlice ';
 const store = configureStore({
   reducer: {
-    cart: cartReducer,
+    secondCrausel: secondCrauselReducer,
+        cart: cartReducer,
     categories: categoryReducer,
     product: productReducer,
     coupons: couponReducer,

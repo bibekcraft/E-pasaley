@@ -4,6 +4,7 @@ import { registerUser } from '../slice/registerSlice';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import epsl from '../../assets/epsl.png';
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -41,8 +42,8 @@ const Register = () => {
       <ToastContainer />
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <a href="#" className="flex items-center mb-6 text-3xl font-semibold text-gray-900">
-          <img className="w-10 h-10 mr-2" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg" alt="logo" />
-          E-pasaley
+        <img className="w-auto h-20 mr-2" src={epsl} alt="logo" />
+        E-pasaley
         </a>
         <div className="w-full bg-white rounded-lg shadow-lg sm:max-w-md xl:p-0">
           <div className="p-6 space-y-4 sm:p-8">

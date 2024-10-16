@@ -6,20 +6,19 @@ import 'slick-carousel/slick/slick-theme.css';
 
 // Sample brand logos
 const brands = [
-  { name: "Amazon", logo: "https://cdn.logojoy.com/wp-content/uploads/20230629132639/current-logo-600x338.png" }, // Replace with actual logo paths
+  { name: "Amazon", logo: "https://cdn.logojoy.com/wp-content/uploads/20230629132639/current-logo-600x338.png" },
   { name: "Flipkart", logo: "https://logos-world.net/wp-content/uploads/2020/11/Flipkart-Logo.png" },
   { name: "Myntra", logo: "https://www.perficient.com/-/media/images/insights/research/case-study-logos/myntra_logo-min.ashx?h=1600&iar=0&w=5100&hash=6ABE517E5CDA2D1710DF42786417FE33" },
   { name: "H&M", logo: "https://www.graftoncentre.co.uk/wp-content/uploads/2016/09/h-and-m.png" },
   { name: "Boat", logo: "https://logos-world.net/wp-content/uploads/2020/11/Flipkart-Logo.png" },
   { name: "Firebolt", logo: "https://www.itvoice.in/wp-content/uploads/2023/05/Brand-Logo-1.png" },
-  
   { name: "Red-Tape", logo: "https://assets.tatacliq.com/medias/sys_master/images/47020900188190.jpg" },
   { name: "adidas", logo: "https://upload.wikimedia.org/wikipedia/commons/2/20/Adidas_Logo.svg" },
 ];
 
 const WWW: React.FC = () => {
   const settings = {
-    dots: true,
+    dots: false, // Set to false to remove the dots
     infinite: true,
     speed: 500,
     slidesToShow: 4,

@@ -24,7 +24,7 @@ const Header = () => {
 
 
             {/* Sliding Text Section */}
-            <div className="w-full py-2 overflow-hidden bg-black">
+            <div className="w-full py-2 overflow-hidden bg-green-700">
                 <div className="marquee ">
                     <div 
                         className="text-white animate-marquee"  

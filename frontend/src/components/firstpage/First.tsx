@@ -37,7 +37,7 @@ function First() {
   };
 
   return (
-    <div className="container flex flex-col items-center px-4 py-6 mx-auto bg-white shadow-lg rounded-xl">
+    <div className="container flex flex-col items-center px-4 py-6 mx-auto shadow-lg bg-gray-6oo rounded-xl">
       {/* Logo and Site Name */}
       <div className="flex items-center mb-4">
         <Link to="/" aria-label="Go home" title="Company" className="inline-flex items-center">

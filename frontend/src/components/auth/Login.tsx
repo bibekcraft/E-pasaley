@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../slice/loginSlice';
-
+import epsl from '../../assets/epsl.png';
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ const Login = () => {
     <section className="bg-white">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <a href="#" className="flex items-center mb-6 text-3xl font-semibold text-gray-900">
-          <img className="w-10 h-10 mr-2" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg" alt="logo" />
+        <img className="w-auto h-20 mr-2" src={epsl} alt="logo" />
           E-pasaley
         </a>
         <div className="w-full bg-white rounded-lg shadow-md sm:max-w-md xl:p-0">
