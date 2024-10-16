@@ -27,6 +27,7 @@ function App() {
     <Provider store={store}>
       <Router>
         <Routes>
+          
           <Route path="/" element={<FirstPage />} />
           <Route path="/home" element={<Second />} />
           {/* Protected Routes */}

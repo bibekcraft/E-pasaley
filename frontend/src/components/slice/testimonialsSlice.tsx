@@ -1,4 +1,3 @@
-// src/features/testimonials/testimonialsSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
@@ -7,6 +6,7 @@ export const fetchTestimonials = createAsyncThunk(
   'testimonials/fetchTestimonials',
   async () => {
     const response = await axios.get('http://127.0.0.1:8000/testimonials/');
+    console.log('API Response:', response.data); // Log API response to check for duplicates
     return response.data; // The payload of fulfilled action will be this data
   }
 );
@@ -29,6 +29,7 @@ const testimonialsSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(fetchTestimonials.fulfilled, (state, action) => {
+        console.log('Fetched Testimonials:', action.payload); // Log fetched data for duplicates
         state.status = 'succeeded';
         state.testimonials = action.payload; // Add the fetched testimonials to the state
       })

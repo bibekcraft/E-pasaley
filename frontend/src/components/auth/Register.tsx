@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../slice/registerSlice';
 import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -13,23 +15,30 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  useEffect(() => {
+    if (success) {
+      toast.success('User registered successfully!', {
+        position: 'top-right',
+        autoClose: 3000,
+        onClose: () => navigate('/login'),
+      });
+    }
+  }, [success, navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      alert("Passwords don't match");
+      toast.error("Passwords don't match", { position: 'top-right' });
       return;
     }
 
     await dispatch(registerUser({ username, email, password }));
-
-    if (success) {
-      navigate('/login'); // Redirect to login page on successful registration
-    }
   };
 
   return (
     <section className="bg-white">
+      <ToastContainer />
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <a href="#" className="flex items-center mb-6 text-3xl font-semibold text-gray-900">
           <img className="w-10 h-10 mr-2" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg" alt="logo" />
@@ -40,7 +49,6 @@ const Register = () => {
             <h1 className="text-2xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
               Create an account
             </h1>
-            {success && <p className="text-green-500">Registration successful!</p>}
             {error && <p className="text-red-500">{error}</p>}
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
