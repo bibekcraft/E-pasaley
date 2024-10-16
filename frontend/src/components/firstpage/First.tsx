@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchProduct } from "../slice/ProductSlice";
-import epsl from "../../assets/epsl.png";
+import epsl from "../../assets/epsl.png"; // Use colored logo image
 import { RootState } from "../store/Store"; // Import RootState if needed for typing
-import { FaShoppingCart } from "react-icons/fa"; // Import FontAwesome Cart Icon
+import { FaShoppingCart, FaSearch } from "react-icons/fa"; // Import FontAwesome Icons
 
 function First() {
   const dispatch = useDispatch();
@@ -37,13 +37,13 @@ function First() {
   };
 
   return (
-    <div className="container flex flex-col items-center px-4 py-6 mx-auto shadow-lg bg-gray-6oo rounded-xl">
+    <div className="container flex flex-col items-center px-4 py-6 mx-auto bg-white shadow-lg rounded-xl"> {/* Updated background to white */}
       {/* Logo and Site Name */}
       <div className="flex items-center mb-4">
         <Link to="/" aria-label="Go home" title="Company" className="inline-flex items-center">
           <img src={epsl} alt="E-pasaley Logo" className="w-auto h-20" />
         </Link>
-        <h2 className="ml-2 text-4xl font-bold text-green-600">E-pasaley</h2>
+        <h2 className="ml-2 text-4xl font-bold text-gray-800">E-pasaley</h2> {/* Updated text color */}
       </div>
 
       {/* Search Bar */}
@@ -62,17 +62,17 @@ function First() {
         />
         <button
           onClick={handleSearch}
-          className="p-2 ml-2 text-white transition duration-300 rounded-lg bg-gradient-to-r from-green-400 to-green-600 hover:bg-green-700"
+          className="p-2 ml-2 text-white transition duration-300 rounded-lg bg-gradient-to-r from-green-500 to-green-600 hover:bg-green-700"
         >
-          Search
+          <FaSearch /> {/* Search Icon */}
         </button>
       </div>
 
       {/* Products Display */}
       <div className="flex flex-wrap justify-center w-full mb-4">
         {matchedProducts.map((product) => (
-          <div key={product.id} className="p-4 m-2 transition-shadow duration-300 rounded-lg shadow-md bg-gray-50 hover:shadow-xl w-60">
-            <h3 className="text-lg font-semibold text-green-700">{product.name}</h3>
+          <div key={product.id} className="p-4 m-2 transition-shadow duration-300 bg-gray-100 rounded-lg shadow-md hover:shadow-xl w-60">
+            <h3 className="text-lg font-semibold text-gray-800">{product.name}</h3> {/* Updated text color */}
             <p className="text-gray-600">${product.price}</p>
             <Link to={`/allproducts/${product.categoryId}`} className="text-blue-600 hover:underline">
               View Details
@@ -86,30 +86,30 @@ function First() {
 
       {/* Links Section */}
       <div className="flex justify-center w-full mt-4 space-x-4">
-        <Link to="/trackorder" className="relative font-medium text-black group">
-          Track Order
+        <Link to="/trackorder" className="relative flex items-center font-medium text-gray-800 group">
+          <span className="mr-1">Track Order</span>
           <span className="absolute left-0 w-0 h-1.5 transition-all duration-300 bg-green-600 -bottom-1 group-hover:w-full"></span>
         </Link>
 
         {/* Cart Icon */}
-        <Link to="/cart" className="relative flex items-center font-medium text-black group">
+        <Link to="/cart" className="relative flex items-center font-medium text-gray-800 group">
           <FaShoppingCart className="mr-2" /> Cart
           <span className="absolute left-0 -bottom-1 h-1.5 w-0 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
         </Link>
 
         {/* Conditionally Render Offers or Auth Links */}
         {isAuthenticated ? (
-          <Link to="/offers" className="relative font-medium text-black group">
+          <Link to="/offers" className="relative font-medium text-gray-800 group">
             Offers
             <span className="absolute left-0 -bottom-1 h-1.5 w-0 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
           </Link>
         ) : (
           <>
-            <Link to="/login" className="relative font-medium text-black group">
+            <Link to="/login" className="relative font-medium text-gray-800 group">
               Sign In
               <span className="absolute left-0 -bottom-1 h-1.5 w-0 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
             </Link>
-            <Link to="/register" className="relative font-medium text-black group">
+            <Link to="/register" className="relative font-medium text-gray-800 group">
               Sign Up
               <span className="absolute left-0 -bottom-1 h-1.5 w-0 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
             </Link>
