@@ -183,6 +183,27 @@ class LoginView(APIView):
 
 from .serializers import crauselSerializer
 from .models import crausel
+from .serializers import modal1Serializer
+from .models import modal1
 class crauselListCreateAPIView(generics.ListCreateAPIView):
     queryset = crausel.objects.all()
     serializer_class = crauselSerializer
+
+class modal1ListCreateAPIView(generics.ListCreateAPIView):
+    queryset = modal1.objects.all()
+    serializer_class = modal1Serializer
+
+
+from rest_framework import viewsets
+from .models import Order
+from .serializers import OrderSerializer , crauselsofdesignSerializer
+
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+from .models import crauselsofdesign
+
+class crauselsofdesignListCreateAPIView(generics.ListCreateAPIView):
+    queryset = crauselsofdesign.objects.all()
+    serializer_class = crauselsofdesignSerializer

@@ -83,37 +83,76 @@ class faqSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 # Order Serializer
+from .models import Order, OrderItem
+
+from rest_framework import serializers
+from .models import Order, OrderItem
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = ['id', 'item_number', 'final_price', 'quantity', 'total']
+
 class OrderSerializer(serializers.ModelSerializer):
-    products = serializers.PrimaryKeyRelatedField(many=True, queryset=Product.objects.all())
-    product_details = serializers.SerializerMethodField()
+    order_items = OrderItemSerializer(many=True)
 
     class Meta:
         model = Order
-        fields = '__all__'
-
-    def get_product_details(self, obj):
-        # Getting details of products including their category IDs
-        return [
-            {
-                'product_id': product.id,
-                'category_id': product.category.id if product.category else None,
-                'name': product.name,
-                'price': product.price,
-            }
-            for product in obj.products.all()
-        ]
+        fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'address_line', 
+                  'city', 'state', 'zip_code', 'total_cost', 'order_items']
 
     def create(self, validated_data):
-        # Handle products separately
-        products_data = validated_data.pop('products')
+        # Extract order_items data
+        order_items_data = validated_data.pop('order_items')
+        # Create the Order instance
         order = Order.objects.create(**validated_data)
-        # You may want to handle adding products to the order here
-        order.products.set(products_data)  # Assuming you want to set the products
+        # Create each OrderItem instance
+        for item_data in order_items_data:
+            OrderItem.objects.create(order=order, **item_data)
         return order
 
-from .models import crausel
+    def update(self, instance, validated_data):
+        # Extract order_items data
+        order_items_data = validated_data.pop('order_items', None)
+
+        # Update the Order instance
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        # Update order items
+        if order_items_data is not None:
+            # Clear existing order items
+            instance.order_items.all().delete()
+            # Create new order items
+            for item_data in order_items_data:
+                OrderItem.objects.create(order=instance, **item_data)
+
+        return instance
+
+class OrderSerializer(serializers.ModelSerializer):
+    order_items = OrderItemSerializer(many=True)
+
+    class Meta:
+        model = Order
+        fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'address_line', 
+                  'city', 'state', 'zip_code', 'total_cost', 'order_items']
+
+
+from .models import crausel,modal1
 
 class crauselSerializer(serializers.ModelSerializer):
     class Meta:
         model = crausel
+        fields = '__all__'
+
+class modal1Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = modal1
+        fields = '__all__'
+
+from .models import crauselsofdesign
+class crauselsofdesignSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = crauselsofdesign
         fields = '__all__'

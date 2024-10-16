@@ -95,32 +95,62 @@ class Contact(models.Model):
 
 
 from django.db import models
+from django.db import models
+from django.utils import timezone
+from django.db import models
+from django.core.exceptions import ValidationError
 
 class Order(models.Model):
-    # Personal Details
-    first_name = models.CharField(max_length=100, default='your first name')
-    last_name = models.CharField(max_length=100, default='your last name')
-    email = models.EmailField(default='your email')
-    phone = models.CharField(max_length=15,default='your phone number')
-
-    # Shipping Address
-    address_line = models.CharField(max_length=255,default='your address')
-    city = models.CharField(max_length=100,default='your city')
-    state = models.CharField(max_length=100,default='your state')
-    zip_code = models.CharField(max_length=10,default='your zip code')
-
-    # Order Details
+    id = models.CharField(max_length=10, primary_key=True, editable=False)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone = models.CharField(max_length=15)
+    address_line = models.CharField(max_length=255)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    zip_code = models.CharField(max_length=10)
     total_cost = models.DecimalField(max_digits=10, decimal_places=2)
 
-    # Product Details
-    item_numbers = models.JSONField(default='number')  # Store item numbers in a JSON array
-    quantities = models.JSONField(default='quantites')  # Store quantities in a JSON array
+    def generate_id(self):
+        # Get the last order ID and increment it
+        last_order = Order.objects.order_by('id').last()
+        if last_order:
+            last_id = int(last_order.id[4:])  # Remove the prefix "3132"
+            new_id = f"3132{last_id + 1:06d}"  # Increment and pad with zeros
+        else:
+            new_id = "3132000001"  # Starting ID if no orders exist
 
-    # Optional: Timestamp for when the order was created
-    created_at = models.DateTimeField( default=timezone.now)
+        return new_id
 
-    def __str__(self):
-        return f"Order {self.id} by {self.first_name} {self.last_name}"
+    def save(self, *args, **kwargs):
+        if not self.id:  # Generate ID only if it hasn't been set
+            self.id = self.generate_id()
+        super().save(*args, **kwargs)
+
+class OrderItem(models.Model):
+    id = models.CharField(max_length=10, primary_key=True, editable=False)
+    order = models.ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE)
+    item_number = models.CharField(max_length=100)
+    final_price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.IntegerField()
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def generate_id(self):
+        # Get the last order item ID and increment it
+        last_item = OrderItem.objects.order_by('id').last()
+        if last_item:
+            last_id = int(last_item.id[4:])  # Remove the prefix "3132"
+            new_id = f"3132{last_id + 1:06d}"  # Increment and pad with zeros
+        else:
+            new_id = "3132000001"  # Starting ID if no order items exist
+
+        return new_id
+
+    def save(self, *args, **kwargs):
+        if not self.id:  # Generate ID only if it hasn't been set
+            self.id = self.generate_id()
+        super().save(*args, **kwargs)
 
 
 class faq(models.Model):
@@ -134,6 +164,23 @@ class crausel(models.Model):
     title = models.CharField(max_length=244)
     description = models.TextField()
     image = models.ImageField(upload_to='crausel')
+
+    def __str__(self):
+        return self.title
+
+
+class modal1(models.Model):
+    title = models.CharField(max_length=244)
+    description = models.TextField()
+    image = models.ImageField(upload_to='modal1')
+
+    def __str__(self):
+        return self.title
+    
+class crauselsofdesign(models.Model):
+    title = models.CharField(max_length=244)
+    description = models.TextField()
+    image = models.ImageField(upload_to='crauselsofdesign')
 
     def __str__(self):
         return self.title
