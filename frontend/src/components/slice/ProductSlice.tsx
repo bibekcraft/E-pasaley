@@ -1,10 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ReactNode } from 'react';
 
+// Define the Product interface
 interface Product {
-    image1: any;
-    image3: any;
-    image2: any;
+    discount: ReactNode;
     itemnumber: ReactNode;
     feature: ReactNode;
     description: ReactNode;
@@ -18,6 +17,7 @@ interface Product {
     name: string;
 }
 
+// Define the initial state for the slice
 interface ProductState {
     products: Product[];
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
@@ -30,6 +30,7 @@ const initialState: ProductState = {
     error: null,
 };
 
+// Async function to fetch products from the API
 const fetchProductWithAPI = async (categoryId: number) => {
     const response = await fetch(`http://127.0.0.1:8000/products/?category=${categoryId}`);
     if (!response.ok) {
@@ -38,15 +39,16 @@ const fetchProductWithAPI = async (categoryId: number) => {
     return response.json();
 };
 
+// Create an async thunk for fetching products
 const fetchProduct = createAsyncThunk<Product[], number>(
     'product/fetchProducts',
     async (categoryId) => {
-        const response = await fetchProductWithAPI(categoryId);
-        console.log(response); // Log the response here
-        return response;
+        const data = await fetchProductWithAPI(categoryId);
+        return data;
     }
 );
 
+// Create the slice
 const productSlice = createSlice({
     name: 'product',
     initialState,
@@ -55,21 +57,18 @@ const productSlice = createSlice({
         builder
             .addCase(fetchProduct.pending, (state) => {
                 state.status = 'loading';
-                console.log('Loading products...');
             })
             .addCase(fetchProduct.fulfilled, (state, action: PayloadAction<Product[]>) => {
                 state.status = 'succeeded';
                 state.products = action.payload;
-                console.log('Fetched products:', action.payload);
             })
             .addCase(fetchProduct.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.error.message || 'Failed to fetch products';
-                console.log('Error fetching products:', action.error.message);
             });
     }
-    
 });
 
+// Export the async thunk and the reducer
 export default productSlice.reducer;
 export { fetchProduct };

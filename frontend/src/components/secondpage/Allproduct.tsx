@@ -111,8 +111,9 @@ const AllProducts: React.FC = () => {
                         setMaxPrice(1000000);
                         setSelectedBrand('');
                         setSelectedDiscount(null);
-                        dispatch(fetchProduct(categoryIdNumber || 1));
-                      }}
+                        if (categories.length > 0) {
+                          dispatch(fetchProduct(categories[0].id)); // or handle as per your app's logic
+                        }                      }}
                     >
                       Clear all
                     </button>
@@ -316,19 +317,16 @@ const AllProducts: React.FC = () => {
 
         {/* View Details Button */}
         <button className="w-full px-4 py-2 mt-4 text-white bg-green-700 rounded hover:bg-green-800">
+        <Link  to={`/productview/${categoryId}/${product.id}`}className="font-semibold text-gray-800 text-md" style={{ fontFamily: 'Poppins' }}>
+
           View details
+          </Link>
         </button>
       </div>
     ))}
-  </div>
-</div>
-
-
-
-
-
-</div>
-
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

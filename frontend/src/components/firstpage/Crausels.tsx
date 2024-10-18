@@ -4,7 +4,7 @@ import { fetchCrausel } from '../slice/crauselSlice'; // Adjust path as necessar
 
 function Crausels() {
   const dispatch = useDispatch();
-  const { crausel, status, error } = useSelector((state) => state.crausel);
+  const { crausel, status, error } = useSelector((state: any) => state.crausel);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Fetch the carousel data when the component mounts

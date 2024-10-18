@@ -22,6 +22,7 @@ import PrivacyPolicy from './components/firstpage/ProvacyPolicy';
 import Testimonials from './components/firstpage/Testimonials';
 import LoadingScreen from '../src/components/modal/LoadingScreen';
 import TrackOrder from '../src/components/secondpage/TrackOrder';
+import TestView from '../src/components/secondpage/testview';
 function App() {
   return (
     <Provider store={store}>
@@ -36,8 +37,15 @@ function App() {
           {/* Public Routes */}
           <Route path="/allproducts" element={<Allproduct />} />
           <Route path="/allproducts/:categoryId" element={<Allproduct />} />
-          <Route path="/productview/:categoryId/:productId" element={<ProductView />} />
+
+
+
+          <Route path="/productview/:categoryId/:productId" element={<TestView />} />
+
+
+          
           <Route path="/productview" element={<ProductView />} />
+
           <Route path="/faq" element={<Faq />} />
           <Route path="/product/:productId" element={<ProductDetail />} />
           <Route path="/productcarousel" element={<ProductCarousel />} />

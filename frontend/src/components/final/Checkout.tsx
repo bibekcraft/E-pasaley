@@ -6,7 +6,6 @@ import { setQuantities } from '../slice/orderSlice';
 import { validateCoupon, reset } from '../slice/CouponSlice';
 import CategorySection from '../firstpage/CategorySection';
 import { RootState } from '../store/Store';
-
 import LoadingScreen from '../modal/LoadingScreen';
 
 interface Product {
@@ -23,17 +22,17 @@ const Checkout: React.FC = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const quantities = useSelector((state: RootState) => state.order.quantities);
-  const { discount, status, error } = useSelector((state: RootState) => state.coupons);
+  const { discount = 0, status = 'idle', error } = useSelector((state: RootState) => state.coupons);
   
   const location = useLocation();
-  const state = location.state as { products: Product[]; totalCost: number; quantities: number[] };
+  const state = location.state as { products: Product[]; totalCost: number; quantities: number[] } || { products: [], totalCost: 0, quantities: [] };
 
   const [couponCode, setCouponCode] = useState('');
 
   // Log the received state for verification
   useEffect(() => {
-    console.log('Products passed to Checkout:', state?.products);
-    console.log('Total Cost:', state?.totalCost);
+    console.log('Products passed to Checkout:', state.products);
+    console.log('Total Cost:', state.totalCost);
   }, [state]);
 
   // Handle quantity change
@@ -55,7 +54,7 @@ const Checkout: React.FC = () => {
   }));
 
   const totalPrice = groupedItems.reduce((total, item) => total + (item.totalPrice || 0), 0);
-  const totalWithDiscount = totalPrice - (discount || 0);
+  const totalWithDiscount = totalPrice - discount;
   const shippingCost = 100;
   const exactFinalCost = totalWithDiscount + shippingCost;
 
@@ -71,13 +70,10 @@ const Checkout: React.FC = () => {
     return () => {
       dispatch(reset());
     };
-
   }, [dispatch]);
 
-  
   if (status === 'idle' || status === 'loading') {
-    return     <LoadingScreen />;
-
+    return <LoadingScreen />;
   }
 
   return (
@@ -155,33 +151,22 @@ const Checkout: React.FC = () => {
             </div>
             <button
               onClick={handleApplyCoupon}
-              className="px-5 py-2 text-sm text-white uppercase bg-red-500 hover:bg-red-600"
-              disabled={status === 'loading'}
+              className="px-5 py-2 text-sm text-white uppercase bg-red-600 rounded-md"
             >
               Apply
             </button>
-
-            {status === 'loading' && <p className="text-sm text-gray-500">Validating coupon...</p>}
-            {error && <p className="text-sm text-red-500">{error}</p>}
-
-            {discount > 0 && (
-              <div className="flex justify-between mt-5 text-sm font-semibold uppercase">
-                <span>Discount Applied</span>
-                <span className="text-green-500">- Rs {discount}</span>
-              </div>
-            )}
-
-            <div className="mt-8 border-t">
-              <div className="flex justify-between py-6 text-sm font-semibold uppercase">
-                <span>Total cost</span>
-                <span>Rs {exactFinalCost}</span>
-              </div>
-              <Link to="/shipping" state={{ products: groupedItems, totalCost: exactFinalCost, quantities }}>
-                <button className="w-full py-3 text-sm font-semibold text-white uppercase bg-indigo-500 hover:bg-indigo-600">
-                  Checkout
-                </button>
-              </Link>
+            {error && <p className="text-red-500">{error}</p>}
+            <div className="flex justify-between mt-5 mb-5">
+              <span className="text-sm font-semibold uppercase">Discount</span>
+              <span className="text-sm font-semibold">Rs {discount}</span>
             </div>
+            <div className="flex justify-between mb-5">
+              <span className="text-sm font-semibold uppercase">Total</span>
+              <span className="text-sm font-semibold">Rs {exactFinalCost}</span>
+            </div>
+            <Link to="/success" className="block w-full px-5 py-2 text-center text-white bg-blue-500 rounded-md">
+              Proceed to Checkout
+            </Link>
           </div>
         </div>
       </div>

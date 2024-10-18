@@ -16,8 +16,7 @@ const store = configureStore({
     secondCrausel: secondCrauselReducer,
         cart: cartReducer,
     categories: categoryReducer,
-    product: productReducer,
-    coupons: couponReducer,
+    product: productReducer, 
     order: orderReducer,
     faqs: faqReducer,
     register: registerReducer,
@@ -29,9 +28,7 @@ const store = configureStore({
   },
 });
 
-
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-
 
 export default store;

@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
-      "module": "commonjs",
-      "target": "es5",
-      "jsx": "react",
-      "strict": true,
-      "esModuleInterop": true,
-      "skipLibCheck": true,
-      "forceConsistentCasingInFileNames": true,
-      "baseUrl": "./src"
+    "module": "commonjs",
+    "target": "es5",
+    "jsx": "react",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": "./src",
+    "outDir": "./dist",         // Output directory for compiled .js files
+    "rootDir": "./src",         // Root directory for .tsx and .ts files
+    "noEmit": false             // Ensure that TypeScript compiles to .js files
   },
   "include": ["src"]
 }
