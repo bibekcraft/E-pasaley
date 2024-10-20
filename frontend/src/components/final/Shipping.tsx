@@ -9,12 +9,10 @@ import LoadingScreen from '../modal/LoadingScreen';
 function Shipping() {
   const dispatch = useDispatch();
 
-  // Fetch cart items and quantities from the Redux store
-  const cartItems = useSelector((state: RootState) => state.cart.items);
   const quantities = useSelector((state: RootState) => state.order.quantities); // Get quantities from Redux
 
   const location = useLocation();
-  const { totalCost } = location.state || { totalCost: 0 }; // Get total cost passed from Checkout
+  const { totalCost, products } = location.state || { totalCost: 0, products: [] }; // Get total cost and products passed from Checkout
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -55,11 +53,12 @@ function Shipping() {
     }));
     dispatch(setTotal(totalCost)); // Use the total cost passed from Checkout
 
-    const productsData = cartItems.map((item, index) => ({
+    // Prepare the products data for the API
+    const productsData = products.map((item) => ({
       itemnumber: item.itemnumber,
       final_price: item.final_price,
-      quantity: quantities[index] || 1, // Default to 1 if undefined
-      total: (quantities[index] * Number(item.final_price)).toFixed(2),
+      quantity: item.quantity, // Use the quantity from the products array
+      total: (item.quantity * Number(item.final_price)).toFixed(2),
     }));
 
     try {
@@ -73,7 +72,7 @@ function Shipping() {
         city: formData.city,
         state: formData.state,
         total_cost: totalCost, // Use the total cost passed from Checkout
-        products: productsData,
+        products: productsData, // Send the products data
       });
       if (response.status === 201) {
         console.log("Order completed successfully", response.data);
@@ -108,17 +107,17 @@ function Shipping() {
         {/* Order Summary */}
         <div className="bg-gradient-to-r from-green-800 via-green-700 to-green-800 sm:h-screen sm:sticky sm:top-0 lg:min-w-[370px] sm:min-w-[300px] p-4">
           <h2 className="text-xl font-semibold text-white">Your Order:</h2>
-          {cartItems.map((product, index) => (
-            <div key={product.id} className="flex justify-between mt-2 text-white border-b border-green-600">
+          {products.map((product) => (
+            <div key={product.itemnumber} className="flex justify-between mt-2 text-white border-b border-green-600">
               <span>{product.itemnumber}</span>
-              <span>{quantities[index] || 1}</span> {/* Show quantity */}
-              <span>Rs {(Number(product.final_price) * (quantities[index] || 1)).toFixed(2)}</span>
+              <span>{product.quantity}</span> {/* Show quantity */}
+              <span>Rs {(Number(product.final_price) * product.quantity).toFixed(2)}</span> {/* Show updated price */}
             </div>
           ))}
           <div className="pt-4 mt-8 border-t border-green-600">
             <div className="flex justify-between py-6 font-semibold text-white uppercase">
               <span>Total cost</span>
-              <span>Rs {totalCost}</span> {/* Display the total cost after discount */}
+              <span>Rs {totalCost}</span> {/* Display the total cost */}
             </div>
           </div>
         </div>
