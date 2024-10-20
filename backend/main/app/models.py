@@ -101,6 +101,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 
 class Order(models.Model):
+
     id = models.CharField(max_length=10, primary_key=True, editable=False)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -111,23 +112,20 @@ class Order(models.Model):
     state = models.CharField(max_length=100)
     zip_code = models.CharField(max_length=10)
     total_cost = models.DecimalField(max_digits=10, decimal_places=2)
-
     def generate_id(self):
-        # Get the last order ID and increment it
-        last_order = Order.objects.order_by('id').last()
-        if last_order:
-            last_id = int(last_order.id[4:])  # Remove the prefix "3132"
-            new_id = f"3132{last_id + 1:06d}"  # Increment and pad with zeros
-        else:
-            new_id = "3132000001"  # Starting ID if no orders exist
-
+        # Ensure last order ID retrieval is safe
+        try:
+            last_order = Order.objects.order_by('id').last()
+            if last_order:
+                last_id = int(last_order.id[4:])  # Assuming "3132" prefix
+                new_id = f"3132{last_id + 1:06d}"
+            else:
+                new_id = "3132000001"  # Starting ID if no orders exist
+        except Exception as e:
+            # Log exception for debugging
+            print(f"Error generating order ID: {e}")
+            new_id = "3132000001"  # Fallback ID
         return new_id
-
-    def save(self, *args, **kwargs):
-        if not self.id:  # Generate ID only if it hasn't been set
-            self.id = self.generate_id()
-        super().save(*args, **kwargs)
-
 class OrderItem(models.Model):
     id = models.CharField(max_length=10, primary_key=True, editable=False)
     order = models.ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE)

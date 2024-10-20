@@ -207,3 +207,4 @@ from .models import crauselsofdesign
 class crauselsofdesignListCreateAPIView(generics.ListCreateAPIView):
     queryset = crauselsofdesign.objects.all()
     serializer_class = crauselsofdesignSerializer
+

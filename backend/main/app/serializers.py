@@ -8,10 +8,15 @@ from .models import (
     Video,
     Contact,
     faq,
-    Order
-
+    Order,
+    OrderItem,
+    crausel,
+    modal1,
+    crauselsofdesign
 )
 from rest_framework.exceptions import ValidationError
+
+# Register Serializer
 class RegisterSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True)
 
@@ -29,6 +34,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         return user
 
+# Login Serializer
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
@@ -82,40 +88,36 @@ class faqSerializer(serializers.ModelSerializer):
         model = faq
         fields = '__all__'
 
-# Order Serializer
-from .models import Order, OrderItem
-
-from rest_framework import serializers
-from .models import Order, OrderItem
-
+# OrderItem Serializer
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
         fields = ['id', 'item_number', 'final_price', 'quantity', 'total']
 
+# Order Serializer
 class OrderSerializer(serializers.ModelSerializer):
     order_items = OrderItemSerializer(many=True)
 
     class Meta:
         model = Order
-        fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'address_line', 
-                  'city', 'state', 'zip_code', 'total_cost', 'order_items']
+        fields = ['id', 'first_name', 'last_name', 'email', 'phone', 
+                  'address_line', 'city', 'state', 'zip_code', 
+                  'total_cost', 'order_items']
 
     def create(self, validated_data):
-        # Extract order_items data
         order_items_data = validated_data.pop('order_items')
-        # Create the Order instance
         order = Order.objects.create(**validated_data)
-        # Create each OrderItem instance
-        for item_data in order_items_data:
-            OrderItem.objects.create(order=order, **item_data)
+        OrderItem.objects.bulk_create([
+            OrderItem(order=order, **item_data) for item_data in order_items_data
+        ])
         return order
+    
+
 
     def update(self, instance, validated_data):
-        # Extract order_items data
         order_items_data = validated_data.pop('order_items', None)
 
-        # Update the Order instance
+        # Update Order instance
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
@@ -130,28 +132,19 @@ class OrderSerializer(serializers.ModelSerializer):
 
         return instance
 
-class OrderSerializer(serializers.ModelSerializer):
-    order_items = OrderItemSerializer(many=True)
-
-    class Meta:
-        model = Order
-        fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'address_line', 
-                  'city', 'state', 'zip_code', 'total_cost', 'order_items']
-
-
-from .models import crausel,modal1
-
+# Carousel Serializer
 class crauselSerializer(serializers.ModelSerializer):
     class Meta:
         model = crausel
         fields = '__all__'
 
+# Modal1 Serializer
 class modal1Serializer(serializers.ModelSerializer):
     class Meta:
         model = modal1
         fields = '__all__'
 
-from .models import crauselsofdesign
+# Carousel of Design Serializer
 class crauselsofdesignSerializer(serializers.ModelSerializer):
     class Meta:
         model = crauselsofdesign

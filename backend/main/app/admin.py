@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, Testimonial, Coupon, Contact, Video, Order,faq,crausel,modal1,crauselsofdesign
+from .models import Category, Product, Testimonial, Coupon, Contact, Video, Order,faq,crausel,modal1,crauselsofdesign,OrderItem
 
 # Register Category model
 @admin.register(Category)
@@ -57,4 +57,5 @@ admin.site.register(faq)
 admin.site.register(crausel)
 admin.site.register(Product)
 admin.site.register(modal1)
+admin.site.register(OrderItem)
 admin.site.register(crauselsofdesign)
