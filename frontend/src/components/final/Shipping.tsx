@@ -2,17 +2,31 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPersonalDetails, setShippingAddress, setTotal } from '../slice/orderSlice';
 import { RootState } from '../store/Store';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import LoadingScreen from '../modal/LoadingScreen';
 
+// InputField Component
+function InputField({ name, type = "text", placeholder, value, onChange, required }: any) {
+  return (
+    <input
+      className="w-full p-2 border rounded-md"
+      name={name}
+      type={type}
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+      required={required}
+    />
+  );
+}
+
 function Shipping() {
   const dispatch = useDispatch();
-
-  const quantities = useSelector((state: RootState) => state.order.quantities); // Get quantities from Redux
-
+  const quantities = useSelector((state: RootState) => state.order.quantities);
   const location = useLocation();
-  const { totalCost, products } = location.state || { totalCost: 0, products: [] }; // Get total cost and products passed from Checkout
+  const navigate = useNavigate(); // Initialize navigate
+  const { totalCost, products } = location.state || { totalCost: 0, products: [] };
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -30,7 +44,7 @@ function Shipping() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -51,13 +65,13 @@ function Shipping() {
       state: formData.state,
       zipCode: formData.zipCode,
     }));
-    dispatch(setTotal(totalCost)); // Use the total cost passed from Checkout
+    dispatch(setTotal(totalCost));
 
     // Prepare the products data for the API
     const productsData = products.map((item) => ({
-      itemnumber: item.itemnumber,
+      item_number: item.itemnumber, // Ensure this key matches your API
       final_price: item.final_price,
-      quantity: item.quantity, // Use the quantity from the products array
+      quantity: item.quantity,
       total: (item.quantity * Number(item.final_price)).toFixed(2),
     }));
 
@@ -67,13 +81,14 @@ function Shipping() {
         last_name: formData.lastName,
         email: formData.email,
         phone: formData.phone,
-        zipcode: formData.zipCode,
         address_line: formData.addressLine,
         city: formData.city,
         state: formData.state,
-        total_cost: totalCost, // Use the total cost passed from Checkout
-        products: productsData, // Send the products data
+        zip_code: formData.zipCode, // Ensure this matches your API key
+        total_cost: totalCost,
+        order_items: productsData, // Ensure the key matches your API for order items
       });
+
       if (response.status === 201) {
         console.log("Order completed successfully", response.data);
         // Reset form data
@@ -87,10 +102,12 @@ function Shipping() {
           state: '',
           zipCode: '',
         });
+        // Navigate to Thank You page
+        navigate('/thankyou');
       }
     } catch (error) {
       console.error("Error completing order:", error);
-      setErrorMessage("Error completing order: " + (error.response?.data?.detail || error.message));
+      setErrorMessage(error.response?.data?.detail || "An error occurred while completing the order.");
     } finally {
       setLoading(false);
     }
@@ -102,7 +119,7 @@ function Shipping() {
   }
 
   return (
-    <div className="font-[sans-serif] bg-white">
+    <div className="font-sans bg-white">
       <div className="flex h-full gap-12 max-sm:flex-col max-lg:gap-4">
         {/* Order Summary */}
         <div className="bg-gradient-to-r from-green-800 via-green-700 to-green-800 sm:h-screen sm:sticky sm:top-0 lg:min-w-[370px] sm:min-w-[300px] p-4">
@@ -110,14 +127,14 @@ function Shipping() {
           {products.map((product) => (
             <div key={product.itemnumber} className="flex justify-between mt-2 text-white border-b border-green-600">
               <span>{product.itemnumber}</span>
-              <span>{product.quantity}</span> {/* Show quantity */}
-              <span>Rs {(Number(product.final_price) * product.quantity).toFixed(2)}</span> {/* Show updated price */}
+              <span>{product.quantity}</span>
+              <span>Rs {(Number(product.final_price) * product.quantity).toFixed(2)}</span>
             </div>
           ))}
           <div className="pt-4 mt-8 border-t border-green-600">
             <div className="flex justify-between py-6 font-semibold text-white uppercase">
               <span>Total cost</span>
-              <span>Rs {totalCost}</span> {/* Display the total cost */}
+              <span>Rs {totalCost}</span>
             </div>
           </div>
         </div>
@@ -131,50 +148,36 @@ function Shipping() {
             <div>
               <h3 className="mb-4 text-base text-gray-800">Personal Details</h3>
               <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <input
-                    type="text"
-                    name="firstName"
-                    placeholder="First Name"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-600"
-                    required
-                  />
-                </div>
-                <div>
-                  <input
-                    type="text"
-                    name="lastName"
-                    placeholder="Last Name"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-600"
-                    required
-                  />
-                </div>
-                <div>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-600"
-                    required
-                  />
-                </div>
-                <div>
-                  <input
-                    type="tel"
-                    name="phone"
-                    placeholder="Phone Number"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-600"
-                    required
-                  />
-                </div>
+                <InputField 
+                  name="firstName" 
+                  placeholder="First Name" 
+                  value={formData.firstName} 
+                  onChange={handleChange} 
+                  required 
+                />
+                <InputField 
+                  name="lastName" 
+                  placeholder="Last Name" 
+                  value={formData.lastName} 
+                  onChange={handleChange} 
+                  required 
+                />
+                <InputField 
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+                <InputField 
+                  type="tel"
+                  name="phone"
+                  placeholder="Phone Number"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                />
               </div>
             </div>
 
@@ -182,50 +185,34 @@ function Shipping() {
             <div className="mt-6">
               <h3 className="mb-4 text-base text-gray-800">Shipping Address</h3>
               <div className="grid gap-4">
-                <div>
-                  <input
-                    type="text"
-                    name="addressLine"
-                    placeholder="Address Line"
-                    value={formData.addressLine}
-                    onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-600"
-                    required
-                  />
-                </div>
-                <div>
-                  <input
-                    type="text"
-                    name="city"
-                    placeholder="City"
-                    value={formData.city}
-                    onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-600"
-                    required
-                  />
-                </div>
-                <div>
-                  <input
-                    type="text"
-                    name="state"
-                    placeholder="State"
-                    value={formData.state}
-                    onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-600"
-                    required
-                  />
-                </div>
-                <div>
-                  <input
-                    type="text"
-                    name="zipCode"
-                    placeholder="Zip Code"
-                    value={formData.zipCode}
-                    onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-600"
-                    required
-                  />
-                </div>
+                <InputField 
+                  name="addressLine"
+                  placeholder="Address Line"
+                  value={formData.addressLine}
+                  onChange={handleChange}
+                  required
+                />
+                <InputField 
+                  name="city"
+                  placeholder="City"
+                  value={formData.city}
+                  onChange={handleChange}
+                  required
+                />
+                <InputField 
+                  name="state"
+                  placeholder="State"
+                  value={formData.state}
+                  onChange={handleChange}
+                  required
+                />
+                <InputField 
+                  name="zipCode"
+                  placeholder="Zip Code"
+                  value={formData.zipCode}
+                  onChange={handleChange}
+                  required
+                />
               </div>
             </div>
 

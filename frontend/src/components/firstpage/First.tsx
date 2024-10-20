@@ -72,7 +72,7 @@ function First() {
                     <span className="absolute left-0 w-0 h-1.5 transition-all duration-300 bg-green-600 -bottom-1 group-hover:w-full"></span>
                 </Link>
 
-                <Link to="/cart" className="relative flex items-center font-medium text-gray-800 group">
+                <Link to="/checkout" className="relative flex items-center font-medium text-gray-800 group">
                     <FaShoppingCart className="mr-2" /> Cart
                     <span className="absolute left-0 -bottom-1 h-1.5 w-0 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
                 </Link>

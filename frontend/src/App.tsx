@@ -22,7 +22,8 @@ import PrivacyPolicy from './components/firstpage/ProvacyPolicy';
 import Testimonials from './components/firstpage/Testimonials';
 import LoadingScreen from '../src/components/modal/LoadingScreen';
 import TrackOrder from '../src/components/secondpage/TrackOrder';
-import TestView from '../src/components/secondpage/testview';
+import ThankYou from '../src/components/last/thankyou'
+import TestView from '../src/components/secondpage/TestView'
 function App() {
   return (
     <Provider store={store}>
@@ -34,6 +35,7 @@ function App() {
           {/* Protected Routes */}
           <Route path="/checkout" element={<ProtectedRoute Component={Checkout} />} />
           <Route path="/shipping" element={<ProtectedRoute Component={Shipping} />} />
+          <Route path="/thankyou" element={<ProtectedRoute Component={ThankYou}  />} />
           {/* Public Routes */}
           <Route path="/allproducts" element={<Allproduct />} />
           <Route path="/allproducts/:categoryId" element={<Allproduct />} />
