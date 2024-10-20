@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setPersonalDetails, setShippingAddress, setTotal } from '../slice/orderSlice';
-import { RootState } from '../store/Store';
+import { useDispatch } from 'react-redux';
+import { setPersonalDetails, setShippingAddress, setTotal, clearCart } from '../slice/orderSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import LoadingScreen from '../modal/LoadingScreen';
@@ -27,7 +26,7 @@ function InputField({ name, type = "text", placeholder, value, onChange, require
 function Shipping() {
   const dispatch = useDispatch();
   const location = useLocation();
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
   const { totalCost, products } = location.state || { totalCost: 0, products: [] };
 
   const [formData, setFormData] = useState({
@@ -70,8 +69,8 @@ function Shipping() {
     dispatch(setTotal(totalCost));
 
     // Prepare the products data for the API
-    const productsData = products.map((item) => ({
-      item_number: item.itemnumber, 
+    const productsData = products.map((item: any) => ({
+      item_number: item.itemnumber,
       final_price: item.final_price,
       quantity: item.quantity,
       total: (item.quantity * Number(item.final_price)).toFixed(2),
@@ -88,11 +87,13 @@ function Shipping() {
         state: formData.state,
         zip_code: formData.zipCode,
         total_cost: totalCost,
-        order_items: productsData, 
+        order_items: productsData,
       });
 
       if (response.status === 201) {
-        // Reset form data
+        // Clear the cart and reset form data in Redux state
+        dispatch(clearCart());
+        // Reset local form data
         setFormData({
           firstName: '',
           lastName: '',
@@ -106,8 +107,9 @@ function Shipping() {
         // Navigate to Thank You page
         navigate('/thankyou');
       }
-    } catch (error) {
-      console.error("Error completing order:", error);
+    } catch (error: any) {
+      console.error("Error completing order:", error.response ? error.response.data : error.message);
+      // Set error message from API response if available
       setErrorMessage(error.response?.data?.detail || "An error occurred while completing the order.");
     } finally {
       setLoading(false);
@@ -121,122 +123,53 @@ function Shipping() {
 
   return (
     <>
-    <Header />
-    <div className="min-h-screen font-sans bg-gray-100">
-      <div className="container px-4 py-12 mx-auto lg:px-20">
-        <div className="flex flex-col gap-8 lg:flex-row">
-          {/* Order Summary */}
-          <div className="p-6 text-white rounded-lg shadow-lg lg:w-1/3 bg-gradient-to-r from-green-700 to-green-800">
-            <h2 className="mb-4 text-xl font-bold">Your Order Summary</h2>
-            {products.map((product) => (
-              <div key={product.itemnumber} className="flex justify-between pb-2 mb-2 text-lg border-b border-green-500">
-                <span>{product.itemnumber}</span>
-                <span>{product.quantity}</span>
-                <span>Rs {(Number(product.final_price) * product.quantity).toFixed(2)}</span>
-              </div>
-            ))}
-            <div className="pt-4 mt-6 border-t border-green-600">
-              <div className="flex justify-between text-lg font-bold uppercase">
-                <span>Total cost</span>
-                <span>Rs {totalCost}</span>
+      <Header />
+      <div className="min-h-screen font-sans bg-gray-100">
+        <div className="container px-4 py-12 mx-auto lg:px-20">
+          <div className="flex flex-col gap-8 lg:flex-row">
+            {/* Order Summary */}
+            <div className="p-6 text-white rounded-lg shadow-lg lg:w-1/3 bg-gradient-to-r from-green-700 to-green-800">
+              <h2 className="mb-4 text-xl font-bold">Your Order Summary</h2>
+              {products.map((product: any) => (
+                <div key={product.itemnumber} className="flex justify-between pb-2 mb-2 text-lg border-b border-green-500">
+                  <span>{product.itemnumber}</span>
+                  <span>{product.quantity}</span>
+                  <span>Rs {(Number(product.final_price) * product.quantity).toFixed(2)}</span>
+                </div>
+              ))}
+              <div className="pt-4 mt-6 border-t border-green-600">
+                <div className="flex justify-between text-lg font-semibold">
+                  <span>Total Cost:</span>
+                  <span>Rs {totalCost.toFixed(2)}</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Shipping Details */}
-          <div className="p-6 bg-white rounded-lg shadow-lg lg:w-2/3">
-            <h2 className="mb-6 text-2xl font-bold text-gray-800">Shipping Information</h2>
-            {errorMessage && <p className="mb-4 text-red-500">{errorMessage}</p>}
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Personal Details */}
-              <div>
-                <h3 className="mb-2 text-lg font-semibold text-gray-800">Personal Details</h3>
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <InputField 
-                    name="firstName" 
-                    placeholder="First Name" 
-                    value={formData.firstName} 
-                    onChange={handleChange} 
-                    required 
-                  />
-                  <InputField 
-                    name="lastName" 
-                    placeholder="Last Name" 
-                    value={formData.lastName} 
-                    onChange={handleChange} 
-                    required 
-                  />
-                  <InputField 
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                  <InputField 
-                    type="tel"
-                    name="phone"
-                    placeholder="Phone Number"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    required
-                  />
+            {/* Shipping Form */}
+            <div className="flex-grow p-6 bg-white rounded-lg shadow-lg lg:w-2/3">
+              <h2 className="mb-4 text-xl font-bold">Shipping Details</h2>
+              {errorMessage && <p className="text-red-600">{errorMessage}</p>}
+              <form onSubmit={handleSubmit}>
+                <div className="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2">
+                  <InputField name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleChange} required />
+                  <InputField name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleChange} required />
+                  <InputField name="email" type="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
+                  <InputField name="phone" type="tel" placeholder="Phone" value={formData.phone} onChange={handleChange} required />
+                  <InputField name="addressLine" placeholder="Address Line" value={formData.addressLine} onChange={handleChange} required />
+                  <InputField name="city" placeholder="City" value={formData.city} onChange={handleChange} required />
+                  <InputField name="state" placeholder="State" value={formData.state} onChange={handleChange} required />
+                  <InputField name="zipCode" type="number" placeholder="ZIP Code" value={formData.zipCode} onChange={handleChange} required />
                 </div>
-              </div>
-
-              {/* Shipping Address */}
-              <div>
-                <h3 className="mb-2 text-lg font-semibold text-gray-800">Shipping Address</h3>
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <InputField 
-                    name="addressLine"
-                    placeholder="Address Line"
-                    value={formData.addressLine}
-                    onChange={handleChange}
-                    required
-                  />
-                  <InputField 
-                    name="city"
-                    placeholder="City"
-                    value={formData.city}
-                    onChange={handleChange}
-                    required
-                  />
-                  <InputField 
-                    name="state"
-                    placeholder="State"
-                    value={formData.state}
-                    onChange={handleChange}
-                    required
-                  />
-                  <InputField 
-                    name="zipCode"
-                    placeholder="Zip Code"
-                    value={formData.zipCode}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Submit Button */}
-              <div className="flex justify-end">
-                <button
-                  type="submit"
-                  className="px-8 py-3 font-semibold text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-500"
-                  disabled={loading}
-                >
-                  {loading ? 'Processing...' : 'Submit Order'}
+                <button type="submit" className="w-full py-2 text-white bg-green-700 rounded hover:bg-green-800">
+                  Submit Order
                 </button>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
       </div>
       <Faq />
       <Footer />
-    </div>
     </>
   );
 }

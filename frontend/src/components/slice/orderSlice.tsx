@@ -81,7 +81,8 @@ const orderSlice = createSlice({
       })
       .addCase(submitOrder.fulfilled, (state, action) => {
         state.loading = false;
-        state.orderId = action.payload.id || null; // Handle response more safely
+        // Ensure that the response contains an 'id' property
+        state.orderId = action.payload.id || null; 
         // Reset state after a successful order submission
         state.personalDetails = initialState.personalDetails;
         state.shippingAddress = initialState.shippingAddress;
@@ -90,6 +91,7 @@ const orderSlice = createSlice({
       })
       .addCase(submitOrder.rejected, (state, action) => {
         state.loading = false;
+        // Provide a fallback message if action.error.message is undefined
         state.error = action.error.message || 'Failed to submit order';
       });
   },
