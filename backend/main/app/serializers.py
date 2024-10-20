@@ -88,49 +88,30 @@ class faqSerializer(serializers.ModelSerializer):
         model = faq
         fields = '__all__'
 
-# OrderItem Serializer
+from rest_framework import serializers
+from .models import Order, OrderItem
+
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
-        fields = ['id', 'item_number', 'final_price', 'quantity', 'total']
+        fields = ['product', 'quantity']
 
-# Order Serializer
 class OrderSerializer(serializers.ModelSerializer):
-    order_items = OrderItemSerializer(many=True)
+    items = OrderItemSerializer(many=True)
 
     class Meta:
         model = Order
-        fields = ['id', 'first_name', 'last_name', 'email', 'phone', 
-                  'address_line', 'city', 'state', 'zip_code', 
-                  'total_cost', 'order_items']
+        fields = ['user', 'items']
 
     def create(self, validated_data):
-        order_items_data = validated_data.pop('order_items')
+        items_data = validated_data.pop('items')
         order = Order.objects.create(**validated_data)
-        OrderItem.objects.bulk_create([
-            OrderItem(order=order, **item_data) for item_data in order_items_data
-        ])
+
+        # Ensure no manual id assignment here
+        for item_data in items_data:
+            OrderItem.objects.create(order=order, **item_data)
+
         return order
-    
-
-
-    def update(self, instance, validated_data):
-        order_items_data = validated_data.pop('order_items', None)
-
-        # Update Order instance
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        instance.save()
-
-        # Update order items
-        if order_items_data is not None:
-            # Clear existing order items
-            instance.order_items.all().delete()
-            # Create new order items
-            for item_data in order_items_data:
-                OrderItem.objects.create(order=instance, **item_data)
-
-        return instance
 
 # Carousel Serializer
 class crauselSerializer(serializers.ModelSerializer):

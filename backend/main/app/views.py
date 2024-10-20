@@ -115,17 +115,11 @@ class faqListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = faqSerializer
 
 
-# Order Views
-class OrderCreateView(generics.CreateAPIView):
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            order = serializer.save()
-            return Response({'detail': 'Order created successfully!', 'order_id': order.id}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+from .models import OrderItem
+from .serializers import OrderItemSerializer
+class OrderItemCreateView(generics.CreateAPIView):
+    queryset = OrderItem.objects.all()
+    serializer_class = OrderItemSerializer
 
 
 class OrderDetailAPIView(generics.RetrieveAPIView):
@@ -203,8 +197,61 @@ class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
 
 from .models import crauselsofdesign
+from .models import Order,OrderItem
 
 class crauselsofdesignListCreateAPIView(generics.ListCreateAPIView):
     queryset = crauselsofdesign.objects.all()
     serializer_class = crauselsofdesignSerializer
 
+
+
+
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Order
+from .serializers import OrderSerializer
+
+class TrackOrderView(generics.RetrieveAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    lookup_field = 'id'  # Track order by order ID
+
+    def get(self, request, *args, **kwargs):
+        order = self.get_object()
+        serializer = self.get_serializer(order)
+        return Response(serializer.data)
+
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+from django.http import JsonResponse
+from django.views import View
+
+from django.http import JsonResponse
+from django.views import View
+
+class TrackOrderView(View):
+    def get(self, request, order_id, tracking_id):
+        # Here you would normally query your database for the order
+        # For demonstration purposes, let's say we have the following data:
+
+        orders = {
+            '132000002': {'status': 'Shipped', 'days_remaining': 3},
+            # Add more orders as needed
+        }
+
+        if order_id == tracking_id and order_id in orders:
+            order_info = orders[order_id]
+            return JsonResponse({
+                'status': order_info['status'],
+                'days_remaining': order_info['days_remaining'],
+            })
+        else:
+            return JsonResponse({'error': 'Order ID not found.'}, status=404)

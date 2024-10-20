@@ -36,8 +36,8 @@ class Product(models.Model):
     description = models.TextField()
     feature = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products', null=True, blank=True)
-    discount_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    discount = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    discount_rate = models.DecimalField(max_digits=7, decimal_places=2, default=0)  # Adjusted for 99999.99
+    discount = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)  # Adjusted for 999999.99
     image = models.ImageField(upload_to='product')
     image1 = models.ImageField(default='default_image.jpg', upload_to='images/')
     image2 = models.ImageField(default='default_image.jpg', upload_to='images/')
@@ -93,15 +93,11 @@ class Contact(models.Model):
 
 # Custom User and Manager
 
-
-from django.db import models
 from django.db import models
 from django.utils import timezone
-from django.db import models
 from django.core.exceptions import ValidationError
 
 class Order(models.Model):
-
     id = models.CharField(max_length=10, primary_key=True, editable=False)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -112,37 +108,21 @@ class Order(models.Model):
     state = models.CharField(max_length=100)
     zip_code = models.CharField(max_length=10)
     total_cost = models.DecimalField(max_digits=10, decimal_places=2)
+
     def generate_id(self):
-        # Ensure last order ID retrieval is safe
+        """
+        Generate a unique ID for each order. Starts from '3132000001' and increments sequentially.
+        """
         try:
             last_order = Order.objects.order_by('id').last()
             if last_order:
-                last_id = int(last_order.id[4:])  # Assuming "3132" prefix
+                last_id = int(last_order.id[4:])  # Extracts the numeric part
                 new_id = f"3132{last_id + 1:06d}"
             else:
-                new_id = "3132000001"  # Starting ID if no orders exist
+                new_id = "3132000001"  # Starting ID
         except Exception as e:
-            # Log exception for debugging
             print(f"Error generating order ID: {e}")
             new_id = "3132000001"  # Fallback ID
-        return new_id
-class OrderItem(models.Model):
-    id = models.CharField(max_length=10, primary_key=True, editable=False)
-    order = models.ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE)
-    item_number = models.CharField(max_length=100)
-    final_price = models.DecimalField(max_digits=10, decimal_places=2)
-    quantity = models.IntegerField()
-    total = models.DecimalField(max_digits=10, decimal_places=2)
-
-    def generate_id(self):
-        # Get the last order item ID and increment it
-        last_item = OrderItem.objects.order_by('id').last()
-        if last_item:
-            last_id = int(last_item.id[4:])  # Remove the prefix "3132"
-            new_id = f"3132{last_id + 1:06d}"  # Increment and pad with zeros
-        else:
-            new_id = "3132000001"  # Starting ID if no order items exist
-
         return new_id
 
     def save(self, *args, **kwargs):
@@ -150,6 +130,59 @@ class OrderItem(models.Model):
             self.id = self.generate_id()
         super().save(*args, **kwargs)
 
+    def __str__(self):
+        return f"Order {self.id} by {self.first_name} {self.last_name}"
+
+    def total_items(self):
+        """
+        Calculate the total number of items in the order.
+        """
+        return sum(item.quantity for item in self.order_items.all())
+
+    def get_order_items(self):
+        """
+        Fetch all items for this order.
+        """
+        return self.order_items.all()
+
+class OrderItem(models.Model):
+    id = models.CharField(max_length=10, primary_key=True, editable=False)
+    order = models.ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE)
+    item_number = models.CharField(max_length=100)
+    final_price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.IntegerField()
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    def generate_id(self):
+        """
+        Generate a unique ID for each order item.
+        """
+        try:
+            last_item = OrderItem.objects.order_by('id').last()
+            if last_item:
+                last_id = int(last_item.id[4:])  # Extract numeric part
+                new_id = f"ITEM{last_id + 1:06d}"
+            else:
+                new_id = "ITEM000001"
+        except Exception as e:
+            print(f"Error generating order item ID: {e}")
+            new_id = "ITEM000001"  # Fallback ID
+        return new_id
+
+    def save(self, *args, **kwargs):
+        if not self.id:  # Generate ID only if it hasn't been set
+            self.id = self.generate_id()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"OrderItem {self.id} (Order {self.order.id})"
+
+    @property
+    def total_price(self):
+        """
+        Calculate the total price of this order item based on quantity and final price.
+        """
+        return self.final_price * self.quantity
 
 class faq(models.Model):
     title = models.CharField(max_length=244)
@@ -182,3 +215,25 @@ class crauselsofdesign(models.Model):
 
     def __str__(self):
         return self.title
+    
+
+
+
+from django.db import models
+
+class OrderTracking(models.Model):
+    order = models.ForeignKey(Order, related_name='tracking', on_delete=models.CASCADE)
+    
+    # Status choices
+    ORDER_STATUS_CHOICES = [
+        ('received', 'Order Received'),
+        ('ready', 'Ready to Deliver'),
+        ('out_for_delivery', 'Out for Delivery'),
+        ('delivered', 'Delivered'),
+    ]
+    
+    status = models.CharField(max_length=20, choices=ORDER_STATUS_CHOICES)
+    timestamp = models.DateTimeField(auto_now_add=True)  # Automatically set the timestamp when created
+
+    def __str__(self):
+        return f"{self.order.id} - {self.status} at {self.timestamp}"
