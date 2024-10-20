@@ -14,7 +14,7 @@ const ThankYou = () => {
     <div className="flex flex-col items-center justify-center h-screen p-4 bg-gradient-to-br from-green-100 to-green-300">
       <h1 className="text-5xl font-bold text-green-800">Thank You!</h1>
       <p className="mt-4 text-lg text-gray-700">
-        Your order has been placed successfully.
+        Your order has been placed successfully.We will contact you soon.
       </p>
 
       {/* Display order information */}

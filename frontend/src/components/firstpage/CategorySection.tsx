@@ -22,10 +22,10 @@ function CategorySection() {
         <div className="py-10">
             {/* Title and View All Link */}
             <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-bold">
+                <h2 className="text-2xl font-bold text-blue-500">
                     Shop From <span className="text-green-600">Top Categories</span>
                 </h2>
-                <Link to="/allproducts" className="text-green-600">View All &rarr;</Link>
+                <Link to="/allproducts" className="text-blue-500">View All &rarr;</Link>
             </div>
 
             {/* Render Categories if Data is Available */}
@@ -46,7 +46,7 @@ function CategorySection() {
                                         onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => (e.target as HTMLImageElement).src = '/path/to/default-image.png'} // Fallback on error
                                     />
                                 </div>
-                                <span className="font-semibold text-center text-blue-500">{category.name}</span>
+                                <span className="font-semibold text-center text-green-600">{category.name}</span>
                             </Link>
                         ))}
                     </div>

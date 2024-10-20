@@ -24,22 +24,22 @@ export default function Footer() {
 
           {/* Contact Information */}
           <div className="space-y-2 text-sm">
-            <p className="text-base font-bold tracking-wide text-green-500">Contacts</p>
+            <p className="text-base font-bold tracking-wide text-green-600">Contacts</p>
             <div className="flex">
               <p className="mr-1 text-gray-600">Phone:</p>
-              <a href="tel:+977-9705970545" aria-label="Our phone" title="Our phone" className="text-green-800 transition-colors duration-300 hover:text-green-600">
+              <a href="tel:+977-9705970545" aria-label="Our phone" title="Our phone" className="text-green-600 transition-colors duration-300 hover:text-green-800">
                 9705970545
               </a>
             </div>
             <div className="flex">
               <p className="mr-1 text-gray-600">Email:</p>
-              <a href="mailto:support@epasaley.com" aria-label="Our email" title="Our email" className="text-green-800 transition-colors duration-300 hover:text-green-600">
+              <a href="mailto:support@epasaley.com" aria-label="Our email" title="Our email" className="text-green-600 transition-colors duration-300 hover:text-green-800">
                 shopwithepasale@gmail.com
               </a>
             </div>
             <div className="flex">
               <p className="mr-1 text-gray-600">Address:</p>
-              <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" aria-label="Our address" title="Our address" className="text-green-800 transition-colors duration-300 hover:text-green-600">
+              <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" aria-label="Our address" title="Our address" className="text-green-600 transition-colors duration-300 hover:text-green-800">
                 Butwal, Nepal
               </a>
             </div>

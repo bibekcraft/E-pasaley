@@ -1,6 +1,15 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+// Define a Product interface for better type safety
+interface Product {
+  itemnumber: string;
+  final_price: number;
+  quantity: number;
+  total: string;
+}
+
+// Define the structure for the order state
 interface OrderState {
   personalDetails: { firstName: string; lastName: string; email: string; phone: string };
   shippingAddress: { addressLine: string; city: string; state: string; zipCode: string };
@@ -8,8 +17,10 @@ interface OrderState {
   total: number;
   loading: boolean; // For loading state
   error: string | null; // For error handling
+  orderId?: string | null; // Store the order ID or confirmation number
 }
 
+// Initial state of the order
 const initialState: OrderState = {
   personalDetails: { firstName: '', lastName: '', email: '', phone: '' },
   shippingAddress: { addressLine: '', city: '', state: '', zipCode: '' },
@@ -17,6 +28,7 @@ const initialState: OrderState = {
   total: 0,
   loading: false,
   error: null,
+  orderId: null,
 };
 
 // Create an async thunk for submitting the order
@@ -32,10 +44,10 @@ export const submitOrder = createAsyncThunk(
     state: string;
     zipCode: string;
     total: number;
-    products: { itemnumber: string; final_price: number; quantity: number; total: string }[];
+    products: Product[];
   }) => {
     const response = await axios.post('http://127.0.0.1:8000/orders/', orderData);
-    return response.data;
+    return response.data; // Ensure your API returns a consistent structure
   }
 );
 
@@ -55,16 +67,26 @@ const orderSlice = createSlice({
     setTotal(state, action: PayloadAction<number>) {
       state.total = action.payload;
     },
+    clearCart(state) {
+      state.quantities = [];
+      state.total = 0;
+      state.orderId = null;
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(submitOrder.pending, (state) => {
         state.loading = true;
-        state.error = null; // Reset error on new submission
+        state.error = null;
       })
       .addCase(submitOrder.fulfilled, (state, action) => {
         state.loading = false;
-        // Optionally handle successful submission (e.g., reset state)
+        state.orderId = action.payload.id || null; // Handle response more safely
+        // Reset state after a successful order submission
+        state.personalDetails = initialState.personalDetails;
+        state.shippingAddress = initialState.shippingAddress;
+        state.quantities = [];
+        state.total = 0;
       })
       .addCase(submitOrder.rejected, (state, action) => {
         state.loading = false;
@@ -73,8 +95,8 @@ const orderSlice = createSlice({
   },
 });
 
-// Export actions
-export const { setPersonalDetails, setShippingAddress, setQuantities, setTotal } = orderSlice.actions;
+// Export actions for use in components
+export const { setPersonalDetails, setShippingAddress, setQuantities, setTotal, clearCart } = orderSlice.actions;
 
-// Export the reducer
+// Export the reducer to be used in the store
 export default orderSlice.reducer;

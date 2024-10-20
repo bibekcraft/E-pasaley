@@ -5,12 +5,15 @@ import { RootState } from '../store/Store';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import LoadingScreen from '../modal/LoadingScreen';
+import Faq from '../resources/Faq';
+import Footer from '../firstpage/Footer';
+import Header from '../firstpage/Header';
 
 // InputField Component
 function InputField({ name, type = "text", placeholder, value, onChange, required }: any) {
   return (
     <input
-      className="w-full p-2 border rounded-md"
+      className="w-full p-3 border rounded-lg focus:outline-none focus:border-blue-500"
       name={name}
       type={type}
       placeholder={placeholder}
@@ -23,7 +26,6 @@ function InputField({ name, type = "text", placeholder, value, onChange, require
 
 function Shipping() {
   const dispatch = useDispatch();
-  const quantities = useSelector((state: RootState) => state.order.quantities);
   const location = useLocation();
   const navigate = useNavigate(); // Initialize navigate
   const { totalCost, products } = location.state || { totalCost: 0, products: [] };
@@ -69,7 +71,7 @@ function Shipping() {
 
     // Prepare the products data for the API
     const productsData = products.map((item) => ({
-      item_number: item.itemnumber, // Ensure this key matches your API
+      item_number: item.itemnumber, 
       final_price: item.final_price,
       quantity: item.quantity,
       total: (item.quantity * Number(item.final_price)).toFixed(2),
@@ -84,13 +86,12 @@ function Shipping() {
         address_line: formData.addressLine,
         city: formData.city,
         state: formData.state,
-        zip_code: formData.zipCode, // Ensure this matches your API key
+        zip_code: formData.zipCode,
         total_cost: totalCost,
-        order_items: productsData, // Ensure the key matches your API for order items
+        order_items: productsData, 
       });
 
       if (response.status === 201) {
-        console.log("Order completed successfully", response.data);
         // Reset form data
         setFormData({
           firstName: '',
@@ -119,117 +120,124 @@ function Shipping() {
   }
 
   return (
-    <div className="font-sans bg-white">
-      <div className="flex h-full gap-12 max-sm:flex-col max-lg:gap-4">
-        {/* Order Summary */}
-        <div className="bg-gradient-to-r from-green-800 via-green-700 to-green-800 sm:h-screen sm:sticky sm:top-0 lg:min-w-[370px] sm:min-w-[300px] p-4">
-          <h2 className="text-xl font-semibold text-white">Your Order:</h2>
-          {products.map((product) => (
-            <div key={product.itemnumber} className="flex justify-between mt-2 text-white border-b border-green-600">
-              <span>{product.itemnumber}</span>
-              <span>{product.quantity}</span>
-              <span>Rs {(Number(product.final_price) * product.quantity).toFixed(2)}</span>
-            </div>
-          ))}
-          <div className="pt-4 mt-8 border-t border-green-600">
-            <div className="flex justify-between py-6 font-semibold text-white uppercase">
-              <span>Total cost</span>
-              <span>Rs {totalCost}</span>
+    <>
+    <Header />
+    <div className="min-h-screen font-sans bg-gray-100">
+      <div className="container px-4 py-12 mx-auto lg:px-20">
+        <div className="flex flex-col gap-8 lg:flex-row">
+          {/* Order Summary */}
+          <div className="p-6 text-white rounded-lg shadow-lg lg:w-1/3 bg-gradient-to-r from-green-700 to-green-800">
+            <h2 className="mb-4 text-xl font-bold">Your Order Summary</h2>
+            {products.map((product) => (
+              <div key={product.itemnumber} className="flex justify-between pb-2 mb-2 text-lg border-b border-green-500">
+                <span>{product.itemnumber}</span>
+                <span>{product.quantity}</span>
+                <span>Rs {(Number(product.final_price) * product.quantity).toFixed(2)}</span>
+              </div>
+            ))}
+            <div className="pt-4 mt-6 border-t border-green-600">
+              <div className="flex justify-between text-lg font-bold uppercase">
+                <span>Total cost</span>
+                <span>Rs {totalCost}</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Shipping Details */}
-        <div className="sticky top-0 w-full max-w-4xl px-4 py-8 bg-white rounded-md shadow-md">
-          <h2 className="text-2xl font-bold text-gray-800">Complete your order</h2>
-          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-          <form className="mt-8" onSubmit={handleSubmit}>
-            {/* Personal Details */}
-            <div>
-              <h3 className="mb-4 text-base text-gray-800">Personal Details</h3>
-              <div className="grid gap-4 md:grid-cols-2">
-                <InputField 
-                  name="firstName" 
-                  placeholder="First Name" 
-                  value={formData.firstName} 
-                  onChange={handleChange} 
-                  required 
-                />
-                <InputField 
-                  name="lastName" 
-                  placeholder="Last Name" 
-                  value={formData.lastName} 
-                  onChange={handleChange} 
-                  required 
-                />
-                <InputField 
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-                <InputField 
-                  type="tel"
-                  name="phone"
-                  placeholder="Phone Number"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  required
-                />
+          {/* Shipping Details */}
+          <div className="p-6 bg-white rounded-lg shadow-lg lg:w-2/3">
+            <h2 className="mb-6 text-2xl font-bold text-gray-800">Shipping Information</h2>
+            {errorMessage && <p className="mb-4 text-red-500">{errorMessage}</p>}
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Personal Details */}
+              <div>
+                <h3 className="mb-2 text-lg font-semibold text-gray-800">Personal Details</h3>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <InputField 
+                    name="firstName" 
+                    placeholder="First Name" 
+                    value={formData.firstName} 
+                    onChange={handleChange} 
+                    required 
+                  />
+                  <InputField 
+                    name="lastName" 
+                    placeholder="Last Name" 
+                    value={formData.lastName} 
+                    onChange={handleChange} 
+                    required 
+                  />
+                  <InputField 
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                  />
+                  <InputField 
+                    type="tel"
+                    name="phone"
+                    placeholder="Phone Number"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
               </div>
-            </div>
 
-            {/* Shipping Address */}
-            <div className="mt-6">
-              <h3 className="mb-4 text-base text-gray-800">Shipping Address</h3>
-              <div className="grid gap-4">
-                <InputField 
-                  name="addressLine"
-                  placeholder="Address Line"
-                  value={formData.addressLine}
-                  onChange={handleChange}
-                  required
-                />
-                <InputField 
-                  name="city"
-                  placeholder="City"
-                  value={formData.city}
-                  onChange={handleChange}
-                  required
-                />
-                <InputField 
-                  name="state"
-                  placeholder="State"
-                  value={formData.state}
-                  onChange={handleChange}
-                  required
-                />
-                <InputField 
-                  name="zipCode"
-                  placeholder="Zip Code"
-                  value={formData.zipCode}
-                  onChange={handleChange}
-                  required
-                />
+              {/* Shipping Address */}
+              <div>
+                <h3 className="mb-2 text-lg font-semibold text-gray-800">Shipping Address</h3>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <InputField 
+                    name="addressLine"
+                    placeholder="Address Line"
+                    value={formData.addressLine}
+                    onChange={handleChange}
+                    required
+                  />
+                  <InputField 
+                    name="city"
+                    placeholder="City"
+                    value={formData.city}
+                    onChange={handleChange}
+                    required
+                  />
+                  <InputField 
+                    name="state"
+                    placeholder="State"
+                    value={formData.state}
+                    onChange={handleChange}
+                    required
+                  />
+                  <InputField 
+                    name="zipCode"
+                    placeholder="Zip Code"
+                    value={formData.zipCode}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
               </div>
-            </div>
 
-            {/* Submit Button */}
-            <div className="flex justify-end mt-6">
-              <button
-                type="submit"
-                className={`px-6 py-3 font-semibold text-white bg-blue-600 rounded-md transition duration-200 hover:bg-blue-500 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                disabled={loading}
-              >
-                {loading ? 'Processing...' : 'Submit Order'}
-              </button>
-            </div>
-          </form>
+              {/* Submit Button */}
+              <div className="flex justify-end">
+                <button
+                  type="submit"
+                  className="px-8 py-3 font-semibold text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-500"
+                  disabled={loading}
+                >
+                  {loading ? 'Processing...' : 'Submit Order'}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
+      <Faq />
+      <Footer />
     </div>
+    </>
   );
 }
 

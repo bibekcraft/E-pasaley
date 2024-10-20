@@ -5,6 +5,9 @@ import { removeItemFromCart } from '../slice/cartSlice';
 import { validateCoupon, reset } from '../slice/CouponSlice';
 import CategorySection from '../firstpage/CategorySection';
 import { Link } from 'react-router-dom';
+import Header from '../firstpage/Header';
+import Footer from '../firstpage/Footer';
+
 
 const Checkout: React.FC = () => {
   const dispatch = useDispatch<typeof store.dispatch>();
@@ -57,6 +60,7 @@ const Checkout: React.FC = () => {
 
   return (
     <div>
+      <Header />
       <CategorySection />
       <div className="container mx-auto mt-10">
         <div className="my-10 shadow-md sm:flex">
@@ -173,6 +177,7 @@ const Checkout: React.FC = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

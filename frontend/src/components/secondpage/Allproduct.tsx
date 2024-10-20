@@ -7,6 +7,10 @@ import { AppDispatch } from '../store/Store';
 import { RootState } from '../store/Store';
 import { FaTag } from 'react-icons/fa';
 import LoadingScreen from '../modal/LoadingScreen';
+import Second from '../firstpage/Second';
+import Header from '../firstpage/Header';
+import Faq from '../resources/Faq';
+import Footer from '../firstpage/Footer';
 export interface Product {
   final_price: number;
   id: number;
@@ -90,11 +94,14 @@ const AllProducts: React.FC = () => {
 
   return (
     <div>
+      <Header />
+            <Second />
+
       <section>
         <div className="w-full px-5 py-16 mx-auto md:px-10 md:py-24">
           <div className="flex flex-col gap-12">
             <div className="flex flex-col gap-5">
-              <h3 className="text-2xl font-bold md:text-5xl">Filter products</h3>
+              <h3 className="text-2xl font-bold text-blue-500 md:text-5xl">Filter products</h3>
               <p className="text-sm text-gray-500 sm:text-base">Find the best products for you</p>
             </div>
             <div className="grid gap-10 md:gap-12 lg:grid-cols-[300px_1fr]">
@@ -284,7 +291,7 @@ const AllProducts: React.FC = () => {
         
         {/* Discount Label (above the photo) */}
         {product.discount_rate > 0 && (
-  <span className="px-3 py-1 mb-2 text-sm font-bold text-black bg-green-700 rounded">
+  <span className="px-3 py-1 mb-2 text-sm font-bold text-white bg-green-700 rounded">
                          -{product.discount_rate}% OFF
   </span>
 )}
@@ -331,6 +338,8 @@ const AllProducts: React.FC = () => {
           </div>
         </div>
       </section>
+      <Faq />
+      <Footer />
     </div>
   );
 };

@@ -7,10 +7,12 @@ function Second() {
     <div className="bg-white shadow-md">
       <div className="container flex items-center justify-between py-4 mx-auto">
         {/* Logo on the left */}
+      <Link to="/" className="text-green-800">
         <div className="flex items-center">
           <img src={epsl} alt="Logo" className="w-32 h-auto" /> {/* Replace with your logo path */}
           <h2 className="ml-2 text-2xl font-bold text-green-800">E-pasaley</h2>
         </div>
+        </Link>
         
         {/* Text and links on the left */}
         <div className="flex items-center space-x-5">
