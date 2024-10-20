@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../slice/loginSlice';
 import epsl from '../../assets/epsl.png';
+
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/'); // Redirect to homepage upon successful login
+      navigate('/'); // Redirect to homepage if authenticated
     }
   }, [isAuthenticated, navigate]);
 
@@ -27,7 +28,7 @@ const Login = () => {
     <section className="bg-white">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <a href="#" className="flex items-center mb-6 text-3xl font-semibold text-gray-900">
-        <img className="w-auto h-20 mr-2" src={epsl} alt="logo" />
+          <img className="w-auto h-20 mr-2" src={epsl} alt="logo" />
           E-pasaley
         </a>
         <div className="w-full bg-white rounded-lg shadow-md sm:max-w-md xl:p-0">
@@ -35,7 +36,7 @@ const Login = () => {
             <h1 className="text-2xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
               Sign in to your account
             </h1>
-            {error && <p className="text-red-500">{error}</p>}
+            {error && <p className="text-red-500">{error}</p>} {/* Display the error */}
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-900">

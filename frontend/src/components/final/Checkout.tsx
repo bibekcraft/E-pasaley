@@ -1,45 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link, useLocation } from 'react-router-dom';
+import store, { RootState } from '../store/Store';
 import { removeItemFromCart } from '../slice/cartSlice';
-import { setQuantities } from '../slice/orderSlice';
 import { validateCoupon, reset } from '../slice/CouponSlice';
 import CategorySection from '../firstpage/CategorySection';
-import { RootState } from '../store/Store';
-import LoadingScreen from '../modal/LoadingScreen';
-
-interface Product {
-  id: string;
-  categoryId: string;
-  name: string;
-  image: string;
-  brand: string;
-  final_price: number;
-  quantity: number;
-}
+import { Link } from 'react-router-dom';
 
 const Checkout: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<typeof store.dispatch>();
   const cartItems = useSelector((state: RootState) => state.cart.items);
-  const quantities = useSelector((state: RootState) => state.order.quantities);
   const { discount = 0, status = 'idle', error } = useSelector((state: RootState) => state.coupons);
-  
-  const location = useLocation();
-  const state = location.state as { products: Product[]; totalCost: number; quantities: number[] } || { products: [], totalCost: 0, quantities: [] };
 
+  const [quantities, setQuantities] = useState(cartItems.map((item) => item.quantity || 1));
   const [couponCode, setCouponCode] = useState('');
 
-  // Log the received state for verification
-  useEffect(() => {
-    console.log('Products passed to Checkout:', state.products);
-    console.log('Total Cost:', state.totalCost);
-  }, [state]);
-
   // Handle quantity change
-  const handleQuantityChange = (index: number, quantity: number) => {
-    const newQuantities = [...quantities];
-    newQuantities[index] = quantity; // Update quantity for the specific item
-    dispatch(setQuantities(newQuantities)); // Dispatch new quantities to Redux
+  const handleQuantityChange = (index: number, newQuantity: number) => {
+    const updatedQuantities = [...quantities];
+    updatedQuantities[index] = newQuantity;
+    setQuantities(updatedQuantities);
   };
 
   // Handle item removal
@@ -48,10 +27,14 @@ const Checkout: React.FC = () => {
   };
 
   // Group items and calculate total prices
-  const groupedItems = cartItems.map((item, index) => ({
-    ...item,
-    totalPrice: (item.final_price || 0) * (quantities[index] || 1),
-  }));
+  const groupedItems = cartItems.map((item, index) => {
+    const finalPrice = item.final_price || 0;
+    const quantity = quantities[index];
+    return {
+      ...item,
+      totalPrice: finalPrice * quantity,
+    };
+  });
 
   const totalPrice = groupedItems.reduce((total, item) => total + (item.totalPrice || 0), 0);
   const totalWithDiscount = totalPrice - discount;
@@ -71,10 +54,6 @@ const Checkout: React.FC = () => {
       dispatch(reset());
     };
   }, [dispatch]);
-
-  if (status === 'idle' || status === 'loading') {
-    return <LoadingScreen />;
-  }
 
   return (
     <div>
@@ -96,12 +75,11 @@ const Checkout: React.FC = () => {
                   <p className="text-base font-black leading-none text-gray-800">{item.name}</p>
                   <div className="flex items-center justify-between w-full">
                     <select
-                      value={quantities[index] || 1}
+                      value={quantities[index]}
                       onChange={(e) => handleQuantityChange(index, Number(e.target.value))}
                       aria-label="Select quantity"
                       className="px-1 py-2 mr-6 border border-gray-200"
                     >
-                      {/* Populate select options for 1-10 */}
                       {Array.from({ length: 10 }, (_, i) => (
                         <option key={i} value={i + 1}>
                           {i + 1}
@@ -124,6 +102,12 @@ const Checkout: React.FC = () => {
               </div>
             ))}
 
+            {/* Proceed to Checkout Button */}
+            <Link to="/shipping" state={{ products: groupedItems, totalCost: exactFinalCost, quantities }}>
+              <button className="w-full py-3 text-sm font-semibold text-white uppercase bg-indigo-500 hover:bg-indigo-600">
+                Proceed to Checkout
+              </button>
+            </Link>
           </div>
 
           <div id="summary" className="w-full px-8 py-10 sm:w-1/4 md:w-1/2">
@@ -151,22 +135,29 @@ const Checkout: React.FC = () => {
             </div>
             <button
               onClick={handleApplyCoupon}
-              className="px-5 py-2 text-sm text-white uppercase bg-red-600 rounded-md"
+              className="px-5 py-2 text-sm text-white uppercase bg-red-500 hover:bg-red-600"
+              disabled={status === 'loading'}
             >
               Apply
             </button>
-            {error && <p className="text-red-500">{error}</p>}
-            <div className="flex justify-between mt-5 mb-5">
-              <span className="text-sm font-semibold uppercase">Discount</span>
-              <span className="text-sm font-semibold">Rs {discount}</span>
+
+            {status === 'loading' && <p className="text-sm text-gray-500">Validating coupon...</p>}
+            {error && <p className="text-sm text-red-500">{error}</p>}
+
+            {/* Show discount if applied */}
+            {discount > 0 && (
+              <div className="flex justify-between mt-5 text-sm font-semibold uppercase">
+                <span>Discount Applied</span>
+                <span className="text-green-500">- Rs {discount}</span>
+              </div>
+            )}
+
+            <div className="mt-8 border-t">
+              <div className="flex justify-between py-6 text-sm font-semibold uppercase">
+                <span>Total cost</span>
+                <span>Rs {exactFinalCost}</span> {/* Final total with shipping */}
+              </div>
             </div>
-            <div className="flex justify-between mb-5">
-              <span className="text-sm font-semibold uppercase">Total</span>
-              <span className="text-sm font-semibold">Rs {exactFinalCost}</span>
-            </div>
-            <Link to="/success" className="block w-full px-5 py-2 text-center text-white bg-blue-500 rounded-md">
-              Proceed to Checkout
-            </Link>
           </div>
         </div>
       </div>

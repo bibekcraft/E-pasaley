@@ -1,31 +1,37 @@
-// src/components/slice/loginSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// Async thunk for logging in the user
 export const loginUser = createAsyncThunk(
   'login/loginUser',
-  async ({ username, password }: { username: string; password: string }) => {
-    const response = await axios.post('http://127.0.0.1:8000/auth/login/', { username, password });
-    return response.data; // Adjust this to your response structure
+  async ({ username, password }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/auth/login/', { username, password });
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        // If the server responds with a 401 Unauthorized
+        return rejectWithValue('Your details are not correct. Please check your username or password.');
+      }
+      return rejectWithValue(error.response?.data?.detail || 'Login failed');
+    }
   }
 );
 
 const loginSlice = createSlice({
   name: 'login',
   initialState: {
-    isAuthenticated: !!localStorage.getItem('token'), // Check if token exists on initial load
+    isAuthenticated: !!localStorage.getItem('token'),
     loading: false,
     error: null,
   },
   reducers: {
-    resetError: (state) => {
-      state.error = null;
-    },
     logout: (state) => {
       state.isAuthenticated = false;
-      state.error = null; // Clear error on logout
-      localStorage.removeItem('token'); // Clear the token from local storage
+      state.error = null;
+      localStorage.removeItem('token');
+    },
+    resetError: (state) => {
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -37,19 +43,14 @@ const loginSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.isAuthenticated = true;
-        localStorage.setItem('token', action.payload.access); // Store the access token
-        // Optional: If your backend returns a refresh token, you can store that as well
-        if (action.payload.refresh) {
-          localStorage.setItem('refreshToken', action.payload.refresh);
-        }
+        localStorage.setItem('token', action.payload.access);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload; // Store the custom error message
       });
   },
 });
 
-// Export the actions and reducer
-export const { resetError, logout } = loginSlice.actions;
+export const { logout, resetError } = loginSlice.actions;
 export default loginSlice.reducer;

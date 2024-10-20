@@ -1,12 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const WelcomeModal: React.FC = () => {
   // State to manage modal visibility
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
-  // Close modal function
+  useEffect(() => {
+    // Check if the user has already closed the modal before
+    const isModalClosed = localStorage.getItem('welcomeModalClosed');
+    if (!isModalClosed) {
+      setIsOpen(true);
+    }
+  }, []);
+
+  // Close modal function and set flag in local storage
   const handleClose = () => {
     setIsOpen(false);
+    localStorage.setItem('welcomeModalClosed', 'true'); // Store in localStorage
   };
 
   return (

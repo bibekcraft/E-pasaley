@@ -14,7 +14,7 @@ import secondCrauselReducer  from '../slice/secondCrauselSlice ';
 const store = configureStore({
   reducer: {
     secondCrausel: secondCrauselReducer,
-        cart: cartReducer,
+    cart: cartReducer,
     categories: categoryReducer,
     product: productReducer, 
     order: orderReducer,
@@ -23,7 +23,9 @@ const store = configureStore({
     login: loginReducer,
     auth: authReducer,
     testimonials: testimonialsReducer,
+    coupons: couponReducer,
     crausel: CrauselReducer,
+
 
   },
 });

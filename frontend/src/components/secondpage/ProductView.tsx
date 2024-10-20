@@ -1,17 +1,18 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'; // Import useNavigate
 import { RootState } from '../store/Store';
-import { addItem } from '../slice/cartSlice'; 
+import { addItem } from '../slice/cartSlice';
 import Faq from '../resources/Faq';
 import Second from '../firstpage/Second';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Footer from '../firstpage/Footer';
-import First from 'components/firstpage/First';
+
 const ProductView: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // Initialize useNavigate
   const { products, status } = useSelector((state: RootState) => state.product);
 
   useEffect(() => {
@@ -24,10 +25,14 @@ const ProductView: React.FC = () => {
   const handleAddToCart = () => {
     if (product) {
       dispatch(addItem({
-        ...product, id: product.id.toString(),
-        quantity: 0
+        ...product,
+        id: product.id.toString(),
+        quantity: 1 // Set a default quantity for the cart
       }));
       toast.success('Item has been added to the cart.');
+
+      // Navigate to the Checkout page and pass the cart data
+navigate('/checkout', { state: { products: [product], totalCost: product.final_price, quantities: 1 } });
     }
   };
 
@@ -129,7 +134,7 @@ const ProductView: React.FC = () => {
             </table>
           </div>
         </div>
-        <Faq/>
+        <Faq />
       </div>
       <Footer />
     </div>

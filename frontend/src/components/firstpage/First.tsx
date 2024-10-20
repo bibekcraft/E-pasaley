@@ -31,7 +31,7 @@ function First() {
         <div className="container flex flex-col items-center px-4 py-6 mx-auto bg-white shadow-lg rounded-xl">
             {/* Logo and Site Name */}
             <div className="flex items-center mb-4">
-                <Link to="/" aria-label="Go home" title="Company" className="inline-flex items-center">
+                <Link to="" aria-label="Go home" title="Company" className="inline-flex items-center">
                     <img src={epsl} alt="E-pasaley Logo" className="w-auto h-20" />
                 </Link>
                 <h2 className="ml-2 text-4xl font-bold text-gray-800">E-pasaley</h2>
@@ -84,10 +84,10 @@ function First() {
                     </Link>
                 ) : (
                     <>
-                        <Link to="/login" className="relative font-medium text-gray-800 group">
+                        {/* <Link to="/login" className="relative font-medium text-gray-800 group">
                             Sign In
                             <span className="absolute left-0 -bottom-1 h-1.5 w-0 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
-                        </Link>
+                        </Link> */}
                         <Link to="/register" className="relative font-medium text-gray-800 group">
                             Sign Up
                             <span className="absolute left-0 -bottom-1 h-1.5 w-0 bg-green-600 transition-all duration-300 group-hover:w-full"></span>

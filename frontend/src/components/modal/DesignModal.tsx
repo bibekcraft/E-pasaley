@@ -6,13 +6,22 @@ interface Design {
 }
 
 const DesignModal: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [designs, setDesigns] = useState<Design[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Close modal function
+  useEffect(() => {
+    // Check if the user has already closed the design modal before
+    const isDesignModalClosed = localStorage.getItem('designModalClosed');
+    if (!isDesignModalClosed) {
+      setIsOpen(true);
+    }
+  }, []);
+
+  // Close modal function and set flag in local storage
   const handleClose = () => {
     setIsOpen(false);
+    localStorage.setItem('designModalClosed', 'true'); // Store in localStorage
   };
 
   // Fetch designs from the API
