@@ -39,7 +39,7 @@ function First() {
                 <Link to="" aria-label="Go home" title="Company" className="inline-flex items-center">
                     <img src={epsl} alt="E-pasaley Logo" className="w-auto h-24" />
                 </Link>
-                <h2 className="ml-2 text-6xl font-bold text-green-600">E-pasaley</h2>
+                <h2 className="ml-2 text-6xl font-bold text-blue-400">E-pasaley</h2>
             </div>
 
             {/* Refined Search Bar */}

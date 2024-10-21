@@ -9,7 +9,7 @@ import Footer from '../firstpage/Footer';
 import Header from '../firstpage/Header';
 
 // InputField Component
-function InputField({ name, type = "text", placeholder, value, onChange, required }: any) {
+function InputField({ name, type = "text", placeholder, value, onChange, required }) {
   return (
     <input
       className="w-full p-3 border rounded-lg focus:outline-none focus:border-blue-500"
@@ -43,16 +43,16 @@ function Shipping() {
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setErrorMessage('');
-
+  
     // Dispatch personal details and shipping address to Redux store
     dispatch(setPersonalDetails({
       firstName: formData.firstName,
@@ -67,15 +67,15 @@ function Shipping() {
       zipCode: formData.zipCode,
     }));
     dispatch(setTotal(totalCost));
-
+  
     // Prepare the products data for the API
-    const productsData = products.map((item: any) => ({
-      item_number: item.itemnumber,
+    const productsData = products.map((item) => ({
+      item_number: item.itemnumber, // Ensure this matches your API
       final_price: item.final_price,
       quantity: item.quantity,
       total: (item.quantity * Number(item.final_price)).toFixed(2),
     }));
-
+  
     try {
       const response = await axios.post('http://127.0.0.1:8000/orders/', {
         first_name: formData.firstName,
@@ -87,9 +87,9 @@ function Shipping() {
         state: formData.state,
         zip_code: formData.zipCode,
         total_cost: totalCost,
-        order_items: productsData,
+        order_items: productsData, // Ensure this is sent correctly
       });
-
+  
       if (response.status === 201) {
         // Clear the cart and reset form data in Redux state
         dispatch(clearCart());
@@ -107,9 +107,8 @@ function Shipping() {
         // Navigate to Thank You page
         navigate('/thankyou');
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error completing order:", error.response ? error.response.data : error.message);
-      // Set error message from API response if available
       setErrorMessage(error.response?.data?.detail || "An error occurred while completing the order.");
     } finally {
       setLoading(false);
@@ -130,7 +129,7 @@ function Shipping() {
             {/* Order Summary */}
             <div className="p-6 text-white rounded-lg shadow-lg lg:w-1/3 bg-gradient-to-r from-green-700 to-green-800">
               <h2 className="mb-4 text-xl font-bold">Your Order Summary</h2>
-              {products.map((product: any) => (
+              {products.map((product) => (
                 <div key={product.itemnumber} className="flex justify-between pb-2 mb-2 text-lg border-b border-green-500">
                   <span>{product.itemnumber}</span>
                   <span>{product.quantity}</span>

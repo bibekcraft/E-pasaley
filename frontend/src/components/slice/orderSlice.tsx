@@ -55,16 +55,13 @@ const orderSlice = createSlice({
   name: 'order',
   initialState,
   reducers: {
-    setPersonalDetails(state, action: PayloadAction<OrderState['personalDetails']>) {
+    setPersonalDetails(state, action) {
       state.personalDetails = action.payload;
     },
-    setShippingAddress(state, action: PayloadAction<OrderState['shippingAddress']>) {
+    setShippingAddress(state, action) {
       state.shippingAddress = action.payload;
     },
-    setQuantities(state, action: PayloadAction<number[]>) {
-      state.quantities = action.payload;
-    },
-    setTotal(state, action: PayloadAction<number>) {
+    setTotal(state, action) {
       state.total = action.payload;
     },
     clearCart(state) {
@@ -81,24 +78,16 @@ const orderSlice = createSlice({
       })
       .addCase(submitOrder.fulfilled, (state, action) => {
         state.loading = false;
-        // Ensure that the response contains an 'id' property
-        state.orderId = action.payload.id || null; 
-        // Reset state after a successful order submission
-        state.personalDetails = initialState.personalDetails;
-        state.shippingAddress = initialState.shippingAddress;
-        state.quantities = [];
-        state.total = 0;
+        state.orderId = action.payload.id; // Assuming your API returns an id
       })
       .addCase(submitOrder.rejected, (state, action) => {
         state.loading = false;
-        // Provide a fallback message if action.error.message is undefined
-        state.error = action.error.message || 'Failed to submit order';
+        state.error = action.error.message;
       });
   },
 });
 
-// Export actions for use in components
-export const { setPersonalDetails, setShippingAddress, setQuantities, setTotal, clearCart } = orderSlice.actions;
 
-// Export the reducer to be used in the store
+// Export actions and reducer
+export const { setPersonalDetails, setShippingAddress, setTotal, clearCart } = orderSlice.actions;
 export default orderSlice.reducer;
