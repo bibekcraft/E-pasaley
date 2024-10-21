@@ -11,22 +11,25 @@ function First() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true); // Loading state
+    const [searchQuery, setSearchQuery] = useState(""); // State for search query
 
     // Fetch products from state
-    const product = useSelector((state: RootState) => state.product.product);
+    const products = useSelector((state: RootState) => state.product.products); // Use products instead of product
     const isAuthenticated = useSelector((state: RootState) => state.login.isAuthenticated);
 
-    // Only allow products that match a certain condition
-    const matchedProducts = product ? [product] : [];
+    // Filter products based on the search query
+    const filteredProducts = products.filter(product => 
+        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
-    const handleSearch = () => {
-        // Implement your search logic here
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(e.target.value); // Update search query
     };
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true); // Set loading state to true
-            await dispatch(fetchProduct(1)); // Fetch a product (replace with appropriate product ID)
+            await dispatch(fetchProduct(1)); // Fetch products (replace with appropriate category ID)
             setLoading(false); // Set loading state to false after fetching
         };
         fetchData();
@@ -43,14 +46,16 @@ function First() {
             </div>
 
             {/* Refined Search Bar */}
-            <div className="flex w-full max-w-md mb-8">
+            <div className="flex w-full max-w-md mb-4">
                 <input
                     type="text"
                     placeholder="Search products..."
                     className="flex-1 px-4 py-4 text-xl border border-gray-300 rounded-l-lg focus:ring focus:ring-blue-300 focus:outline-none"
+                    value={searchQuery} // Bind input value to searchQuery state
+                    onChange={handleSearch} // Handle input change
                 />
                 <button
-                    onClick={handleSearch}
+                    onClick={() => {}}
                     className="px-4 py-4 text-xl text-white transition duration-300 bg-green-600 rounded-r-lg hover:bg-green-700"
                 >
                     <FaSearch className="w-6 h-6" />
@@ -58,19 +63,27 @@ function First() {
             </div>
 
             {/* Products Display */}
-            <div className="grid w-full grid-cols-1 gap-4 mb-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <div className="flex justify-center w-full mb-6">
                 {loading ? (
-                    <div className="text-xl text-center text-gray-600 col-span-full">Loading products...</div>
+                    <div className="text-xl text-center text-gray-600">Loading products...</div>
                 ) : (
-                    matchedProducts.map((product) => (
-                        <div key={product.id} className="p-4 transition-shadow duration-300 bg-gray-100 rounded-lg shadow-md hover:shadow-xl">
-                            <h3 className="text-lg font-semibold text-blue-700">{product.name}</h3>
-                            <p className="text-blue-600">${product.final_price.toFixed(2)}</p>
-                            <Link to={`/allproducts/${product.categoryId}`} className="text-blue-500 hover:underline">
-                                View Details
-                            </Link>
+                    searchQuery && ( // Only show results if there's a search query
+                        <div className="flex flex-col w-full max-w-md p-4 space-y-2 bg-white border border-gray-300 rounded-lg shadow-md">
+                            {filteredProducts.length > 0 ? (
+                                filteredProducts.map((product) => (
+                                    <Link
+                                        key={product.id}
+                                        to={`/allproducts/${product.id}`} // Pass product ID as a URL parameter
+                                        className="text-black hover:underline"
+                                    >
+                                        {product.name}
+                                    </Link>
+                                ))
+                            ) : (
+                                <div className="text-lg text-gray-600">No products found.</div>
+                            )}
                         </div>
-                    ))
+                    )
                 )}
             </div>
 
