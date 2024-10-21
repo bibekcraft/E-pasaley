@@ -15,10 +15,6 @@ function Second() {
         </Link>
         
         {/* Text and links on the left */}
-        <div className="flex items-center space-x-5">
-          <a href="#" className="text-green-800">Track your order</a>
-          <a href="#" className="text-green-800">All Offers</a>
-        </div>
 
         {/* Cart section on the right */}
         <div className="flex items-center">

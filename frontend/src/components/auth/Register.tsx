@@ -18,13 +18,15 @@ const Register = () => {
 
   useEffect(() => {
     if (success) {
-      toast.success('User registered successfully!', {
-        position: 'top-right',
-        autoClose: 3000,
-        onClose: () => navigate('/login'),
-      });
+      toast.success('User registered successfully!');
+      navigate('/login'); // Redirect to /login after successful registration
     }
-  }, [success, navigate]);
+
+    // Optionally handle error notifications
+    if (error) {
+      toast.error(error); // Display the error message from Redux state
+    }
+  }, [success, error, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,8 +44,8 @@ const Register = () => {
       <ToastContainer />
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <a href="#" className="flex items-center mb-6 text-3xl font-semibold text-gray-900">
-        <img className="w-auto h-20 mr-2" src={epsl} alt="logo" />
-        E-pasaley
+          <img className="w-auto h-20 mr-2" src={epsl} alt="logo" />
+          E-pasaley
         </a>
         <div className="w-full bg-white rounded-lg shadow-lg sm:max-w-md xl:p-0">
           <div className="p-6 space-y-4 sm:p-8">

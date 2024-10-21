@@ -8,7 +8,6 @@ import { Link } from 'react-router-dom';
 import Header from '../firstpage/Header';
 import Footer from '../firstpage/Footer';
 
-
 const Checkout: React.FC = () => {
   const dispatch = useDispatch<typeof store.dispatch>();
   const cartItems = useSelector((state: RootState) => state.cart.items);
@@ -59,106 +58,101 @@ const Checkout: React.FC = () => {
   }, [dispatch]);
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-100">
       <Header />
       <CategorySection />
       <div className="container mx-auto mt-10">
-        <div className="my-10 shadow-md sm:flex">
-          <div className="w-full px-10 py-10 bg-white sm:w-3/4">
-            <div className="flex justify-between pb-8 border-b">
-              <h1 className="text-2xl font-semibold">Shopping Cart</h1>
-              <h2 className="text-2xl font-semibold">{groupedItems.length} Items</h2>
-            </div>
-
-            {groupedItems.map((item, index) => (
-              <div key={item.id} className="items-stretch py-8 border-t md:flex md:py-10 lg:py-8 border-gray-50">
-                <div className="w-full md:w-4/12 2xl:w-1/4">
-                  <img src={item.image} alt={item.name} className="object-cover object-center w-full h-full" />
-                </div>
-                <div className="flex flex-col justify-center md:pl-3 md:w-8/12 2xl:w-3/4">
-                  <p className="text-base font-black leading-none text-gray-800">{item.name}</p>
-                  <div className="flex items-center justify-between w-full">
-                    <select
-                      value={quantities[index]}
-                      onChange={(e) => handleQuantityChange(index, Number(e.target.value))}
-                      aria-label="Select quantity"
-                      className="px-1 py-2 mr-6 border border-gray-200"
-                    >
-                      {Array.from({ length: 10 }, (_, i) => (
-                        <option key={i} value={i + 1}>
-                          {i + 1}
-                        </option>
-                      ))}
-                    </select>
-                    <p className="text-base font-black leading-none text-gray-800">Rs {item.totalPrice}</p>
+        <div className="bg-white rounded-lg shadow-md sm:flex">
+          <div className="w-full px-10 py-10 sm:w-3/4">
+            <h1 className="mb-6 text-2xl font-semibold text-gray-800">Shopping Cart</h1>
+            {groupedItems.length === 0 ? (
+              <p className="text-lg text-gray-600">Your cart is empty.</p>
+            ) : (
+              groupedItems.map((item, index) => (
+                <div key={item.id} className="flex items-start py-4 border-b border-gray-300">
+                  <div className="w-24">
+                    <img src={item.image} alt={item.name} className="object-cover object-center w-full h-full rounded-md" />
                   </div>
-                  <p className="text-xs leading-3 text-gray-600">Brand: {item.brand}</p>
-                  <div className="flex items-center justify-between pt-5">
-                    <p className="text-xs leading-3 text-gray-800 underline cursor-pointer">Add to favorites</p>
-                    <p
+                  <div className="flex-1 pl-4">
+                    <p className="text-lg font-bold text-gray-800">{item.name}</p>
+                    <p className="text-sm text-gray-600">Brand: {item.brand}</p>
+                    <p className="text-sm text-red-600">Itemnumber: {item.itemnumber}</p>
+                    <div className="flex items-center justify-between mt-2">
+                      <select
+                        value={quantities[index]}
+                        onChange={(e) => handleQuantityChange(index, Number(e.target.value))}
+                        className="px-2 py-1 border border-gray-300 rounded-md"
+                      >
+                        {Array.from({ length: 10 }, (_, i) => (
+                          <option key={i} value={i + 1}>
+                            {i + 1}
+                          </option>
+                        ))}
+                      </select>
+                      <p className="text-lg font-semibold text-gray-800">Rs {item.totalPrice.toFixed(2)}</p>
+                    </div>
+                    <button
                       onClick={() => handleRemoveItem(item.id)}
-                      className="pl-5 text-xs leading-3 text-red-500 underline cursor-pointer"
+                      className="mt-2 text-red-500 hover:underline"
                     >
                       Remove
-                    </p>
+                    </button>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
 
             {/* Proceed to Checkout Button */}
-            <Link 
-  to="/shipping" 
-  state={{ 
-    products: groupedItems.map(item => ({
-      itemnumber: item.itemnumber, // Assuming item.id is the unique identifier
-      final_price: item.final_price || 0,
-      quantity: quantities[cartItems.findIndex(cartItem => cartItem.id === item.id)] || 1, // Use the quantity from state
-      total: item.totalPrice.toFixed(2), // Total price per item
-    })),
-    totalCost: exactFinalCost 
-  }}
->
-  <button className="w-full py-3 text-sm font-semibold text-white uppercase bg-indigo-500 hover:bg-indigo-600">
-    Proceed to Checkout
-  </button>
-</Link>
-
+            <Link
+              to="/shipping"
+              state={{
+                products: groupedItems.map(item => ({
+                  itemnumber: item.id, // Using item.id as unique identifier
+                  final_price: item.final_price || 0,
+                  quantity: quantities[cartItems.findIndex(cartItem => cartItem.id === item.id)] || 1, // Use the quantity from state
+                  total: item.totalPrice.toFixed(2), // Total price per item
+                })),
+                totalCost: exactFinalCost
+              }}
+            >
+              <button className="w-full py-3 mt-5 text-sm font-semibold text-white uppercase transition duration-300 bg-indigo-500 rounded-md hover:bg-indigo-600">
+                Proceed to Checkout
+              </button>
+            </Link>
           </div>
 
-          <div id="summary" className="w-full px-8 py-10 sm:w-1/4 md:w-1/2">
-            <h1 className="pb-8 text-2xl font-semibold border-b">Order Summary</h1>
-            <div className="flex justify-between mt-10 mb-5">
-              <span className="text-sm font-semibold uppercase">Items {groupedItems.length}</span>
-              <span className="text-sm font-semibold">Rs {totalPrice}</span>
+          <div className="w-full px-8 py-10 rounded-lg shadow-md sm:w-1/4 md:w-1/2 bg-gray-50">
+            <h1 className="pb-4 text-2xl font-semibold border-b">Order Summary</h1>
+            <div className="flex justify-between mt-6 mb-4">
+              <span className="text-sm font-semibold">Items {groupedItems.length}</span>
+              <span className="text-sm font-semibold">Rs {totalPrice.toFixed(2)}</span>
             </div>
             <div>
-              <label className="inline-block mb-3 text-sm font-medium uppercase">Shipping</label>
-              <select className="block w-full p-2 text-sm text-gray-600">
+              <label className="inline-block mb-2 text-sm font-medium">Shipping</label>
+              <select className="block w-full p-2 text-sm text-gray-600 border border-gray-300 rounded-md">
                 <option>Standard shipping - Rs {shippingCost}</option>
               </select>
             </div>
-            <div className="py-10">
-              <label className="inline-block mb-3 text-sm font-semibold uppercase">Promo Code</label>
+            <div className="py-6">
+              <label className="inline-block mb-2 text-sm font-semibold">Promo Code</label>
               <input
                 type="text"
-                id="promo"
                 placeholder="Enter your code"
                 value={couponCode}
                 onChange={(e) => setCouponCode(e.target.value)}
-                className="w-full p-2 text-sm border border-gray-300"
+                className="w-full p-2 text-sm border border-gray-300 rounded-md"
               />
             </div>
             <button
               onClick={handleApplyCoupon}
-              className="px-5 py-2 text-sm text-white uppercase bg-red-500 hover:bg-red-600"
+              className="px-5 py-2 text-sm text-white uppercase transition duration-300 bg-red-500 rounded-md hover:bg-red-600"
               disabled={status === 'loading'}
             >
               Apply
             </button>
 
-            {status === 'loading' && <p className="text-sm text-gray-500">Validating coupon...</p>}
-            {error && <p className="text-sm text-red-500">{error}</p>}
+            {status === 'loading' && <p className="mt-2 text-sm text-gray-500">Validating coupon...</p>}
+            {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
 
             {/* Show discount if applied */}
             {discount > 0 && (
@@ -168,10 +162,10 @@ const Checkout: React.FC = () => {
               </div>
             )}
 
-            <div className="mt-8 border-t">
-              <div className="flex justify-between py-6 text-sm font-semibold uppercase">
+            <div className="pt-4 mt-6 border-t">
+              <div className="flex justify-between text-lg font-semibold uppercase">
                 <span>Total cost</span>
-                <span>Rs {exactFinalCost}</span> {/* Final total with shipping */}
+                <span>Rs {exactFinalCost.toFixed(2)}</span> {/* Final total with shipping */}
               </div>
             </div>
           </div>

@@ -24,6 +24,7 @@ import LoadingScreen from '../src/components/modal/LoadingScreen';
 import TrackOrder from '../src/components/secondpage/TrackOrder';
 import ThankYou from '../src/components/last/thankyou';
 import TestView from '../src/components/secondpage/TestView';
+import Offer from '../src/components/secondpage/Offer';
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/testimonials" element={<Testimonials />} />
             <Route path="/trackorder" element={<TrackOrder />} />
+            <Route path="/offers" element={<Offer />} />
             {/* Authentication Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />

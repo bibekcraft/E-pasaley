@@ -12,9 +12,9 @@ function First() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true); // Loading state
 
-    // Fetch products from state (assuming products is part of your root state)
+    // Fetch products from state
     const product = useSelector((state: RootState) => state.product.product);
-    const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+    const isAuthenticated = useSelector((state: RootState) => state.login.isAuthenticated);
 
     // Only allow products that match a certain condition
     const matchedProducts = product ? [product] : [];
@@ -76,21 +76,18 @@ function First() {
 
             {/* Links Section */}
             <div className="flex justify-center w-full mt-4 space-x-6">
-                <Link to="/trackorder" className="relative flex items-center text-xl font-medium text-gray-600 group">
-                    <span className="mr-1">Track Order</span>
-                    <span className="absolute left-0 w-0 h-1.5 transition-all duration-300 bg-green-600 -bottom-1 group-hover:w-full"></span>
-                </Link>
-
-                <Link to="/checkout" className="relative flex items-center text-xl font-medium text-gray-600 group">
-                    <FaShoppingCart className="mr-2" /> Cart
-                    <span className="absolute left-0 -bottom-1 h-1.5 w-0 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
-                </Link>
-
                 {isAuthenticated ? (
-                    <Link to="/offers" className="relative text-xl font-medium text-gray-600 group">
-                        Offers
-                        <span className="absolute left-0 -bottom-1 h-1.5 w-0 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
-                    </Link>
+                    <>
+                        <Link to="/checkout" className="relative flex items-center text-xl font-medium text-gray-600 group">
+                            <FaShoppingCart className="mr-2" /> Cart
+                            <span className="absolute left-0 -bottom-1 h-1.5 w-0 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
+                        </Link>
+
+                        <Link to="/allproducts" className="relative text-xl font-medium text-gray-600 group">
+                            All Categories
+                            <span className="absolute left-0 -bottom-1 h-1.5 w-0 bg-green-600 transition-all duration-300 group-hover:w-full"></span>
+                        </Link>
+                    </>
                 ) : (
                     <Link to="/register" className="relative text-xl font-medium text-gray-600 group">
                         Sign Up

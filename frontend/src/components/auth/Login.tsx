@@ -7,7 +7,6 @@ import epsl from '../../assets/epsl.png';
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const { loading, error, isAuthenticated } = useSelector((state) => state.login);
 
   const [username, setUsername] = useState('');
@@ -36,7 +35,7 @@ const Login = () => {
             <h1 className="text-2xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
               Sign in to your account
             </h1>
-            {error && <p className="text-red-500">{error}</p>} {/* Display the error */}
+            {error && <p className="text-red-500">{error}</p>}
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-900">
