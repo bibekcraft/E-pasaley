@@ -76,7 +76,7 @@ const Checkout: React.FC = () => {
                   <div className="flex-1 pl-4">
                     <p className="text-lg font-bold text-gray-800">{item.name}</p>
                     <p className="text-sm text-gray-600">Brand: {item.brand}</p>
-                    <p className="text-sm text-red-600">Itemnumber: {item.itemnumber}</p>
+                    <p className="text-sm text-red-600">Item number: {item.itemnumber}</p>
                     <div className="flex items-center justify-between mt-2">
                       <select
                         value={quantities[index]}
@@ -165,7 +165,7 @@ const Checkout: React.FC = () => {
             <div className="pt-4 mt-6 border-t">
               <div className="flex justify-between text-lg font-semibold uppercase">
                 <span>Total cost</span>
-                <span>Rs {exactFinalCost.toFixed(2)}</span> {/* Final total with shipping */}
+                <span>Rs {exactFinalCost.toFixed(2)}</span>
               </div>
             </div>
           </div>

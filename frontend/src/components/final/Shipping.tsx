@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { setPersonalDetails, setShippingAddress, setTotal, clearCart } from '../slice/orderSlice';
+import { setPersonalDetails, setTotal, clearCart } from '../slice/orderSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import LoadingScreen from '../modal/LoadingScreen';
@@ -13,8 +13,8 @@ function InputField({ name, type = "text", placeholder, value, onChange, require
   return (
     <input
       className="w-full p-3 border rounded-lg focus:outline-none focus:border-blue-500"
-      name={name}
       type={type}
+      name={name}
       placeholder={placeholder}
       value={value}
       onChange={onChange}
@@ -23,11 +23,14 @@ function InputField({ name, type = "text", placeholder, value, onChange, require
   );
 }
 
+// Shipping Component
 function Shipping() {
   const dispatch = useDispatch();
-  const location = useLocation();
   const navigate = useNavigate();
-  const { totalCost, products } = location.state || { totalCost: 0, products: [] };
+  const location = useLocation();
+  
+  // Access products and total cost from the state
+  const { products, totalCost } = location.state || { products: [], totalCost: 0 };
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -39,7 +42,7 @@ function Shipping() {
     state: '',
     zipCode: '',
   });
-
+  
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -52,30 +55,22 @@ function Shipping() {
     e.preventDefault();
     setLoading(true);
     setErrorMessage('');
-  
+
     // Dispatch personal details and shipping address to Redux store
     dispatch(setPersonalDetails({
       firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: formData.email,
-      phone: formData.phone,
-    }));
-    dispatch(setShippingAddress({
-      addressLine: formData.addressLine,
-      city: formData.city,
-      state: formData.state,
       zipCode: formData.zipCode,
     }));
     dispatch(setTotal(totalCost));
-  
+
     // Prepare the products data for the API
     const productsData = products.map((item) => ({
-      item_number: item.item_number, // Ensure this matches your API
+      item_number: item.itemnumber,
       final_price: item.final_price,
       quantity: item.quantity,
       total: (item.quantity * Number(item.final_price)).toFixed(2),
     }));
-  
+
     try {
       const response = await axios.post('http://127.0.0.1:8000/orders/', {
         first_name: formData.firstName,
@@ -87,24 +82,11 @@ function Shipping() {
         state: formData.state,
         zip_code: formData.zipCode,
         total_cost: totalCost,
-        order_items: productsData, // Ensure this is sent correctly
+        order_items: productsData,
       });
-  
+
       if (response.status === 201) {
-        // Clear the cart and reset form data in Redux state
         dispatch(clearCart());
-        // Reset local form data
-        setFormData({
-          firstName: '',
-          lastName: '',
-          email: '',
-          phone: '',
-          addressLine: '',
-          city: '',
-          state: '',
-          zipCode: '',
-        });
-        // Navigate to Thank You page
         navigate('/thankyou');
       }
     } catch (error) {
@@ -115,55 +97,49 @@ function Shipping() {
     }
   };
 
-  // Show loading screen while processing
-  if (loading) {
-    return <LoadingScreen />;
-  }
-
   return (
     <>
       <Header />
-      <div className="min-h-screen font-sans bg-gray-100">
-        <div className="container px-4 py-12 mx-auto lg:px-20">
-          <div className="flex flex-col gap-8 lg:flex-row">
-            {/* Order Summary */}
-            <div className="p-6 text-white rounded-lg shadow-lg lg:w-1/3 bg-gradient-to-r from-green-700 to-green-800">
-              <h2 className="mb-4 text-xl font-bold">Your Order Summary</h2>
-              {products.map((product) => (
-                <div key={product.item_number} className="flex justify-between pb-2 mb-2 text-lg border-b border-green-500">
-                  <span>{product.itemnumber}</span>
-                  <span>{product.quantity}</span>
-                  <span>Rs {(Number(product.final_price) * product.quantity).toFixed(2)}</span>
-                </div>
-              ))}
-              <div className="pt-4 mt-6 border-t border-green-600">
-                <div className="flex justify-between text-lg font-semibold">
-                  <span>Total Cost:</span>
-                  <span>Rs {totalCost.toFixed(2)}</span>
-                </div>
+      {loading && <LoadingScreen />}
+      <div className="container mx-auto mt-10">
+        <div className="flex flex-col lg:flex-row">
+          {/* Order Summary */}
+          <div className="p-6 text-white rounded-lg shadow-lg lg:w-1/3 bg-gradient-to-r from-green-700 to-green-800">
+            <h2 className="mb-4 text-xl font-bold">Your Order Summary</h2>
+            {products.map((product) => (
+              <div key={product.itemnumber} className="flex justify-between pb-2 mb-2 text-lg border-b border-green-500">
+                <span>{product.name}</span>
+                <span>{product.quantity}</span>
+                <span>Rs {(Number(product.final_price) * product.quantity).toFixed(2)}</span>
+              </div>
+            ))}
+            <div className="pt-4 mt-6 border-t border-green-600">
+              <div className="flex justify-between text-lg font-semibold">
+                <span>Total Cost:</span>
+                <span>Rs {totalCost.toFixed(2)}</span>
               </div>
             </div>
+          </div>
 
-            {/* Shipping Form */}
-            <div className="flex-grow p-6 bg-white rounded-lg shadow-lg lg:w-2/3">
-              <h2 className="mb-4 text-xl font-bold">Shipping Details</h2>
-              {errorMessage && <p className="text-red-600">{errorMessage}</p>}
-              <form onSubmit={handleSubmit}>
-                <div className="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2">
-                  <InputField name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleChange} required />
-                  <InputField name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleChange} required />
-                  <InputField name="email" type="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
-                  <InputField name="phone" type="tel" placeholder="Phone" value={formData.phone} onChange={handleChange} required />
-                  <InputField name="addressLine" placeholder="Address Line" value={formData.addressLine} onChange={handleChange} required />
-                  <InputField name="city" placeholder="City" value={formData.city} onChange={handleChange} required />
-                  <InputField name="state" placeholder="State" value={formData.state} onChange={handleChange} required />
-                  <InputField name="zipCode" type="number" placeholder="ZIP Code" value={formData.zipCode} onChange={handleChange} required />
-                </div>
-                <button type="submit" className="w-full py-2 text-white bg-green-700 rounded hover:bg-green-800">
-                  Submit Order
-                </button>
-              </form>
-            </div>
+          {/* Shipping Form */}
+          <div className="flex-grow p-6 bg-white rounded-lg shadow-lg lg:w-2/3">
+            <h2 className="mb-4 text-xl font-bold">Shipping Details</h2>
+            {errorMessage && <p className="text-red-600">{errorMessage}</p>}
+            <form onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2">
+                <InputField name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleChange} required />
+                <InputField name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleChange} required />
+                <InputField name="email" type="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
+                <InputField name="phone" type="tel" placeholder="Phone" value={formData.phone} onChange={handleChange} required />
+                <InputField name="addressLine" placeholder="Address Line" value={formData.addressLine} onChange={handleChange} required />
+                <InputField name="city" placeholder="City" value={formData.city} onChange={handleChange} required />
+                <InputField name="state" placeholder="State" value={formData.state} onChange={handleChange} required />
+                <InputField name="zipCode" type="number" placeholder="ZIP Code" value={formData.zipCode} onChange={handleChange} required />
+              </div>
+              <button type="submit" className="w-full py-2 text-white bg-green-700 rounded hover:bg-green-800">
+                Submit Order
+              </button>
+            </form>
           </div>
         </div>
       </div>
