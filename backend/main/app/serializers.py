@@ -96,22 +96,14 @@ class OrderItemSerializer(serializers.ModelSerializer):
         model = OrderItem
         fields = ['product', 'quantity']
 
-class OrderSerializer(serializers.ModelSerializer):
-    items = OrderItemSerializer(many=True)
+from rest_framework import serializers
+from .models import Order
 
+class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ['user', 'items']
+        fields = '__all__'  # or specify the fields you want
 
-    def create(self, validated_data):
-        items_data = validated_data.pop('items')
-        order = Order.objects.create(**validated_data)
-
-        # Ensure no manual id assignment here
-        for item_data in items_data:
-            OrderItem.objects.create(order=order, **item_data)
-
-        return order
 
 # Carousel Serializer
 class crauselSerializer(serializers.ModelSerializer):

@@ -255,3 +255,24 @@ class TrackOrderView(View):
             })
         else:
             return JsonResponse({'error': 'Order ID not found.'}, status=404)
+
+
+from rest_framework import generics, status
+from rest_framework.response import Response
+from .models import Order
+from .serializers import OrderSerializer
+
+class OrderCreateView(generics.CreateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        order = serializer.save()
+        return Response({'id': order.id, 'message': 'Order created successfully!'}, status=status.HTTP_201_CREATED)
+
+
+class OrderListView(generics.ListAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
