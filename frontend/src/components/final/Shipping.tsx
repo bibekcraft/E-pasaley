@@ -65,7 +65,7 @@ function Shipping() {
 
     // Prepare the products data for the API
     const productsData = products.map((item) => ({
-      item_number: item.itemnumber,
+      item_number: item.itemnumber, // Use item.itemnumber for the item number
       final_price: item.final_price,
       quantity: item.quantity,
       total: (item.quantity * Number(item.final_price)).toFixed(2),
@@ -82,7 +82,7 @@ function Shipping() {
         state: formData.state,
         zip_code: formData.zipCode,
         total_cost: totalCost,
-        order_items: productsData,
+        order_items: productsData, // Send all product details
       });
 
       if (response.status === 201) {
@@ -107,7 +107,7 @@ function Shipping() {
           <div className="p-6 text-white rounded-lg shadow-lg lg:w-1/3 bg-gradient-to-r from-green-700 to-green-800">
             <h2 className="mb-4 text-xl font-bold">Your Order Summary</h2>
             {products.map((product) => (
-              <div key={product.itemnumber} className="flex justify-between pb-2 mb-2 text-lg border-b border-green-500">
+              <div key={product.item_number} className="flex justify-between pb-2 mb-2 text-lg border-b border-green-500">
                 <span>{product.name}</span>
                 <span>{product.quantity}</span>
                 <span>Rs {(Number(product.final_price) * product.quantity).toFixed(2)}</span>

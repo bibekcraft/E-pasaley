@@ -104,21 +104,22 @@ const Checkout: React.FC = () => {
 
             {/* Proceed to Checkout Button */}
             <Link
-              to="/shipping"
-              state={{
-                products: groupedItems.map(item => ({
-                  itemnumber: item.id, // Using item.id as unique identifier
-                  final_price: item.final_price || 0,
-                  quantity: quantities[cartItems.findIndex(cartItem => cartItem.id === item.id)] || 1, // Use the quantity from state
-                  total: item.totalPrice.toFixed(2), // Total price per item
-                })),
-                totalCost: exactFinalCost
-              }}
-            >
-              <button className="w-full py-3 mt-5 text-sm font-semibold text-white uppercase transition duration-300 bg-indigo-500 rounded-md hover:bg-indigo-600">
-                Proceed to Checkout
-              </button>
-            </Link>
+  to="/shipping"
+  state={{
+    products: groupedItems.map(item => ({
+      itemnumber: item.itemnumber, // Use item.itemnumber directly
+      final_price: item.final_price || 0,
+      quantity: quantities[cartItems.findIndex(cartItem => cartItem.id === item.id)] || 1,
+      total: item.totalPrice.toFixed(2),
+    })),
+    totalCost: exactFinalCost
+  }}
+>
+  <button className="w-full py-3 mt-5 text-sm font-semibold text-white uppercase transition duration-300 bg-indigo-500 rounded-md hover:bg-indigo-600">
+    Proceed to Checkout
+  </button>
+</Link>
+
           </div>
 
           <div className="w-full px-8 py-10 rounded-lg shadow-md sm:w-1/4 md:w-1/2 bg-gray-50">

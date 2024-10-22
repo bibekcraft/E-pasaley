@@ -1,16 +1,15 @@
-///TO DO list in project of react
-///MANAGAIGNG AUTH
-//routing mnagamenet
-//all the updation in  text that will be seeen
-//use of api using query with redux
-//perfect use of useeffect and hooks
-//video section in the project
-//maintin checkout page
-//order tracking
-//payment gateway
-//use of backend
+///checkout page maintenace
+///database add.
+
+import { Section } from "lucide-react"
 
 
 
 
 
+
+
+
+1 . in shipping page pass the itemnumber of checkout page in order summary Section
+2 . personal details only goes to bakcned  
+3 . send all the data of order usmmary and personal detail to backend
