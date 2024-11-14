@@ -43,7 +43,7 @@ class Product(models.Model):
     image2 = models.ImageField(default='default_image.jpg', upload_to='images/')
     image3 = models.ImageField(default='default_image.jpg', upload_to='images/')
     image4 = models.ImageField(default='default_image.jpg', upload_to='images/')
-    itemnumber = models.TextField(default='PMS-0001')
+    itemnumber = models.TextField(default='PMS-0001', unique=True)  # Example of uniqueness
 
     def __str__(self):
         return self.name
@@ -116,17 +116,17 @@ class Order(models.Model):
         try:
             last_order = Order.objects.order_by('id').last()
             if last_order:
-                last_id = int(last_order.id[4:])  # Extracts the numeric part
+                last_id = int(last_order.id[4:])  
                 new_id = f"3132{last_id + 1:06d}"
             else:
-                new_id = "3132000001"  # Starting ID
+                new_id = "3132000001" 
         except Exception as e:
             print(f"Error generating order ID: {e}")
-            new_id = "3132000001"  # Fallback ID
+            new_id = "3132000001"  
         return new_id
 
     def save(self, *args, **kwargs):
-        if not self.id:  # Generate ID only if it hasn't been set
+        if not self.id:  
             self.id = self.generate_id()
         super().save(*args, **kwargs)
 
@@ -160,17 +160,17 @@ class OrderItem(models.Model):
         try:
             last_item = OrderItem.objects.order_by('id').last()
             if last_item:
-                last_id = int(last_item.id[4:])  # Extract numeric part
+                last_id = int(last_item.id[4:])  
                 new_id = f"ITEM{last_id + 1:06d}"
             else:
                 new_id = "ITEM000001"
         except Exception as e:
             print(f"Error generating order item ID: {e}")
-            new_id = "ITEM000001"  # Fallback ID
+            new_id = "ITEM000001"  
         return new_id
 
     def save(self, *args, **kwargs):
-        if not self.id:  # Generate ID only if it hasn't been set
+        if not self.id:  
             self.id = self.generate_id()
         super().save(*args, **kwargs)
 
@@ -233,7 +233,7 @@ class OrderTracking(models.Model):
     ]
     
     status = models.CharField(max_length=20, choices=ORDER_STATUS_CHOICES)
-    timestamp = models.DateTimeField(auto_now_add=True)  # Automatically set the timestamp when created
+    timestamp = models.DateTimeField(auto_now_add=True)  
 
     def __str__(self):
         return f"{self.order.id} - {self.status} at {self.timestamp}"

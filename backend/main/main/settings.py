@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 from datetime import timedelta
 
@@ -15,10 +14,6 @@ SECRET_KEY = 'django-insecure-*!6&bt)v*=q&bdp+&na&qce6&h9f0%35$85l1b0+ugc^)g$*jh
 DEBUG = True
 
 ALLOWED_HOSTS = []
-STATICFILES_DIRS = [
-    # Your other static directories
-    # e.g., os.path.join(BASE_DIR, 'static'),
-]
 
 # Application definition
 INSTALLED_APPS = [
@@ -54,7 +49,7 @@ SIMPLE_JWT = {
 }
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # CORS middleware should be first
+    'corsheaders.middleware.CorsMiddleware',  
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -84,26 +79,26 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'main.wsgi.application'
 
-# CORS settings
+# CORS ko setting haru
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',  # Adjust this based on where your frontend is running
+    'http://localhost:5173',  
 ]
 
-# Database
+# Database configuration
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / "db.sqlite3",  
     }
 }
 
-# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',  
+]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',

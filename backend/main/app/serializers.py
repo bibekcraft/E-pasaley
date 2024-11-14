@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from .models import (
     Category,
     Product,
@@ -14,7 +15,6 @@ from .models import (
     modal1,
     crauselsofdesign
 )
-from rest_framework.exceptions import ValidationError
 
 # Register Serializer
 class RegisterSerializer(serializers.ModelSerializer):
@@ -26,7 +26,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         if data['password'] != data['confirm_password']:
-            raise serializers.ValidationError("Passwords do not match.")
+            raise ValidationError("Passwords do not match.")
         return data
 
     def create(self, validated_data):
@@ -43,7 +43,7 @@ class LoginSerializer(serializers.Serializer):
         from django.contrib.auth import authenticate
         user = authenticate(username=data['username'], password=data['password'])
         if user is None:
-            raise serializers.ValidationError("Incorrect username or password")
+            raise ValidationError("Incorrect username or password")
         return {'user': user}
 
 # Category Serializer
@@ -88,22 +88,17 @@ class faqSerializer(serializers.ModelSerializer):
         model = faq
         fields = '__all__'
 
-from rest_framework import serializers
-from .models import Order, OrderItem
-
+# Order Item Serializer
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
         fields = ['product', 'quantity']
 
-from rest_framework import serializers
-from .models import Order
-
+# Order Serializer
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = '__all__'  # or specify the fields you want
-
+        fields = '__all__'  # Specify the fields you want if not all
 
 # Carousel Serializer
 class crauselSerializer(serializers.ModelSerializer):
